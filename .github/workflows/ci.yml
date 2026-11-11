@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # hatch-vcs reads the version from the tags
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: uv sync --group dev
+      - run: uv run inv ci
