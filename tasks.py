@@ -9,8 +9,6 @@ from invoke import task
 # and host). GitHub Actions builds the image on a version tag (.github/workflows/image.yml);
 # this repo only restarts the services. Services, secrets and routing live in the deployment repo.
 IMAGE = "odas"  # local builds only; deployments pull ghcr.io/<owner>/odas
-VPS = os.getenv("ODAS_DEPLOY_VPS", "")  # ssh alias from your ~/.ssh/config
-STACK = os.getenv("ODAS_DEPLOY_STACK", "/srv/stack")  # the compose dir on the VPS
 
 
 @task
@@ -138,8 +136,11 @@ def deploy(c, service=""):
     the image the compose files name. `up -d` recreates a service when the pulled
     image differs, so the services are cycled, not restarted.
     """
-    if not VPS:
-        raise SystemExit("Set ODAS_DEPLOY_VPS first.")
+    _load_env()
+    vps = os.getenv("ODAS_DEPLOY_VPS", "")  # ssh alias from your ~/.ssh/config
+    stack = os.getenv("ODAS_DEPLOY_STACK", "/srv/stack")  # the compose dir on the VPS
+    if not vps:
+        raise SystemExit("Set ODAS_DEPLOY_VPS in .env first.")
     tag = _latest_tag(c)
     run = c.run(
         f"gh run list --workflow=image.yml --branch={tag} -L1 --json databaseId -q '.[0].databaseId'",
@@ -152,8 +153,8 @@ def deploy(c, service=""):
     # Every odas service in the deployment repo is named `odas-*`, so a new org needs no edit here.
     all_odas = "$(docker compose config --services | grep '^odas-')"
     pick = shlex.quote(service) if service else all_odas
-    remote = f"cd {STACK} && S={pick} && docker compose pull $S && docker compose up -d $S"
-    c.run(f"ssh -t {VPS} {shlex.quote(remote)}", pty=True)
+    remote = f"cd {stack} && S={pick} && docker compose pull $S && docker compose up -d $S"
+    c.run(f"ssh -t {vps} {shlex.quote(remote)}", pty=True)
     print(f"Deployed {tag}.")
 
 
