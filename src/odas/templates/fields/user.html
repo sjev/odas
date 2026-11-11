@@ -1,0 +1,11 @@
+{# A team member, picked from the behandelaars ctx the editor passes in. #}
+{% macro input(key, f, values, ctx) %}
+{%- set value = values.get(key, '') %}
+<select name="{{ key }}">
+    <option value=""></option>
+    {% for u in ctx.get('behandelaars', []) %}
+    {% set name = u.first_name ~ ' ' ~ u.last_name %}
+    <option value="{{ name }}"{% if value == name %} selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+</select>
+{%- endmacro %}

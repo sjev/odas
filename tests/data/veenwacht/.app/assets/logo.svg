@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 85" role="img" aria-label="Stichting Veenwacht">
+  <circle cx="42" cy="42" r="34" fill="#2f6b3a"/>
+  <path d="M22 52c8-6 12-6 20 0s12 6 20 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M42 46V22m0 8l-8-6m8 12l8-6" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <text x="88" y="38" font-family="sans-serif" font-size="15" fill="#555">Stichting</text>
+  <text x="88" y="62" font-family="sans-serif" font-size="24" font-weight="bold" fill="#2f6b3a">Veenwacht</text>
+</svg>

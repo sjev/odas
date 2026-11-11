@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Artikel {{ artikel.artikel }} {{ law.short_title }}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="/wetten/{{ law.slug }}">&larr; {{ law.short_title }}</a></nav>
+
+<article>
+    <header class="article-header">
+        <strong>Artikel {{ artikel.artikel }}{% if titel %} — {{ titel }}{% endif %}</strong>
+    </header>
+
+    <p class="wet-bron">
+        Hoofdstuk {{ artikel.hoofdstuk }} — geldig vanaf {{ artikel.valid_from }}.
+        <a href="{{ artikel.source }}">Bron bij de overheid</a>
+    </p>
+
+    {# The government's own wording, verbatim: a line break in the file is a line
+       break in the article, so the text is drawn as it stands and never edited. #}
+    <pre class="wet-tekst">{{ text }}</pre>
+</article>
+{% endblock %}

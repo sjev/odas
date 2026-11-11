@@ -1,0 +1,9 @@
+{% import "fields/select.html" as sel %}
+
+{% macro input(key, f, values, ctx) %}{{ sel.options(key, f, values.get(key, '')) }}{% endmacro %}
+
+{# The badge: label and css both come off the field's options. #}
+{% macro cell(zaak, key, f) %}
+{%- set b = f.badge(zaak.frontmatter.get(key, '')) -%}
+<span class="badge {{ b[1] }}">{{ b[0] }}</span>
+{%- endmacro %}

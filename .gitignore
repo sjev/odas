@@ -1,0 +1,83 @@
+reference/
+temp/
+
+# A zaken/ directory anywhere is an organisation's real case documents -- except
+# one, which is invented and tracked in full: the reference corpus under
+# tests/data. Re-including the directory itself is required: git cannot rescue
+# a file whose parent directory is excluded. The demo's zaken are generated
+# live (`demo_seed.py`), never committed, so they need no line here.
+zaken/
+!tests/data/*/zaken/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+
+# Local environment / secrets
+.env
+
+# A data dir's .app/ holds three different things. `config.yaml` is the schema --
+# it defines the types and fields, so it is the data dir's spec and the corpus
+# under tests/data/ tracks it. `secrets.yaml` holds the deployment's credentials
+# and is never committed anywhere. Everything else is runtime state (session
+# secret, user list, app log, and `app-version`, which records the app that last
+# wrote here, not the data) and is never committed either.
+.app/
+!tests/data/*/.app/
+tests/data/*/.app/*
+!tests/data/*/.app/config.yaml
+!tests/data/*/.app/intake.html
+!tests/data/*/.app/assets/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Type checkers / linters
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+*_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# pyenv
+.python-version
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

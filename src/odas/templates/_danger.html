@@ -1,0 +1,21 @@
+{# The one place a destructive action appears: the foot of an edit page.
+
+   It sits outside the editor form -- a form inside a form is invalid HTML -- so
+   each row is a link to a confirm page, never a submit. Every row says where the
+   thing goes, not only that it goes. #}
+{% macro danger_zone(rows) %}
+{% if rows %}
+<section class="danger-zone">
+    <h2>Gevarenzone</h2>
+    {% for title, sentence, url, label in rows %}
+    <div class="danger-row">
+        <div>
+            <strong>{{ title }}</strong>
+            <small>{{ sentence }}</small>
+        </div>
+        <a href="{{ url }}" role="button" class="btn-danger">{{ label }}</a>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}

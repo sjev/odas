@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% import "_fields.html" as f %}
+{% import "_danger.html" as danger %}
+{% block title %}{{ ref }} bewerken{% endblock %}
+{% block head %}
+{# The one page that still needs an editor component: raw index.md is YAML, where
+   indentation is meaning. The prose fields are plain textareas. #}
+<link rel="stylesheet" href="/static/vendor/codemirror/codemirror.min.css?v={{ version }}">
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="/zaken/{{ ref }}">&larr; {{ ref }}</a></nav>
+
+<h1>Samenvatting bewerken</h1>
+
+{% if error %}
+<p class="error" role="alert">{{ error }}</p>
+{% endif %}
+
+<form method="post" action="/zaken/{{ ref }}/bewerken" class="editor-form"
+    data-draft="zaak" data-draft-guard>
+    <input type="hidden" name="mode" id="mode-input" value="form">
+
+    <div class="editor-mode-toggle">
+        <label>
+            <input type="checkbox" id="toggle-advanced" role="switch">
+            Geavanceerd
+        </label>
+    </div>
+
+    {# the zaken relation is edited through the picker below, not as a text field #}
+    {{ f.field_grid(fields, fm, "team", {'behandelaars': behandelaars}, skip=[relation_key] if relation_key else []) }}
+
+    <label id="body-label">
+        <span>Samenvatting</span>
+        <textarea name="body" class="doc-editor" autocomplete="off">{{ body }}</textarea>
+    </label>
+
+    <label id="raw-label" style="display:none">
+        <span>Ruwe inhoud <small>(index.md)</small></span>
+        <textarea id="raw-editor" name="raw_content" class="doc-editor" spellcheck="false" autocomplete="off" data-draft-skip>{{ raw }}</textarea>
+    </label>
+
+    <div class="form-actions">
+        <a href="/zaken/{{ ref }}" role="button" class="btn-cancel">Annuleren</a>
+        <button type="submit">Opslaan</button>
+    </div>
+
+    <dialog id="toegang-dialog">
+        <article>
+            <h3>Toegang verlenen</h3>
+            {% for u in grantees %}
+            <label class="checkbox-row">
+                <input type="checkbox" name="{{ toegang_key }}" value="{{ u.email }}"
+                    data-name="{{ u.first_name }} {{ u.last_name }}"
+                    {% if u.email|lower in selected %}checked{% endif %}>
+                <span>{{ u.first_name }} {{ u.last_name }}<small>{{ u.email }}</small></span>
+            </label>
+            {% endfor %}
+            {% for email in extra_grantees %}
+            <label class="checkbox-row">
+                <input type="checkbox" name="{{ toegang_key }}" value="{{ email }}" data-name="{{ email }}" checked>
+                <span><small>{{ email }} (niet in gebruikerslijst)</small></span>
+            </label>
+            {% endfor %}
+            {% if not grantees and not extra_grantees %}
+            <p><small>Geen gebruikers beschikbaar.</small></p>
+            {% endif %}
+            <footer class="map-dialog-actions">
+                <button type="button" id="toegang-done">Klaar</button>
+            </footer>
+        </article>
+    </dialog>
+</form>
+
+{% if relation_key %}
+<h2>Zaken</h2>
+{% if add_error %}<p class="error" role="alert">{{ add_error }}</p>{% endif %}
+{% if relation_zaken %}
+<div class="zaak-list">
+    {% for m in relation_zaken %}
+    <div class="member-row">
+        {% if m.error %}
+        <span class="zaak-cell" style="color:var(--pico-del-color)">Onbekende zaak: {{ m.ref }}</span>
+        {% else %}
+        <a class="zaak-cell" href="/zaken/{{ m.ref }}">{{ m.titel }} <small>{{ m.ref }}</small></a>
+        {% endif %}
+        <form method="post" action="/zaken/{{ ref }}/relatie/{{ relation_key }}">
+            <input type="hidden" name="ref" value="{{ m.ref }}">
+            <input type="hidden" name="actie" value="verwijderen">
+            <button type="submit" class="btn-cancel">Verwijderen</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty">Nog geen zaken gekoppeld.</p>
+{% endif %}
+
+{% if relation_opties %}
+<form method="post" action="/zaken/{{ ref }}/relatie/{{ relation_key }}" class="form-actions">
+    <select name="ref" required>
+        <option value="" disabled {% if not add_value %}selected{% endif %}>
+            &mdash; kies een zaak &mdash;</option>
+        {% for opt_ref, label in relation_opties %}
+        <option value="{{ opt_ref }}" {% if add_value == opt_ref %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="actie" value="toevoegen">
+    <button type="submit">Toevoegen</button>
+</form>
+{% else %}
+<p class="empty">Alle zaken zitten al in dit dossier.</p>
+{% endif %}
+{% endif %}
+
+{{ danger.danger_zone([(
+    "Deze zaak verwijderen",
+    "De zaak gaat met logboek en bijlagen naar de prullenbak op de server.",
+    "/zaken/" ~ ref ~ "/verwijderen",
+    "Verwijderen",
+)]) }}
+
+{{ f.field_assets(fields, "edit") }}
+
+<script src="/static/vendor/codemirror/codemirror.min.js?v={{ version }}"></script>
+<script src="/static/vendor/codemirror/yaml.js?v={{ version }}"></script>
+<script src="/static/raw_toggle.js?v={{ version }}"></script>
+<script>
+(function () {
+    const dialog = document.getElementById("toegang-dialog");
+    const summary = document.getElementById("toegang-summary");
+    const open = document.getElementById("toegang-open");
+    if (!open) return;  // this type declares no toegang field
+
+    function refresh() {
+        const names = [...dialog.querySelectorAll("input:checked")].map(c => c.dataset.name);
+        summary.innerHTML = names.length ? names.join("<br>") : "—";
+    }
+
+    open.addEventListener("click", () => dialog.showModal());
+    document.getElementById("toegang-done").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", refresh);
+    refresh();
+})();
+
+initRawToggle({{ 'true' if reopen_raw else 'false' }});
+</script>
+{% endblock %}

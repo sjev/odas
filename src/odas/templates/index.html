@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% import "_table.html" as macros %}
+{% block title %}Zaken{% endblock %}
+{% block body_class %}wide{% endblock %}
+{% block content %}
+{% set label = (soort_counts | selectattr('0', 'equalto', soort) | map(attribute='1') | first) if soort else "Zaken" %}
+
+<article>
+    <header class="article-header">
+        <strong>{{ label }}</strong>
+        {% if request.state.is_team %}
+        <button type="button" class="btn-action"
+            onclick="document.getElementById('nieuwe-zaak').showModal()">Nieuw</button>
+        {% endif %}
+    </header>
+
+    {# Three choices and one box, in one form. A choice reloads the page, so the
+       address always states the set; the button is the route without scripting.
+       The box takes a ref, a few words from the titel, or `sleutel:waarde` per
+       declared field. Quotes hold a phrase together. #}
+    <form class="zoek" method="get" action="/zaken">
+        <div class="zoek-keuze">
+            {% if has_soort_choice or soort %}
+            <select name="soort" aria-label="Soort zaak" onchange="this.form.submit()">
+                <option value="">Alle ({{ total }})</option>
+                {% for name, title, count in soort_counts %}
+                <option value="{{ name }}" {% if soort == name %}selected{% endif %}>{{ title }} ({{ count }})</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if status_options %}
+            <select name="status" aria-label="Status" onchange="this.form.submit()">
+                <option value="">Alle statussen</option>
+                {% for value, title in status_options %}
+                <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ title }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+        {# A header click chose the order; a new choice keeps it. #}
+        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+
+        <div class="zoek-form">
+            <input type="search" name="q" value="{{ q }}" aria-label="Zoek in zaken"
+                placeholder="zk-00001, een woord uit de titel, of status:nieuw">
+            {{ macros.help_button('zoek-help-dialog', 'Hoe zoek ik?') }}
+            <button type="submit">Zoek</button>
+            {# Wissen undoes a narrowing. An order narrows nothing, so it neither
+               draws the button nor gets cleared by it. #}
+            {% if q or soort or status %}
+            <a href="/zaken{{ '?sort=' ~ sort|urlencode if sort }}" role="button" class="btn-cancel">Wissen</a>
+            {% endif %}
+        </div>
+    </form>
+    {{ macros.help_dialog('zoek-help-dialog', 'Zoeken', zoek_help) }}
+
+    {# Its own form: the choice is kept in this browser, never in the address. #}
+    <details class="kolommen">
+        <summary>Kolommen</summary>
+        <form method="post" action="/columns">
+            <input type="hidden" name="back" value="{{ back }}">
+            {% for key, f in candidates.items() %}
+            <label><input type="checkbox" name="columns" value="{{ key }}" {% if key in cols %}checked{% endif %}> {{ f.label }}</label>
+            {% endfor %}
+            <button type="submit">Toepassen</button>
+        </form>
+    </details>
+
+    {% if zaken %}
+    {{ macros.zaak_table(zaken, cols, back=back, links=links) }}
+    {% elif q %}
+    <p class="empty">Geen zaken gevonden voor &ldquo;{{ q }}&rdquo;.</p>
+    {% else %}
+    <p class="empty">Nog geen zaken.</p>
+    {% endif %}
+</article>
+
+{% if request.state.is_team %}
+<dialog id="nieuwe-zaak">
+    <form method="post" action="/zaken">
+        <h2>Nieuwe zaak</h2>
+        <label>Titel
+            <input type="text" name="titel" required autofocus
+                placeholder="Korte titel — de rest vul je later aan.">
+        </label>
+        {% if soorten|length > 1 %}
+        <label>Soort
+            <select name="soort">
+                {% for name, title in soorten %}
+                <option value="{{ name }}" {% if soort == name %}selected{% endif %}>{{ title }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        {% endif %}
+        <div class="grid">
+            <button type="button" class="btn-cancel"
+                onclick="document.getElementById('nieuwe-zaak').close()">Annuleren</button>
+            <button type="submit">Aanmaken</button>
+        </div>
+    </form>
+</dialog>
+{% endif %}
+{% endblock %}

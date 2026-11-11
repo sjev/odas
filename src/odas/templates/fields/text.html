@@ -1,0 +1,4 @@
+{# The default widget, and the fallback for any kind that names no other. #}
+{% macro input(key, f, values, ctx) %}
+<input type="text" name="{{ key }}" value="{{ values.get(key, '') }}"{% if ctx.required %} required{% endif %}{% if ctx.invalid %} aria-invalid="true"{% endif %}>
+{%- endmacro %}

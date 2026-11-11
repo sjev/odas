@@ -1,0 +1,58 @@
+{% import "_icons.html" as ic %}
+
+{# One document, wherever it is drawn: under its log entry and in the gathered
+   list. The name is the file itself, so a row is one click away from it. #}
+{% macro doc_row(d, base_url, ai=false) %}
+        {% set samenvatting_url = base_url ~ "/log/" ~ d.entry ~ "/bijlage/" ~ d.name ~ "/samenvatting" %}
+        {# The address rides the row only while there is something to poll for. #}
+        <li class="doc-row"{% if d.bezig %} data-samenvatting="{{ samenvatting_url }}"{% endif %}>
+            <a class="doc-link" target="_blank" rel="noopener"
+                href="{{ base_url }}/log/{{ d.entry }}/bijlage/{{ d.name }}">
+                {{ ic.icon("paperclip", 14, "icon-clip") }} {{ d.name }}</a>
+            {# One cluster, so the row never breaks between the name and the rest. #}
+            <span class="doc-meta">
+                <span class="meta">{{ d.datum|dt }}</span>
+                {% if d.warn %}
+                <span class="meta doc-warning">geen tekstlaag</span>
+                {% elif d.pages %}
+                <span class="meta">{{ d.pages }} pagina{{ '' if d.pages == 1 else "'s" }}</span>
+                {% endif %}
+                {# The button is a form, so the summary can be asked for without scripting. #}
+                {% if ai and not d.summary and not d.warn and d.pages %}
+                {% if d.bezig %}
+                <span class="meta doc-busy" aria-live="polite">bezig met lezen…</span>
+                {% else %}
+                <form method="post" action="{{ samenvatting_url }}" class="doc-ai">
+                    <button type="submit" class="secondary outline doc-ai-btn"
+                        title="Samenvatten met AI" aria-label="Samenvatten met AI">{{ ic.icon("sparkles", 14, "icon-sparkles") }}</button>
+                </form>
+                {% endif %}
+                {% endif %}
+                {% if d.fout %}
+                <span class="meta doc-warning">{{ d.fout }}</span>
+                {% endif %}
+            </span>
+            <div class="doc-summary-slot">
+                {% if d.summary %}
+                <details class="doc-summary">
+                    <summary>Samenvatting</summary>
+                    <div class="prose">{{ d.summary|md }}</div>
+                </details>
+                {% endif %}
+            </div>
+        </li>
+{% endmacro %}
+
+{# Every attachment of the zaak in one list, whatever entry it arrived in. #}
+{% macro documents_section(documenten, base_url, ai=false) %}
+{% if documenten %}
+<article>
+    <header class="log-toolbar">
+        <div class="log-header-text"><h2 class="log-title">Documenten</h2></div>
+    </header>
+    <ul class="doc-list">
+        {% for d in documenten %}{{ doc_row(d, base_url, ai) }}{% endfor %}
+    </ul>
+</article>
+{% endif %}
+{% endmacro %}

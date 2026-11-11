@@ -1,0 +1,5 @@
+{# The dossier's members. The picker route is the only writer, so this widget is
+   never reached from the editor grid; the detail page renders the refs. #}
+{% macro input(key, f, values, ctx) %}
+<input type="text" name="{{ key }}" value="{{ values.get(key, '') }}" readonly>
+{%- endmacro %}

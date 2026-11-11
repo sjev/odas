@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toestand bwb-id="BWBR9999999" inwerkingtreding="2024-01-01">
+  <wetgeving>
+    <citeertitel>Voorbeeldwet</citeertitel>
+    <wet-besluit>
+      <wettekst>
+        <hoofdstuk>
+          <kop>
+            <label>Hoofdstuk</label>
+            <nr>3</nr>
+            <titel>Bezwaar en beroep</titel>
+          </kop>
+          <paragraaf>
+            <kop>
+              <label>Paragraaf</label>
+              <nr>3.1</nr>
+              <titel>Bezwaar</titel>
+            </kop>
+            <artikel>
+              <kop>
+                <nr>3.1</nr>
+                <titel>Termijn</titel>
+              </kop>
+              <al>Het bezwaarschrift wordt ingediend binnen zes weken.</al>
+            </artikel>
+          </paragraaf>
+          <afdeling>
+            <kop>
+              <label>Afdeling</label>
+              <nr>3.2</nr>
+              <titel>Beroep</titel>
+            </kop>
+            <paragraaf>
+              <kop>
+                <label>Paragraaf</label>
+                <nr>3.2.1</nr>
+                <titel>Algemeen</titel>
+              </kop>
+              <artikel>
+                <kop>
+                  <nr>3.2</nr>
+                </kop>
+                <al>Het beroepschrift wordt ingediend bij de bestuursrechter.</al>
+              </artikel>
+            </paragraaf>
+          </afdeling>
+        </hoofdstuk>
+      </wettekst>
+    </wet-besluit>
+  </wetgeving>
+</toestand>

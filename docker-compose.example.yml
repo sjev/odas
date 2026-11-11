@@ -1,0 +1,123 @@
+# How ODAS runs on a VPS. Copy this, do not deploy it as-is: the real compose
+# files, routing and secrets live in the deployment repo. This file is the
+# reference for what ODAS itself needs, and nothing more.
+#
+# Two containers from one image. The web app serves the zaken; the mail daemon
+# receives correspondence and files it. They share the data volume and nothing
+# else -- the daemon writes the zaak folder directly, so there is no API between
+# them and no shared secret to manage.
+#
+# ── Before the first start ────────────────────────────────────────────────────
+#
+# 1. Create the data dir and let ODAS write its schema into it:
+#      docker run --rm -v /srv/data/odas:/data -e ODAS_DATA_DIR=/data odas init
+#    That writes .app/config.yaml (the complete schema, meant to be edited) and
+#    .app/secrets.yaml (mode 0600, empty). Both must exist before `serve` runs.
+#
+# 2. Edit /srv/data/odas/.app/config.yaml: `org`, `oidc`, `smtp`, `mailin`,
+#    `types`, `fields`. Nothing merges onto this file -- what it does not declare
+#    does not exist for this organisation.
+#
+# 3. Fill /srv/data/odas/.app/secrets.yaml: `oidc_client_secret`, `smtp_pass`,
+#    `pocket_id_api_key`. Credentials never go in config.yaml and never in the
+#    environment. Check both files with:  docker compose run --rm odas config check
+#
+# ── DNS and firewall ──────────────────────────────────────────────────────────
+#
+#   A     odas.example.nl        -> this host   (the web app, behind your proxy)
+#   A     mail.odas.example.nl   -> this host
+#   MX    odas.example.nl        -> mail.odas.example.nl
+#
+# Open port 25 inbound. It is scanned within hours of the MX going live, which is
+# why the daemon answers 550 to any address that is not a zaak it holds.
+#
+# ── Upgrading ─────────────────────────────────────────────────────────────────
+#
+# `version:` in config.yaml is checked against the image at startup and a
+# mismatch refuses to start. When a release says a layout changed, run the
+# matching script in scripts/ against the volume first (dry run by default).
+
+services:
+  odas:
+    # `inv deploy` pushes two tags: `latest`, which this line reads, and the
+    # commit tag, which stays in the registry for a rollback.
+    image: registry.example.nl/odas:latest
+    container_name: odas
+    restart: unless-stopped
+    user: "1000:1000"
+    # One variable. Branding, the identity provider, the mail relay, the capture
+    # domains and the log level are all declared in the data dir's config.yaml.
+    environment:
+      - TZ=Europe/Amsterdam
+      - ODAS_DATA_DIR=/data # single root: .app/ (config, secrets), zaken/
+    volumes:
+      - /srv/data/odas:/data
+    expose:
+      - "8000" # put a reverse proxy in front; ODAS terminates no TLS itself
+    networks:
+      - frontend
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+  # Mail capture. A zaak has one address, `zk-12345@odas.example.nl`. A jurist
+  # puts it in Bcc when they send, and forwards an incoming letter to it. What
+  # arrives here is the message itself, so the zaak holds what was actually sent
+  # rather than a claim about it.
+  #
+  # Needs `mailin:` in config.yaml, or it refuses to start:
+  #
+  #   mailin:
+  #     domains: [odas.example.nl]   # the MX above points here
+  #     port: 2525
+  #     max_bytes: 26214400
+  odas-mail:
+    # `inv deploy` pushes two tags: `latest`, which this line reads, and the
+    # commit tag, which stays in the registry for a rollback.
+    image: registry.example.nl/odas:latest
+    command: mailin
+    container_name: odas-mail
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      - TZ=Europe/Amsterdam
+      - ODAS_DATA_DIR=/data
+    volumes:
+      - /srv/data/odas:/data
+    # It binds 2525 inside the container, so it never needs root to hold port 25.
+    ports:
+      - "25:2525"
+    # The daemon must reach public DNS. DKIM is checked by resolving the sender's
+    # key, so on an internal-only network every signature fails and every message
+    # is refused with 550. Reading the pocket-id user list needs the same route.
+    networks:
+      - frontend
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+# ── Several instances on one host ─────────────────────────────────────────────
+#
+# A host has one port 25 per IP address. An address carries the ref and nothing
+# else, so two instances that answer for one domain must not mint the same ref.
+# Pick one of three shapes; the image is the same in all of them.
+#
+#   1. Separate hosts. Each keeps `ports: ["25:2525"]` and its own MX.
+#   2. One host, several IPs. Bind each instance to its own address:
+#      `ports: ["203.0.113.5:25:2525"]`.
+#   3. One host, one IP. Give each instance its own domain in `mailin.domains`,
+#      move the containers off port 25, and put a relay in front that routes on
+#      the domain. An instance answers 550 to a domain that is not its own, so a
+#      misrouted message bounces rather than landing in the wrong file.
+#
+# ── STARTTLS ──────────────────────────────────────────────────────────────────
+#
+# The daemon speaks plain SMTP. Legal correspondence should not cross the network
+# in the clear, so either mount your proxy's certificate and enable STARTTLS, or
+# put a relay in front that terminates TLS and forwards over the internal
+# network. Decide this before the MX record goes live.
+
+networks:
+  frontend:
+  backend:
+    internal: true

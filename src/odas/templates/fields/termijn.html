@@ -1,0 +1,27 @@
+{# One field, two disk keys: it lays out both itself. #}
+{% macro input(key, f, values, ctx) %}
+<div class="termijn-row">
+    <input type="date" name="termijn_datum" value="{{ values.get('termijn_datum', '') }}">
+    <input type="text" name="termijn_soort" value="{{ values.get('termijn_soort', '') }}" placeholder="welke procedure?">
+</div>
+{%- endmacro %}
+
+{% macro display(key, f, values) %}
+{{- values.get('termijn_datum', '') or '—' }}
+{%- if values.get('termijn_soort') %} <span class="sub">&middot; {{ values.get('termijn_soort') }}</span>{% endif %}
+{%- endmacro %}
+
+{# The overview cell, with how far away the deadline is. Past ones are muted. #}
+{% macro cell(zaak, key, f) %}
+{%- if not zaak.termijn %}—
+{%- else %}
+{%- set days = zaak.termijn.days %}
+{%- set kind = zaak.termijn.kind %}
+{%- if days is none or days < 0 %}
+<span style="color:var(--pico-muted-color)"{% if kind %} title="{{ kind }}"{% endif %}>{{ zaak.termijn.due|dt }}</span>
+{%- else %}
+<span{% if kind %} title="{{ kind }}"{% endif %}>{{ zaak.termijn.due|dt }} <span class="sub">&middot;
+    {%- if days == 0 %} <strong>vandaag</strong>{% elif days == 1 %} 1 dag{% else %} {{ days }} dagen{% endif %}</span></span>
+{%- endif %}
+{%- endif %}
+{%- endmacro %}

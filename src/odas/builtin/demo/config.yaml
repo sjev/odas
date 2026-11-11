@@ -1,0 +1,137 @@
+# The public demonstration. Everyone who visits shares these zaken, and the
+# clock outside empties them every hour.
+#
+# This file is the complete schema for this data dir. Nothing is merged onto it:
+# what is not declared here does not exist here. It is copied verbatim by
+# `odas demo init`, so it is meant to be read.
+
+version: 13              # on-disk layout revision, checked at startup
+
+org:
+  display_name: ODAS demo
+  app_title: ODAS demo
+  columns: [aangemaakt, gewijzigd, status, behandelaar, termijn]
+
+# No `oidc:` section. Nobody signs in here, so there is no provider to name and
+# no directory to ask. `demo.users` below is the whole list of people.
+
+# The demonstration itself. Its presence is what opens the door; a data dir that
+# declares no `demo:` section is unchanged in every respect.
+demo:
+  name: Demonstratie
+  actor: odas-demo@dasopen.nl   # every action is recorded under this address
+  reset: elk uur
+  max_zaken: 50
+  users:
+    - {name: Ilse de Vries, email: ilse@demo.dasopen.nl, team: true}
+    - {name: John Travolta, email: john@demo.dasopen.nl, team: true}
+
+# Visitor counting. The demonstration is public and holds no real case, so how
+# many people try it is worth knowing. The counter is self-hosted and the id is
+# public; the indiener's `/inzien-` pages are never counted.
+analytics:
+  src: https://m.roxautomation.com/script.js
+  website_id: 6bcd30f0-8bb4-4a44-b4cc-1d2e43e5ae6d
+
+# Mail capture. A zaak has one address, `<ref>@<domein>`. A visitor writes from
+# their own client and puts it in Bcc. Any sender the signature proves counts as
+# one of the accounts above, so a stranger may mail a zaak without editing it.
+mailin:
+  domains: [odas.dasopen.nl]
+
+# The relay is a folder, so the three notices the app sends are written to disk
+# and none of them reaches a stranger's inbox.
+smtp:
+  sender: noreply@odas.dasopen.nl
+  host: ./uitgaand   # a folder, not a relay: sent mail lands on disk
+  # Offered under a typed message, so a person reads it before sending.
+  footer: |
+    U ziet uw zaak in via {inzien_url}
+    Deze link is persoonlijk. Haal deze regel weg als u aan iemand anders schrijft.
+
+# No `ai:` section, so the summarise button is not drawn and no visitor runs up
+# a bill. The seeded documents ship with their summaries already written.
+
+types:
+  # A procedure: one case against one external body. This is what a visitor
+  # reads, makes and mails.
+  procedure:
+    prefix: zk
+    status:
+      type: status
+      options:
+        - {value: nieuw, label: Nieuw, css: status-new}
+        - {value: in_behandeling, label: In behandeling, css: status-progress}
+        - {value: afgerond, label: Afgerond, css: status-done}
+      public: true
+    opvolgen: {type: flag}  # an IN sets it; a person clears it on the zaak page
+    fase:
+      type: [verzoek, zienswijze, bezwaar, beroep]
+      label: Type procedure
+      public: true
+    wederpartij:
+      type: str
+      label: Wederpartij
+      hint: het bestuursorgaan waar deze zaak tegen loopt
+      public: true
+    locatie:
+      type: latlon
+      hint: lat,lon (zet via kaart)
+      public: true
+    termijn:
+      type: termijn
+      options: [geen, zienswijze, bezwaar, beroep]
+      public: true
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+  # A dossier: a zaak that groups other zaken.
+  dossier:
+    prefix: ds
+    zaken:
+      type: zaken
+      hint: refs van de zaken in dit dossier
+    reply_token:
+      type: reply_token
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+  # An overleg: an internal discussion. No indiener, no termijn, and no token,
+  # so it has no /inzien- page either. The team alone opens it.
+  overleg:
+    prefix: ov
+    status: {type: status}
+    opvolgen: {type: flag}
+    eigenaar: {type: user}
+
+fields:
+  # log/ entry frontmatter, read off the message that came in. The date and the
+  # direction live in the entry name, so neither appears here.
+  log:
+    onderwerp:
+      type: str
+      hint: korte titel, bv. zienswijze
+    markdown:
+      type: bool
+      label: Markdown
+    van:
+      type: email
+      editable: []
+      hint: "systeem: afzender"
+    aan:
+      type: list[email]
+      label: Aan
+      hint: gescheiden door komma's
+    cc:
+      type: list[email]
+      label: Cc
+      hint: gescheiden door komma's
+    message_id:
+      type: str
+      editable: []
+      hint: "systeem: kenmerk van het bericht, houdt dubbele kopieën eruit"

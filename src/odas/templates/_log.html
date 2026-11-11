@@ -1,0 +1,155 @@
+{% import "_reply.html" as reply_macros %}
+{% import "_icons.html" as ic %}
+{% import "_fields.html" as fields_macros %}
+{% import "_documents.html" as docs_macros %}
+
+
+{# The log fields a person may type, minus the one the forms lay out themselves.
+   Keys read off a received message are not offered: they are not ours to set. #}
+{% macro log_field_grid(values, role, locked=[]) %}
+{{ fields_macros.field_grid(log_form_fields(), values, role, skip=["onderwerp"], locked=locked) }}
+{% endmacro %}
+
+{% macro direction_select(selected) %}
+<select name="direction">
+    {% for d in [("LOG", "LOG — interne notitie"),
+                 ("UIT", "UIT — uitgaand"), ("IN", "IN — ontvangen")] %}
+    <option value="{{ d[0] }}" {% if selected == d[0] %}selected{% endif %}>
+        {{ d[1] }}</option>
+    {% endfor %}
+</select>
+{%- endmacro %}
+
+{% macro log_add_form(action, cancel_url, log_error, log_direction, log_date, log_fm, log_body, log_footer="", log_known="") %}
+<div class="log-add">
+    <form method="post" action="{{ action }}" id="log-form" class="log-form"
+        data-footer="{{ log_footer }}" data-known="{{ log_known }}"
+        data-draft="log" data-draft-opener="log-new-btn"
+        enctype="multipart/form-data"{% if not (log_error or log_fm) %} hidden{% endif %}>
+        <div class="log-form-grid">
+            <label>Richting {{ direction_select(log_direction) }}</label>
+            <label>Datum
+                <input type="date" name="entry_date" value="{{ log_date }}" required>
+            </label>
+            <label class="log-onderwerp">Onderwerp
+                <input type="text" name="onderwerp" value="{{ log_fm.onderwerp or '' }}"
+                    placeholder="korte titel">
+            </label>
+        </div>
+
+        {# Whatever else this data dir lets a person type on a log entry. #}
+        {{ log_field_grid(log_fm, "team") }}
+
+        <textarea name="body" class="doc-editor"
+            autocomplete="off">{{ log_body or '' }}</textarea>
+
+        <div class="intake-docs" id="log-docs">
+            <p class="docs-label">{{ ic.icon("paperclip", 16, "icon-clip") }} Bijlagen</p>
+            <button type="button" class="drop-area">
+                <span class="drop-title">Bestand toevoegen</span>
+                <span class="drop-hint">Klik hier, of sleep uw bestanden hierheen</span>
+            </button>
+            <input type="file" name="documenten" multiple hidden>
+            <p class="docs-count"></p>
+            <ul class="docs-list"></ul>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ cancel_url }}" role="button" class="btn-cancel">Annuleren</a>
+            <button type="submit">Opslaan</button>
+            {# Sending is a declaration: no recipient field, no mail from this data dir. #}
+            {% if log_mail_fields() %}
+            <button type="submit" name="action" value="send" class="btn-send" disabled>
+                {{ ic.icon("mail") }} Verstuur e-mail</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endmacro %}
+
+{% macro log_section(entries, base_url, log_error, log_direction, log_date, log_fm, log_body, readonly, reply, token, sent, values, errors, reply_open, editable=true, documenten={}, ai=false, log_footer="", log_known="") %}
+<article>
+    <div class="log-toolbar">
+        <div class="log-header-text">
+            <h2 class="log-title">Logboek</h2>
+            <p class="log-subtitle">laatste item boven</p>
+        </div>
+        {% if not readonly %}<button type="button" id="log-new-btn" class="log-new-btn"{% if log_error %} hidden{% endif %}>Toevoegen</button>{% endif %}
+        {% if reply %}<button type="button" id="reply-new-btn" class="reply-new-btn"{% if reply_open %} hidden{% endif %}>Reageren of aanvullen</button>{% endif %}
+    </div>
+    {% if log_error %}<p class="error" role="alert">{{ log_error }}</p>{% endif %}
+
+    {% if not readonly %}
+    {{ log_add_form(base_url ~ "/log", base_url, log_error, log_direction, log_date, log_fm, log_body, log_footer, log_known) }}
+    {% endif %}
+
+    {% if reply %}
+    {{ reply_macros.reply_section(token, sent, values, errors, reply_open) }}
+    {% endif %}
+
+    {{ log_list(entries, base_url, editable=editable, documenten=documenten, ai=ai) }}
+</article>
+{% endmacro %}
+
+{% macro log_list(entries, base_url, editable=true, documenten={}, ai=false) %}
+{% if entries %}
+<div class="log">
+    {% for entry in entries|reverse %}
+    <div class="log-entry">
+        <div class="ts"><span>{{ entry.datum|dt }}</span>
+            {%- if entry.time %} <span class="time">{{ entry.time }}</span>{% endif %}
+            {%- if entry.edited %} <span class="edited" title="gewijzigd op {{ entry.edited }}">bewerkt</span>{% endif %}</div>
+        <div class="ev">
+            {% if editable %}<a href="{{ base_url }}/log/{{ entry.name }}/bewerken"
+                class="edit-btn row-edit" role="button" title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
+            {# Floats right after the pencil, so it sits left of it. #}
+            {% if editable and log_mail_fields() and entry|mailable %}<a href="{{ base_url }}?reply={{ entry.name }}"
+                class="icon-action reply-link" role="button" title="Beantwoorden" aria-label="Beantwoorden">{{ ic.icon("reply-all") }}</a>{% endif %}
+            <span class="badge">{{ entry.direction }}</span>
+            {{ entry.frontmatter.onderwerp or entry.slug }}
+            {# Headers of the message this entry was filed from, when it came by mail. #}
+            {% set aan = entry.frontmatter.get("aan") %}
+            {% if aan or entry.frontmatter.get("van") %}
+            <span class="route">
+                {% if entry.frontmatter.get("van") %}{{ entry.frontmatter.van|naam }}{% endif %}
+                {% if aan %}<b>&rarr;</b> {{ aan }}{% endif %}
+                {% if entry.frontmatter.get("cc") %}<span class="sub">cc {{ entry.frontmatter.cc }}</span>{% endif %}
+                {# The window shows the message with its kopregels: a team tool. #}
+                {% if editable and entry.frontmatter.get("message_id") %}
+                <a class="eml-link" href="{{ base_url }}/log/{{ entry.name }}/bericht"
+                    data-eml="{{ base_url }}/log/{{ entry.name }}/bijlage/bericht.eml"
+                    data-onderwerp="{{ entry.frontmatter.onderwerp or '' }}"
+                    title="Het ontvangen bericht zelf, zoals het verstuurd is">&#8615; .eml</a>
+                {% endif %}
+            </span>
+            {% endif %}
+            {% if entry.body and entry.frontmatter.markdown == "ja" %}<div class="entry-text">{{ entry.body | md }}</div>
+            {% elif entry.body %}<div class="entry-text prewrap">{{ entry.body }}</div>{% endif %}
+            {# The documents of this entry, drawn as they are in the gathered list. #}
+            {% set rows = documenten.get(entry.name, []) %}
+            {% if rows %}
+            <ul class="doc-list">
+                {% for d in rows %}{{ docs_macros.doc_row(d, base_url, ai) }}{% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<dialog id="eml-dialog">
+    <article>
+        <header>
+            <button aria-label="Sluiten" rel="prev"
+                onclick="document.getElementById('eml-dialog').close()"></button>
+            <h3 id="eml-onderwerp">Bericht</h3>
+        </header>
+        <pre id="eml-source" class="eml-source"></pre>
+        <footer>
+            <a id="eml-download" href="" download role="button">Downloaden</a>
+        </footer>
+    </article>
+</dialog>
+{% else %}
+<p class="empty">Nog geen logboek-items.</p>
+{% endif %}
+{% endmacro %}

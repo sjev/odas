@@ -1,0 +1,3 @@
+{% macro input(key, f, values, ctx) %}
+<input type="checkbox" name="{{ key }}" value="ja"{% if values.get(key) == "ja" %} checked{% endif %}>
+{%- endmacro %}

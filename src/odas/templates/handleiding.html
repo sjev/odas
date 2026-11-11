@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}{{ titel }}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="/zaken">&larr; Zaken</a></nav>
+
+{# The prose is the page: builtin/handleiding.md is what a person reads. #}
+<article class="prose">{{ body }}</article>
+{% endblock %}

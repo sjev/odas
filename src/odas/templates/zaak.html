@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% import "_alert.html" as alert %}
+{% import "_table.html" as icons %}
+{% import "_icons.html" as ic %}
+{% import "_log.html" as log %}
+{% import "_documents.html" as docs %}
+{% import "_fields.html" as fld %}
+{% import "fields/latlon.html" as latlon %}
+{% import "_theme.html" as theme %}
+{% block title %}{{ zaak.ref }}{% endblock %}
+{% block head %}
+{% if readonly %}<style>body { background: var(--inzien-bg); }</style>{% endif %}
+{% if reply %}<script src="/static/upload.js?v={{ version }}"></script>{% endif %}
+{% endblock %}
+{% block header %}{% if readonly %}
+<header class="container">
+    <nav class="app-nav">
+        <ul></ul>
+        <ul>{{ theme.toggle() }}</ul>
+    </nav>
+</header>
+{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block content %}
+{% if mail_error %}{{ alert.mail_alert("E-mail niet verstuurd", mail_error) }}{% endif %}
+{% set badge = zaak.badge %}
+{# The page lays these out itself, so the field loop below leaves them alone:
+   the ref, the title and the badge above, the members, Aangemaakt and Gewijzigd below. #}
+{% set header_skip = ('id', 'titel', 'status', 'aangemaakt', 'gewijzigd', relation_key) %}
+{% set widgets = fields.values() | map(attribute='widget') | list %}
+
+{% if not readonly %}
+{# The address a row handed over: the dossier, or the list with its filter and
+   its order. Nothing came in, so the back link is the whole list. #}
+{% set frm = same_site(request.query_params.get('from', '')) %}
+<nav class="back-nav"><a href="{{ frm }}">&larr; {{ "Zaken" if frm == "/zaken" else "Terug" }}</a></nav>
+{% endif %}
+
+<header class="case-header">
+    <div class="title-row">
+        <h1 class="case-title">{{ zaak.titel }}</h1>
+        {% if badge %}<span class="badge {{ badge[1] }}">{{ badge[0] }}</span>{% endif %}
+    </div>
+    <p class="case-subtitle">
+        <span class="ref">{{ zaak.ref }}</span>
+        {% if zaak.created %}
+        <span class="dot">&middot;</span>
+        <span class="meta">aangemaakt {{ zaak.created|dt }}</span>
+        {% endif %}
+        {% if zaak.modified %}
+        <span class="dot">&middot;</span>
+        <span class="meta">gewijzigd {{ zaak.modified|dt }}</span>
+        {% endif %}
+    </p>
+    {% if relation_locaties %}
+    <p class="reageer-line">
+        {{ latlon.map_link(relation_locaties, text=relation_zaken|length ~ " locaties") }}
+    </p>
+    {% endif %}
+    {% if not readonly %}
+    {% if inzien_url %}{{ icons.inzien_link_line(inzien_url) }}{% endif %}
+    {{ icons.mail_adres_line(mail_adres, mail_help) }}
+    <div class="zaak-toolbar">
+         <span class="meta">Download zaak:</span>
+        <a href="/zaken/{{ zaak.ref }}/export.zip" class="copy-btn" role="button" title="Download als zip">
+            {{ ic.icon("download") }}
+        </a>
+    </div>
+    {% endif %}
+
+</header>
+
+<article class="case-card">
+    {% if not readonly %}<a href="/zaken/{{ zaak.ref }}/bewerken" class="edit-btn card-edit-btn" role="button"
+        title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
+    {% if readonly %}<a href="/inzien-{{ token }}/bewerken" class="edit-btn card-edit-btn" role="button"
+        title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
+    <header class="case-meta-header">
+        {% if badge %}{% call icons.meta_field_html("Status") %}<span class="badge {{ badge[1] }}">{{ badge[0] }}</span>{% endcall %}{% endif %}
+        {# Declaration order drives the rest, and every field gets a row: reading
+           this card and reading index.md give the same answer. #}
+        {% for key, f in fields.items() %}
+        {% if key not in header_skip and f.ondisk and (f.public or not readonly) %}
+        {% set shown = fld.field_detail(key, f, zaak.frontmatter) | trim %}
+        {% call icons.meta_field_html(f.label) %}{{ shown or '—' }}{% endcall %}
+        {% endif %}
+        {% endfor %}
+        {# What a schema change left behind: no type declares it, so it shows raw. #}
+        {% for key, value in extra_fm.items() %}
+        {{ icons.meta_field(key, value or '—') }}
+        {% endfor %}
+        {{ icons.meta_field("Aangemaakt", zaak.created|dt or "—") }}
+    </header>
+
+    {% if zaak.body %}
+    <div class="summary prose">{{ zaak.body|md }}</div>
+    {% else %}
+    <p class="empty">Geen samenvatting.</p>
+    {% endif %}
+</article>
+
+<div class="case-main">
+
+    {% if reply %}{% set reply_open = errors or sent %}{% endif %}
+
+    {% if relation_zaken or (not readonly and relation_key) %}
+    <article>
+        <header class="log-toolbar">
+            <div class="log-header-text"><h2 class="log-title">Zaken</h2></div>
+        </header>
+        {% if readonly %}
+        <ul>
+            {% for z in relation_zaken %}
+            <li>
+                {% if relation_inzien_urls.get(z.ref) %}
+                <a href="{{ relation_inzien_urls[z.ref] }}">{{ z.titel }}</a>
+                {% else %}{{ z.titel }}{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        {{ icons.zaak_table(relation_zaken, back="/zaken/" ~ zaak.ref) }}
+        {% endif %}
+    </article>
+    {% endif %}
+    {% set visible_entries = zaak.log_entries|selectattr("direction", "ne", "LOG")|list if readonly else zaak.log_entries %}
+    {{ log.log_section(visible_entries, base_url, log_error, log_direction, log_date,
+        log_fm, log_body, readonly, reply, token, sent, values, errors, reply_open,
+        editable=not readonly, documenten=log_documenten, ai=ai, log_footer=log_footer, log_known=log_known) }}
+    {% if not readonly %}{{ docs.documents_section(documenten, base_url, ai) }}{% endif %}
+
+    {% if not readonly %}
+    {% if zaak.history %}
+    <details class="history">
+        <summary>Audit log</summary>
+        <pre class="history-log">{{ zaak.history }}</pre>
+    </details>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+{{ fld.field_assets(fields, "view") }}
+{# A dossier groups zaken that have locations without declaring one itself. #}
+{% if relation_locaties and 'latlon' not in widgets %}{{ latlon.assets("view") }}{% endif %}
+
+{% if not readonly %}
+<script src="/static/upload.js?v={{ version }}"></script>
+<script src="/static/samenvatting.js?v={{ version }}" defer></script>
+{% endif %}
+<script src="/static/log_form.js?v={{ version }}"></script>
+<script src="/static/eml_view.js?v={{ version }}" defer></script>
+<script>
+    {% if not readonly %}
+    initLogForm();
+    {% endif %}
+
+    initEntryClamp();
+
+    // Copy the reageerlink to the clipboard, with brief feedback.
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            await navigator.clipboard.writeText(btn.dataset.copy);
+            const tip = btn.title;
+            btn.title = 'Gekopieerd!';
+            setTimeout(() => { btn.title = tip; }, 1500);
+        });
+    });
+</script>
+{% endblock %}

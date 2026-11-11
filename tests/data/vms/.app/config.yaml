@@ -1,0 +1,84 @@
+# Vereniging Mooi Stroomdal: dossier bookkeeping only.
+#
+# This file is the complete schema for this data dir. Nothing is merged onto it:
+# what is not declared here does not exist for this organisation. Restart the
+# app after editing.
+#
+# The association is the party, so there is no per-zaak contactpersoon and no
+# behandelaar to assign; the team creates zaken itself, so intake stays off.
+# There is no `dossier` type: every zaak is already a dossier here.
+
+version: 13               # on-disk layout revision, checked at startup
+
+org:
+  display_name: Vereniging Mooi Stroomdal
+  app_title: Mooi Stroomdal
+
+oidc:
+  issuer: https://id.bestuur.example.nl
+  client_id: odas
+  redirect_uri: https://odas.mooistroomdal.example.nl/auth/callback
+  group_team: vms_team
+
+smtp:
+  sender: noreply@mooistroomdal.example.nl
+
+types:
+  # A procedure: one case against one external body. Nobody brings a question
+  # here, so this is the only type and it carries no helpdesk fields.
+  procedure:
+    status:
+      type: status
+      options:              # no 'wacht': this team either works on it or does not
+        - {value: nieuw, label: Nieuw, css: status-new}
+        - {value: in_behandeling, label: In behandeling, css: status-progress}
+        - {value: afgerond, label: Afgerond, css: status-done}
+      public: true
+    opvolgen: {type: flag}  # an IN sets it; a person clears it on the zaak page
+    fase:
+      type: [vooroverleg, zienswijze, bezwaar, beroep]
+      label: Type dossier
+      public: true
+    locatie:
+      type: latlon
+      hint: lat,lon (zet via kaart)
+      public: true
+    termijn:
+      type: termijn
+      options: [geen, zienswijze, bezwaar, beroep]
+      public: true
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+fields:
+  # log/ entry frontmatter, read from the message that came in. Date (JJJJ-MM-DD)
+  # and direction (IN/UIT/LOG) live in the entry name, so neither appears here.
+  # `aan` and `cc` are typed to send; `van` and `message_id` are read off a message.
+  log:
+    onderwerp:
+      type: str
+      hint: korte titel, bv. zienswijze
+    markdown:
+      type: bool
+      label: Markdown
+    van:
+      type: email
+      editable: []
+      hint: "systeem: afzender"
+    aan:
+      type: list[email]
+      label: Aan
+      hint: gescheiden door komma's
+    cc:
+      type: list[email]
+      label: Cc
+      hint: gescheiden door komma's
+    message_id:
+      type: str
+      editable: []
+      hint: "systeem: kenmerk van het bericht, houdt dubbele kopieën eruit"

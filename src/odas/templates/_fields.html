@@ -1,0 +1,87 @@
+{# Type-driven rendering. A field's `widget` names its markup, which lives in
+   `fields/<widget>.html` next to the Python class in `odas/fields/`. A config
+   change therefore reaches the UI without touching a template, and adding a kind
+   means adding a module and a template, not editing a chain here.
+
+   A widget template defines `input(key, f, values, ctx)` and may define:
+     display(key, f, values)  -- read-only inline value
+     detail(key, f, values)   -- the zaak detail row, empty to skip the row
+     cell(zaak, key, f)       -- the overview table cell
+     assets(mode)             -- page-level scripts/markup, "view" or "edit"
+   Everything it leaves out falls back to the generic version below.
+
+   `ctx` carries the extras a widget needs (behandelaars for `user`). #}
+
+{% macro field_input(key, f, values, ctx={}) %}
+{%- import "fields/" ~ f.widget ~ ".html" as w with context -%}
+{{- w.input(key, f, values, ctx) -}}
+{% endmacro %}
+
+{% macro field_display(key, f, values) %}
+{%- import "fields/" ~ f.widget ~ ".html" as w with context -%}
+{%- if w.display is defined %}{{ w.display(key, f, values) }}
+{%- elif f.multi %}{{ values.get(key, '').split(',') | map('trim') | join('<br>') | safe }}
+{%- else %}{{ values.get(key, '') }}
+{%- endif %}
+{% endmacro %}
+
+{# One row of the zaak detail header. Every declared field gets one, empty or not:
+   a blank row says the organisation asked for this and nobody answered. #}
+{% macro field_detail(key, f, values) %}
+{%- import "fields/" ~ f.widget ~ ".html" as w with context -%}
+{%- if w.detail is defined %}{{ w.detail(key, f, values) }}
+{%- else %}{{ field_display(key, f, values) }}
+{%- endif %}
+{% endmacro %}
+
+{% macro field_cell(zaak, key, f) %}
+{%- import "fields/" ~ f.widget ~ ".html" as w with context -%}
+{%- if w.cell is defined %}{{ w.cell(zaak, key, f) }}
+{%- else %}{{ f.cell(zaak, key) or "—" }}
+{%- endif %}
+{% endmacro %}
+
+{# The page-level markup and scripts the widgets on this page need, each emitted
+   once. `mode` is "view" or "edit". #}
+{% macro field_assets(fields, mode) %}
+{%- for widget in fields.values() | map(attribute='widget') | unique | sort %}
+{%- import "fields/" ~ widget ~ ".html" as w with context -%}
+{%- if w.assets is defined %}{{ w.assets(mode) }}{% endif %}
+{%- endfor %}
+{% endmacro %}
+
+{# The fields of a type for a form, relative to the viewer's `role` ("team" or
+   "public"). What the role may not edit reads as one line of facts above the
+   form, its disk keys carried unchanged in hidden inputs. What it may edit
+   follows in declaration order, one field per row, fields of one `group`
+   inside a fieldset. `skip` drops fields a page lays out itself; `locked` moves
+   fields into the facts, where the page may not change them. `errors` maps a
+   disk key to the message shown under that field. #}
+{% macro field_grid(fields, values, role, ctx={}, skip=[], locked=[], errors={}) %}
+{%- set facts, sections = form_sections(fields, role, skip, locked) %}
+{% if facts %}
+<p class="field-facts">
+    {% for key, f in facts %}
+    {%- set shown = field_display(key, f, values) | trim %}
+    {% if shown %}<span><span class="meta">{{ f.label }}</span> {{ shown }}</span>{% endif %}
+    {% endfor %}
+</p>
+{% for key, f in facts %}{% for k in f.disk_keys(key) %}
+<input type="hidden" name="{{ k }}" value="{{ values.get(k, '') }}">
+{%- endfor %}{% endfor %}
+{% endif %}
+<div class="field-grid">
+    {% for group, members in sections %}
+    {% if group %}<fieldset><legend>{{ group }}</legend>{% endif %}
+    {% for key, f in members %}
+    {%- set required = f.required_for(role) %}
+    <label>
+        <span>{{ f.label }}{% if required %} *{% endif %}{% if f.hint %} <small>({{ f.hint }})</small>{% endif %}</span>
+        {{ field_input(key, f, values, dict(ctx, required=required, invalid=key in errors)) }}
+        {% if errors.get(key) %}<small class="error">{{ errors[key] }}</small>{% endif %}
+    </label>
+    {% endfor %}
+    {% if group %}</fieldset>{% endif %}
+    {% endfor %}
+</div>
+{% endmacro %}

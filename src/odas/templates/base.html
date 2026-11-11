@@ -1,0 +1,93 @@
+{% import "_theme.html" as theme %}
+<!DOCTYPE html>
+<html lang="nl" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ org.app_title }}{% endblock %}</title>
+    {% if org.favicon %}<link rel="icon" type="image/png" href="{{ org.favicon }}">{% endif %}
+    <link rel="stylesheet" href="/static/pico.min.css?v={{ version }}">
+    <link rel="stylesheet" href="/static/style.css?v={{ version }}">
+    <script src="/static/theme.js?v={{ version }}"></script>
+    <script src="/static/drafts.js?v={{ version }}"></script>
+    {% if analytics %}<script defer src="{{ analytics.src }}"
+        data-website-id="{{ analytics.website_id }}"></script>{% endif %}
+    {% block head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    {% if demo %}
+    <aside class="demo-banner">
+        <strong>{{ demo.name }} met fictieve data.</strong>
+        Data wordt {{ demo.reset }} gereset.
+
+    </aside>
+    {% endif %}
+    {% block header %}
+    <header class="container">
+        <nav class="app-nav">
+            <ul>
+                {% if request.state.email %}
+                <li><a href="/zaken">Zaken</a></li>
+                <li><a href="/team">Team</a></li>
+                {% if has_wetten() %}<li><a href="/wetten">Wetten</a></li>{% endif %}
+                <li><a href="/handleiding">Handleiding</a></li>
+                {% endif %}
+                {% if request.state.is_team and not demo %}
+                <li><a href="/admin">Admin</a></li>
+                {% endif %}
+            </ul>
+            <ul>
+                {{ theme.toggle() }}
+                {% if request.state.user_profile %}
+                <li class="user-menu">
+                    <button class="user-avatar-btn" type="button"
+                        onclick="document.getElementById('user-dialog').showModal()">
+                        {% if request.state.user_profile.picture %}
+                        <img src="{{ request.state.user_profile.picture }}" alt="profiel" class="user-avatar"
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <span class="user-avatar-fallback" style="display:none">
+                            {{ (request.state.user_profile.name or '?')[0] | upper }}
+                        </span>
+                        {% else %}
+                        <span class="user-avatar-fallback">
+                            {{ (request.state.user_profile.name or '?')[0] | upper }}
+                        </span>
+                        {% endif %}
+                    </button>
+                    <dialog id="user-dialog">
+                        <article>
+                            <header>
+                                <button aria-label="Close" rel="prev"
+                                    onclick="document.getElementById('user-dialog').close()"></button>
+                                <h3>{{ request.state.user_profile.name }}</h3>
+                            </header>
+                            <footer>
+                                <div class="user-dialog-actions">
+                                    <button type="button" class="btn-cancel"
+                                        onclick="document.getElementById('user-dialog').close()">Annuleren</button>
+                                    <a href="/logout" role="button" onclick="odasDrafts.dropAll()">Uitloggen</a>
+                                </div>
+                            </footer>
+                        </article>
+                    </dialog>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    {% endblock %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="container">
+        <div class="footer-stack">
+            <small>{{ org.app_title }} v{{ version }} · <a href="https://github.com/sjev/odas">Broncode</a></small>
+        </div>
+    </footer>
+</body>
+
+</html>

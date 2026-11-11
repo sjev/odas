@@ -1,0 +1,11 @@
+{% macro input(key, f, values, ctx) %}{{ options(key, f, values.get(key, '')) }}{% endmacro %}
+
+{# Shared by every kind that renders its `options` as a dropdown. #}
+{% macro options(key, f, value) %}
+<select name="{{ key }}">
+    {% if not f.required %}<option value=""></option>{% endif %}
+    {% for o in f.options %}
+    <option value="{{ o.value }}"{% if value == o.value %} selected{% endif %}>{{ o.label }}</option>
+    {% endfor %}
+</select>
+{%- endmacro %}

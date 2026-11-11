@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% import "_fields.html" as fields_macros %}
+{% block title %}Hulpvraag indienen{% endblock %}
+{% block header %}
+    <header class="container">
+        <div class="app-header">
+            {% if org.logo %}<img src="{{ org.logo }}" alt="{{ org.display_name }}" class="app-logo">{% endif %}
+        </div>
+    </header>
+{% endblock %}
+{% block content %}
+        <section class="intake-intro">
+            <h1>Hulpvraag indienen</h1>
+            <p>Komt u op voor de natuur en heeft u hulp nodig? Beschrijf hieronder kort wat er
+                speelt. Ons intaketeam bekijkt uw vraag en neemt daarna contact met u op.</p>
+            <p><strong>Wacht niet te lang.</strong> Burgergroepen nemen vaak pas in een late fase contact op. Dan is er vaak al veel gedaan of er is nog maar weinig tijd. Wij helpen u ook graag in een vroegtijdig stadium. Wel belangrijk is dat er een besluit of voorgenomen <strong>besluit is gepubliceerd</strong>. Zonder dat kunnen we niet heel veel.</p>
+
+            <div class="intake-scope">
+                <h3>Wat wij wel en niet doen</h3>
+                <ul>
+                    <li>Wij steunen zaken waarbij de <strong>natuur</strong> in het geding is,
+                        vooral via natuurbeschermingswetgeving.</li>
+                    <li>Geen zaken tegen windmolenparken of zonneweides (tenzij in een
+                        Natura 2000-gebied), en geen zaken tegen woningbouw (tenzij zeer dicht
+                        bij Natura 2000).</li>
+                    <li>Geen NIMBY-zaken. Voor ruimtelijke ordening (zoals bestemmingsplannen)
+                        verwijzen wij meestal door.</li>
+                    <li><strong>Wij nemen geen zaken over.</strong> Wij kunnen meelezen met stukken die u hebt
+                        opgesteld, advies geven over haalbaarheid van de procedure, richting en
+                        volgende stappen. Ook kunnen wij een expert uit ons netwerk aanbevelen.</li>
+                </ul>
+   
+            </div>
+        </section>
+
+        <form method="post" action="/indienen" class="intake-form" enctype="multipart/form-data">
+            <div aria-hidden="true" style="position:absolute;left:-9999px">
+                <label>Laat dit veld leeg <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            <input type="hidden" name="bedenktijd">
+
+            <h2>Verplichte gegevens</h2>
+
+            {% if errors %}<p class="error" role="alert">{{ errors._ or
+                "Uw hulpvraag is niet verstuurd. Vul de velden met een melding aan." }}</p>{% endif %}
+
+            <label>Onderwerp en locatie *
+                <input type="text" name="titel" value="{{ values.titel or '' }}" required
+                    maxlength="{{ titel_max }}"
+                    placeholder="Korte omschrijving en exacte locatie"
+                    aria-invalid="{{ 'true' if errors.titel else '' }}">
+                {% if errors.titel %}<small class="error">{{ errors.titel }}</small>{% endif %}
+            </label>
+
+            {# The questions stand in the box itself, so a person answers under each one. #}
+            {%- set vragen %}
+> Welk probleem speelt er en wat is het belang voor de natuur?
+
+> Voor welke vragen heeft u hulp nodig?
+
+> Loopt er al een procedure? In welke fase is de zaak?
+
+> Wanneer is het besluit genomen of gepland?
+
+> Wat is de link naar de publicatie op officielebekendmakingen.nl?
+
+> Wat is de exacte locatie ? Gebruik "locatie" veld.
+
+> Neemt u contact op namens een vereniging of stichting? Voeg dan de statuten toe als bijlage.
+
+>Is er al een advocaat of adviseur betrokken?
+
+
+{% endset %}
+            <label>Omschrijving van de hulpvraag *
+                <small class="help">Beantwoord de vragen hieronder. Stuur de documenten van het
+                    bevoegd gezag mee als bijlage: het besluit zelf en onderliggende stukken zoals
+                    onderzoeken en aanvragen. Stuur ook uw eigen stukken mee.</small>
+                <textarea name="omschrijving" rows="8" required
+                    aria-invalid="{{ 'true' if errors.omschrijving else '' }}"
+                >{{ values.omschrijving or vragen | trim }}</textarea>
+                {% if errors.omschrijving %}<small class="error">{{ errors.omschrijving }}</small>{% endif %}
+            </label>
+
+            {# Everything else the type asks for. A config change reaches this form
+               without touching a template. #}
+            {{ fields_macros.field_grid(fields, values, "public", errors=errors) }}
+
+            <div class="intake-docs">
+                <p class="docs-label">Besluit en uw documenten <span class="required">*</span></p>
+                <small class="help">Voeg het besluit of voorgenomen besluit en/of uw zienswijze, bezwaar, beroep toe als document (pdf, jpg, png, docx — max 150 MB per bestand).</small>
+
+                <button type="button" id="drop-area" class="drop-area" onclick="docsInput.click()">
+                    <span class="drop-title">Bestand toevoegen</span>
+                    <span class="drop-hint">Klik hier, of sleep uw bestanden hierheen</span>
+                </button>
+
+                <input type="file" name="documenten" id="docs-input" multiple hidden accept=".pdf,.jpg,.jpeg,.png,.docx">
+                <p id="docs-count" class="docs-count"></p>
+                <ul id="docs-list" class="docs-list"></ul>
+
+                {% if errors.documenten %}<small class="error">{{ errors.documenten }}</small>{% endif %}
+            </div>
+
+
+            <button type="submit">Verstuur mijn hulpvraag</button>
+        </form>
+
+    {{ fields_macros.field_assets(fields, "edit") }}
+
+    <script>
+        const ta = document.querySelector('textarea[name="omschrijving"]');
+        function resizeTa() { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+        resizeTa();
+        ta.addEventListener('input', resizeTa);
+
+        const docsInput = document.getElementById('docs-input');
+        const docsList = document.getElementById('docs-list');
+        const docsCount = document.getElementById('docs-count');
+        const dropArea = document.getElementById('drop-area');
+        let docs = [];
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function syncInput() {
+            const dt = new DataTransfer();
+            docs.forEach(f => dt.items.add(f));
+            docsInput.files = dt.files;
+            renderList();
+        }
+
+        function addFiles(fileList) {
+            for (const f of fileList) {
+                if (!docs.some(d => d.name === f.name && d.size === f.size)) {
+                    docs.push(f);
+                }
+            }
+            syncInput();
+        }
+
+        function removeFile(index) {
+            docs.splice(index, 1);
+            syncInput();
+        }
+
+        function renderList() {
+            docsCount.textContent = docs.length
+                ? (docs.length === 1 ? '1 bestand toegevoegd' : docs.length + ' bestanden toegevoegd')
+                : '';
+            docsList.innerHTML = '';
+            docs.forEach((f, i) => {
+                const li = document.createElement('li');
+                const name = document.createElement('span');
+                name.className = 'docs-name';
+                name.textContent = '📄 ' + f.name;
+                const size = document.createElement('span');
+                size.className = 'docs-size';
+                size.textContent = formatSize(f.size);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'docs-remove';
+                btn.textContent = 'Verwijderen';
+                btn.onclick = () => removeFile(i);
+                li.append(name, size, btn);
+                docsList.appendChild(li);
+            });
+        }
+
+        docsInput.addEventListener('change', () => {
+            addFiles(docsInput.files);
+            if (docs.length === 0) docsInput.value = '';
+        });
+
+        ['dragover', 'dragenter'].forEach(ev =>
+            dropArea.addEventListener(ev, e => {
+                e.preventDefault();
+                dropArea.classList.add('drop-active');
+            }));
+        ['dragleave', 'drop'].forEach(ev =>
+            dropArea.addEventListener(ev, e => {
+                e.preventDefault();
+                dropArea.classList.remove('drop-active');
+            }));
+        dropArea.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+        const opened = Date.now();
+        document.querySelector('.intake-form').addEventListener('submit', e => {
+            e.target.elements.bedenktijd.value = (Date.now() - opened) / 1000;
+        });
+    </script>
+{% endblock %}

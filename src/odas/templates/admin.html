@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% import "_icons.html" as ic %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<article>
+    <header class="article-header"><strong>Testmail</strong></header>
+    {% if template_names %}
+    <form method="post" action="/admin/testmail" class="grid">
+        <select name="template" aria-label="Sjabloon">
+            {% for name in template_names %}<option value="{{ name }}">{{ name }}</option>{% endfor %}
+        </select>
+        <input type="email" name="to" placeholder="naam@voorbeeld.nl" required>
+        <button type="submit">Verstuur</button>
+    </form>
+    {% if sent == "ok" %}<p>Verstuurd.</p>{% elif sent %}<p>Niet verstuurd: {{ sent }}</p>{% endif %}
+    {% else %}
+    <p>Er zijn geen mailsjablonen ingesteld.</p>
+    {% endif %}
+</article>
+
+<article>
+    <header class="article-header"><strong>Back-ups</strong></header>
+    <form method="post" action="/admin/backup">
+        {% if backup_running %}
+        <button type="submit" disabled>Maak back-up</button>
+        <p aria-busy="true">Back-up wordt gemaakt</p>
+        <script>setTimeout(() => location.reload(), 5000);</script>
+        {% else %}
+        <button type="submit">Maak back-up</button>
+        {% endif %}
+    </form>
+    {% if backups %}
+    <div class="table-scroll">
+        <table>
+            <thead><tr><th>Datum</th><th>Grootte</th><th>Wachtwoord</th><th></th></tr></thead>
+            <tbody>
+                {% for b in backups %}
+                <tr>
+                    <td>{{ b.made_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ (b.size / 1024) | round | int }} kB</td>
+                    <td class="secret" data-secret="{{ b.password }}">
+                        <code>••••••••••••</code>
+                        <button type="button" class="outline secondary icon-btn" data-action="show" title="Toon" aria-label="Toon">{{ ic.icon("eye") }}</button>
+                        <button type="button" class="outline secondary icon-btn" data-action="copy" title="Kopieer" aria-label="Kopieer">{{ ic.icon("copy") }}</button>
+                    </td>
+                    <td class="secret">
+                        <a href="/admin/backups/{{ b.name }}">Download</a>
+                        <button type="button" class="outline secondary icon-btn" title="Verwijder" aria-label="Verwijder"
+                            onclick="document.getElementById('delete-{{ loop.index }}').showModal()">{{ ic.icon("trash") }}</button>
+                        <dialog id="delete-{{ loop.index }}">
+                            <article>
+                                <header>
+                                    <button aria-label="Close" rel="prev"
+                                        onclick="document.getElementById('delete-{{ loop.index }}').close()"></button>
+                                    <h3>Back-up verwijderen?</h3>
+                                </header>
+                                <p>De back-up van {{ b.made_at.strftime('%Y-%m-%d %H:%M') }} wordt definitief verwijderd.</p>
+                                <footer>
+                                    <form method="post" action="/admin/backups/{{ b.name }}/verwijderen" class="user-dialog-actions">
+                                        <button type="button"
+                                            onclick="document.getElementById('delete-{{ loop.index }}').close()">Annuleren</button>
+                                        <button type="submit" class="btn-cancel">Verwijder</button>
+                                    </form>
+                                </footer>
+                            </article>
+                        </dialog>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</article>
+
+<article>
+    <details class="history">
+        <summary>Audit log</summary>
+        {% if events %}
+        <pre class="audit-log log-tail">{% for e in events|reverse %}{{ e.at.strftime('%Y-%m-%d %H:%M') }}  {% if e.deleted %}{{ e.ref }}{% else %}<a href="/zaken/{{ e.ref }}">{{ e.ref }}</a>{% endif %}  [{{ e.by }}] {{ e.text }}
+{% endfor %}</pre>
+        {% else %}
+        <p>Nog geen activiteit.</p>
+        {% endif %}
+    </details>
+</article>
+
+<article>
+    <details class="history">
+        <summary>Logboek van de applicatie</summary>
+        <pre class="audit-log log-tail">{{ app_log }}</pre>
+    </details>
+</article>
+
+<article>
+    <details class="history">
+        <summary>Logboek van de mail</summary>
+        <pre class="audit-log log-tail">{{ mail_log }}</pre>
+    </details>
+</article>
+
+<script>
+    // The newest line is the last one, so the pane opens at the bottom.
+    // A hidden pane has no scroll height yet, so this waits until it is shown.
+    document.querySelectorAll("details").forEach(d => {
+        d.addEventListener("toggle", () => {
+            if (d.open) d.querySelectorAll(".log-tail").forEach(el => { el.scrollTop = el.scrollHeight; });
+        });
+    });
+
+    // A password is hidden until asked for, the way a token is on a hosting site.
+    document.querySelectorAll(".secret").forEach(cell => {
+        const secret = cell.dataset.secret;
+        const code = cell.querySelector("code");
+        cell.querySelector('[data-action="show"]').addEventListener("click", () => {
+            code.textContent = code.textContent === secret ? "••••••••••••" : secret;
+        });
+        const copy = cell.querySelector('[data-action="copy"]');
+        copy.addEventListener("click", () => {
+            navigator.clipboard.writeText(secret).then(() => {
+                copy.classList.add("copied");
+                setTimeout(() => copy.classList.remove("copied"), 1500);
+            });
+        });
+    });
+</script>
+
+{% endblock %}

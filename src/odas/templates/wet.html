@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ law.short_title }}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="/wetten">&larr; Wetten</a></nav>
+
+<article>
+    <header class="article-header">
+        <strong>{{ law.short_title }}</strong>
+    </header>
+
+    <p class="wet-bron">
+        {{ law.title }} — geldig vanaf {{ law.valid_from }},
+        opgehaald {{ law.fetched_at[:10] }}.
+        <a href="{{ law.source }}">Bron bij de overheid</a>
+    </p>
+
+    {% for heading in toc %}
+    {% if heading.deep %}<h4>{{ heading.label }}</h4>{% else %}<h3>{{ heading.label }}</h3>{% endif %}
+    {% for entry in heading.entries %}
+    <a class="wet-artikel" href="/wetten/{{ law.slug }}/{{ entry.name }}">
+        Artikel {{ entry.nr }}{% if entry.titel %} — {{ entry.titel }}{% endif %}
+    </a>
+    {% endfor %}
+    {% else %}
+    <p class="empty">Deze wet heeft geen artikelen.</p>
+    {% endfor %}
+</article>
+{% endblock %}

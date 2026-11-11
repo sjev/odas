@@ -1,0 +1,4 @@
+{% macro input(key, f, values, ctx) %}
+{# `multiple` is what lets the browser accept "a@x.nl, b@y.nl" in one box. #}
+<input type="email" name="{{ key }}" value="{{ values.get(key, '') }}"{% if f.multi %} multiple{% endif %}{% if ctx.required %} required{% endif %}{% if ctx.invalid %} aria-invalid="true"{% endif %}>
+{%- endmacro %}

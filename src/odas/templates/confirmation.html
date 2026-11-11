@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% import "_alert.html" as alert %}
+{% block title %}Ontvangen{% endblock %}
+{% block header %}
+    <header class="container">
+        <nav class="app-nav">
+            <ul>
+                <li><strong>Hulpvraag</strong></li>
+            </ul>
+        </nav>
+    </header>
+{% endblock %}
+{% block content %}
+{% if melding %}{{ alert.mail_alert("Geen bevestiging per e-mail", melding) }}{% endif %}
+        <h1>We hebben uw hulpvraag ontvangen</h1>
+
+        <article>
+            <p>{% if not melding %}U ontvangt een bevestiging per e-mail. {% endif %}Een behandelaar bekijkt uw vraag
+                en neemt binnen twee werkdagen contact met u op.</p>
+            <p>Uw kenmerk is <strong class="ref">{{ ref }}</strong>. Bewaar dit; u kunt
+                ernaar verwijzen in contact met ons.</p>
+            {% if inzien_url %}
+            <p>Via <a href="{{ inzien_url }}">{{ inzien_url }}</a> ziet u uw zaak in.</p>
+            {% endif %}
+            {% if adres %}
+            <p>Stuur aanvullende berichten naar <a href="mailto:{{ adres }}">{{ adres }}</a>.</p>
+            {% endif %}
+        </article>
+{% endblock %}

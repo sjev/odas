@@ -1,0 +1,6 @@
+{# Timestamps are written by the app, never typed, so this stays a plain box. #}
+{% macro input(key, f, values, ctx) %}
+<input type="text" name="{{ key }}" value="{{ values.get(key, '') }}">
+{%- endmacro %}
+
+{% macro cell(zaak, key, f) %}{{ zaak.frontmatter.get(key)|dt or "—" }}{% endmacro %}

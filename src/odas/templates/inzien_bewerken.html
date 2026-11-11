@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "_fields.html" as f %}
+{% block title %}{{ zaak.ref }} bewerken{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="/inzien-{{ token }}">&larr; Terug</a></nav>
+
+<h1>Gegevens bewerken</h1>
+
+{% if error %}
+<p class="error" role="alert">{{ error }}</p>
+{% endif %}
+
+<form method="post" action="/inzien-{{ token }}/bewerken" class="editor-form">
+    {{ f.field_grid(fields, zaak.frontmatter, "public") }}
+
+    <div class="form-actions">
+        <a href="/inzien-{{ token }}" role="button" class="btn-cancel">Annuleren</a>
+        <button type="submit">Opslaan</button>
+    </div>
+</form>
+
+{{ f.field_assets(fields, "edit") }}
+{% endblock %}

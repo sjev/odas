@@ -1,0 +1,11 @@
+{# A mail that did not go must not hide in a line the person scrolls past. #}
+{% macro mail_alert(title, text) %}
+<dialog class="mail-alert">
+    <article>
+        <header><h3>{{ title }}</h3></header>
+        <p>{{ text }}</p>
+        <footer><button type="button" onclick="this.closest('dialog').close()">Sluiten</button></footer>
+    </article>
+</dialog>
+<script>document.currentScript.previousElementSibling.showModal();</script>
+{% endmacro %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% import "_icons.html" as ic %}
+{% import "_alert.html" as alert %}
+{% import "_log.html" as log_macros %}
+{% import "_danger.html" as danger %}
+{% block title %}{{ ref }} · logboek bewerken{% endblock %}
+{% block content %}
+{% if mail_error %}{{ alert.mail_alert("E-mail niet verstuurd", mail_error) }}{% endif %}
+<nav class="back-nav"><a href="{{ base_url }}">&larr; {{ ref }}</a></nav>
+
+<h1>Logboek-item bewerken</h1>
+<p class="meta">{{ entry_name }}</p>
+
+{% if error %}
+<p class="error" role="alert">{{ error }}</p>
+{% endif %}
+
+<form method="post" action="{{ base_url }}/log/{{ entry_name }}/bewerken"
+    enctype="multipart/form-data" class="editor-form" id="log-form" data-known="{{ known }}"
+    data-draft="log-edit" data-draft-guard>
+
+    <div class="field-grid">
+        <label>
+            <span>Richting</span>
+            {{ log_macros.direction_select(direction) }}
+        </label>
+        <label>
+            <span>Onderwerp</span>
+            <input type="text" name="onderwerp" value="{{ fm.onderwerp or '' }}" placeholder="korte titel">
+        </label>
+    </div>
+
+    {# The rest of `fields.log` a person may type. Keys read off a received
+       message are not shown: `handle_log_edit` keeps what is on disk. An entry
+       that carries the message itself shows its recipients as facts: the
+       message is on the wire, so no field here can move it. #}
+    {{ log_macros.log_field_grid(fm, "team", locked=locked) }}
+
+    <label>
+        <span>Inhoud</span>
+        <textarea name="body" class="doc-editor" autocomplete="off">{{ body }}</textarea>
+    </label>
+
+    {% if attachments %}
+    <ul class="attach-list">
+        {% for fname in attachments %}
+        <li>
+            <a class="attach-name" target="_blank" rel="noopener"
+                href="{{ base_url }}/log/{{ entry_name }}/bijlage/{{ fname }}">{{ ic.icon("paperclip", 14, "icon-clip") }} {{ fname }}</a>
+            <input type="checkbox" name="verwijder" value="{{ fname }}" hidden data-draft-skip>
+            <button type="button" class="attach-remove" title="Verwijderen">&times;</button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if can_attach %}
+    <div class="intake-docs" id="log-docs">
+        <p class="docs-label">{{ ic.icon("paperclip", 16, "icon-clip") }} Bijlagen toevoegen</p>
+        <button type="button" class="drop-area">
+            <span class="drop-title">Bestand toevoegen</span>
+            <span class="drop-hint">Klik hier, of sleep uw bestanden hierheen</span>
+        </button>
+        <input type="file" name="documenten" multiple hidden>
+        <p class="docs-count"></p>
+        <ul class="docs-list"></ul>
+    </div>
+    {% endif %}
+
+    <div class="form-actions">
+        <a href="{{ base_url }}" role="button" class="btn-cancel">Annuleren</a>
+        <button type="submit">Opslaan</button>
+        {# Nothing went out yet, so this item can still go. A sent one has no
+           button: its recipients are facts above, and the message is one. #}
+        {% if log_mail_fields() and not locked %}
+        <button type="submit" name="action" value="send" class="btn-send" disabled>
+            {{ ic.icon("mail") }} Verstuur e-mail</button>
+        {% endif %}
+    </div>
+</form>
+
+{{ danger.danger_zone([(
+    "Dit logboek-item verwijderen",
+    "Het item gaat naar de prullenbak van deze zaak.",
+    base_url ~ "/log/" ~ entry_name ~ "/verwijderen",
+    "Verwijderen",
+)]) }}
+
+<script src="/static/upload.js?v={{ version }}"></script>
+<script src="/static/log_form.js?v={{ version }}"></script>
+<script>
+document.querySelectorAll('.attach-remove').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var li = btn.closest('li');
+        var name = li.querySelector('input[name="verwijder"]').value;
+        if (!confirm('Bijlage "' + name + '" verwijderen?')) return;
+        li.querySelector('input[name="verwijder"]').checked = true;
+        li.classList.add('attach-removed');
+        btn.disabled = true;
+    });
+});
+
+var logDocs = document.getElementById('log-docs');
+if (logDocs) initUpload(logDocs);
+initSendButton(document.getElementById('log-form'));
+</script>
+{% endblock %}

@@ -1,0 +1,64 @@
+# A. Jansen, jurist: own procedures against government bodies. Tier 1.
+#
+# This file is the complete schema for this data dir. Nothing is merged onto it:
+# what is not declared here does not exist. Restart the app after editing.
+#
+# One person works here, so there is no behandelaar to assign and no intake
+# form: every zaak is started by the owner. Sharing is by the reply_token link
+# for a reader, or by toegang for someone who must edit too.
+#
+# The identity of a zaak is external, so the fields point outward: which body is
+# on the other side, their reference, and their contact person.
+
+version: 13               # on-disk layout revision, checked at startup
+
+org:
+  display_name: Mr. A. Jansen
+  app_title: Procedures
+  # This jurist looks a zaak up by the other party's kenmerk, so that column
+  # stands first.
+  columns: [ext_ref, aangemaakt, status, termijn]
+
+oidc:
+  issuer: https://id.jansen.example.nl
+  client_id: odas
+  redirect_uri: https://procedures.jansen.example.nl/auth/callback
+  group_team: jansen     # a group of one; every other reader comes in per zaak
+
+types:
+  # A procedure: one case against one external body, tracked to its last term.
+  procedure:
+    ext_instantie:
+      type: str
+      label: Instantie
+      hint: het bestuursorgaan aan de andere kant
+    ext_ref:
+      type: str
+      label: Kenmerk bij de instantie
+    ext_behandelaar:
+      type: str
+      label: Contactpersoon daar
+    status:
+      type: status          # the four generic values come with the type
+    opvolgen: {type: flag}  # an IN sets it; a person clears it on the zaak page
+    fase:
+      type: [vooroverleg, zienswijze, bezwaar, beroep]
+    termijn:
+      type: termijn         # writes termijn_datum + termijn_soort, never `termijn:`
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Leeslink
+      hint: "systeem: capability-token voor de leespagina"
+
+fields:
+  # log/ entry frontmatter. Date (JJJJ-MM-DD) and direction (IN/UIT/LOG) live in
+  # the entry name, so neither appears here. This jurist writes letters in their
+  # own mail client, so ODAS never sends: there is no recipient and no verzonden
+  # stamp, and the log is a record of what happened, not an outbox.
+  log:
+    onderwerp:
+      type: str
+      hint: korte titel, bv. zienswijze

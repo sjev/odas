@@ -1,0 +1,73 @@
+{% import "_icons.html" as ic %}
+
+{% macro reply_section(token, sent, values, errors, reply_open) %}
+<div class="reply-section">
+    <article class="reply-card" id="reply-card"{% if not reply_open %} hidden{% endif %}>
+        {% if sent %}
+        <div class="success" role="status" id="success-banner">
+            <span class="success-icon" aria-hidden="true">&#10003;</span>
+            <span class="success-text">Bedankt, uw reactie is ontvangen. Een behandelaar bekijkt uw bericht.</span>
+            <button class="success-close" aria-label="Sluiten" onclick="this.closest('#success-banner').remove()">&#x2715;</button>
+        </div>
+        {% endif %}
+        <form method="post" action="/inzien-{{ token }}" class="intake-form" enctype="multipart/form-data"
+            data-draft="reply" data-draft-opener="reply-new-btn">
+            <label>Uw naam *
+                <input type="text" name="naam" value="{{ values.naam or '' }}"
+                    aria-invalid="{{ 'true' if errors.naam else '' }}">
+                {% if errors.naam %}<small class="error">{{ errors.naam }}</small>{% endif %}
+            </label>
+
+            <label>Onderwerp *
+                <input type="text" name="onderwerp" value="{{ values.onderwerp or '' }}"
+                    placeholder="Korte omschrijving"
+                    aria-invalid="{{ 'true' if errors.onderwerp else '' }}">
+                {% if errors.onderwerp %}<small class="error">{{ errors.onderwerp }}</small>{% endif %}
+            </label>
+
+            <label>Uw bericht *
+                <textarea name="bericht" rows="10" placeholder="Uw reactie of aanvullende informatie hier invoeren"
+                    aria-invalid="{{ 'true' if errors.bericht else '' }}">{{ values.bericht or '' }}</textarea>
+                {% if errors.bericht %}<small class="error">{{ errors.bericht }}</small>{% endif %}
+            </label>
+
+            <div class="intake-docs" id="reply-docs">
+                <p class="docs-label">{{ ic.icon("paperclip", 16, "icon-clip") }} Documenten meesturen</p>
+                <button type="button" class="drop-area">
+                    <span class="drop-title">Bestand toevoegen</span>
+                    <span class="drop-hint">Klik hier, of sleep uw bestanden hierheen</span>
+                </button>
+                <input type="file" name="documenten" multiple hidden>
+                <p class="docs-count"></p>
+                <ul class="docs-list"></ul>
+                {% if errors.documenten %}<small class="error">{{ errors.documenten }}</small>{% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="reply-cancel-btn" class="btn-cancel">Annuleren</button>
+                <button type="submit">Verstuur reactie</button>
+            </div>
+        </form>
+    </article>
+</div>
+<script>
+    initUpload(document.getElementById('reply-docs'));
+    // Reveal the reply form on click; mirrors the team "Nieuw" log pattern.
+    (function () {
+        const replyBtn = document.getElementById('reply-new-btn');
+        const replyCard = document.getElementById('reply-card');
+        if (replyBtn) replyBtn.addEventListener('click', () => {
+            replyBtn.hidden = true;
+            replyCard.hidden = false;
+            replyCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        const replyCancelBtn = document.getElementById('reply-cancel-btn');
+        if (replyCancelBtn) replyCancelBtn.addEventListener('click', () => {
+            replyCard.hidden = true;
+            replyBtn.hidden = false;
+            replyCard.querySelector('form').reset();
+            replyBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    })();
+</script>
+{% endmacro %}

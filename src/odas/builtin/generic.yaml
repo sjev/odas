@@ -1,0 +1,157 @@
+# The template `odas init` copies into a new data dir: neutral branding, extra
+# features off. Once copied it is that data dir's own file -- edit it there, not
+# here. This is the complete schema: nothing merges onto it or behind it.
+#
+# `types:` is the registry: one entry per soort of zaak, and a type *is* its field
+# declaration. `id`, `soort`, `titel`, `aangemaakt` and `gewijzigd` are injected in front of
+# every type, so no type declares them.
+#
+# `prefix:` is the two letters in front of a new ref of that type, so a kenmerk
+# reads as its own soort. A type that declares none takes `zk`.
+
+version: 13              # on-disk layout revision, checked at startup
+
+# Branding, and the columns the overview starts with. Ref, Opvolgen and Naam stand
+# first always, and a person may pick another set for their own browser. Leave
+# the section out to take the neutral name and the two dates.
+#
+# org:
+#   display_name: Uw organisatie
+#   logo: /assets/logo.svg       # .app/assets/ beside this file is served at /assets/
+#   favicon: /assets/favicon.png
+#   columns: [aangemaakt, gewijzigd, status, termijn]
+#
+# How this deployment reaches the outside world. Credentials are not declared
+# here: they live in secrets.yaml beside this file. Leave a section out to take
+# its defaults -- no identity provider, and mail logged instead of sent.
+#
+# oidc:
+#   issuer: https://id.example.nl
+#   client_id: odas
+#   redirect_uri: https://odas.example.nl/auth/callback
+#   group_team: team               # this group may work on zaken
+#
+# smtp:                            # only the notices to people without an account
+#   host: mail.example.nl          # empty = log only; a folder path = .eml files
+#   port: 587
+#   sender: noreply@example.nl
+#   user: noreply@example.nl       # set it to log in; the relay must offer STARTTLS
+#
+# Mail capture. Correspondence is written and sent in the jurist's own mail
+# client, with the zaak address in Bcc; an incoming letter is forwarded to it.
+# `odas mailin` receives the copy and files it whole. Without this section the
+# log is written by hand and no address exists.
+#
+# mailin:
+#   domains: [odas.example.nl]     # needs an MX record pointing here
+#   port: 2525                     # the container maps port 25 onto it
+#
+# Every sender may write to a zaak address, so treat it as one you have
+# published. A sender the signature does not prove is a warning in the mail log.
+#
+# Capture is encrypted: the daemon makes its own certificate in `.app/` on the
+# first run. There is nothing to declare and nothing to renew.
+#
+# server:
+#   log_level: INFO
+#   host: 0.0.0.0
+#   port: 8000
+#
+# What a document is summarized with. Without this section there is no button and
+# no `odas index summarize`. Turning it on accepts two things: the text of a
+# document leaves the building, and the organisation gets a bill. A summary is
+# made only when a person asks for one, on the document they name. The key goes
+# in .app/secrets.yaml as `ai_api_key`, never here.
+#
+# ai:
+#   base_url: https://openrouter.ai/api/v1   # any OpenAI-compatible gateway
+#   model: anthropic/claude-haiku-4.5
+#   max_tokens: 1024
+#   timeout: 300           # seconds; a long document is minutes of work
+#   prompt: |              # your own words: what a summary should say
+#     Schrijf 3 tot 5 zinnen. Noem wat het stuk is, wie het schreef, wat het
+#     vraagt of beslist, en elke datum of termijn die erin staat.
+#
+# Fields are kept deliberately small: only what code branches on (enums, routing,
+# access, deadline) or what you scan a list by. Descriptive context (telefoon,
+# adviseur, vereniging, lopende procedure, links, bevoegd gezag) lives as free
+# text in the body, not as fields.
+
+types:
+  # A procedure: one case against one external body. This is the base type, and
+  # it is deliberately plain. A helpdesk adds its own fields on top -- see the
+  # veenwacht corpus in the source tree for what that looks like. Nothing here
+  # assumes that somebody outside hands a question in.
+  procedure:
+    prefix: zk
+    ext_instantie:
+      type: str
+      label: Instantie
+      hint: het bestuursorgaan aan de andere kant
+    ext_ref:
+      type: str
+      label: Kenmerk bij de instantie
+    ext_behandelaar:
+      type: str
+      label: Contactpersoon daar
+    status:
+      type: status          # the four generic values come with the type
+      public: true
+    opvolgen: {type: flag}  # an IN sets it; a person clears it on the zaak page
+    fase:
+      type: [vooroverleg, zienswijze, bezwaar, beroep]
+      public: true
+    locatie:
+      type: latlon
+      hint: lat,lon (zet via kaart)
+      public: true
+    termijn:
+      type: termijn         # writes termijn_datum + termijn_soort, never `termijn:`
+      public: true
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Leeslink
+      hint: "systeem: capability-token voor de leespagina"
+
+  # A dossier: a zaak that groups other zaken.
+  dossier:
+    prefix: ds
+    zaken:
+      type: zaken           # refs to other zaken, edited through a picker
+      hint: refs van de zaken in dit dossier
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+fields:
+  # log/ entry frontmatter, read from the message that came in. Date (JJJJ-MM-DD)
+  # and direction (IN/UIT/LOG) live in the entry name, so neither appears here.
+  # `aan` and `cc` are typed to send the entry as mail, and are read off a
+  # message that comes in. `van` and `message_id` belong to a received message
+  # alone, so they stay `editable: []`.
+  # Declare `mailin:` above to switch capture on; without it the log is written
+  # by hand and only onderwerp is ever filled.
+  log:
+    onderwerp:
+      type: str
+      hint: korte titel, bv. zienswijze
+    van:
+      type: email
+      editable: []
+      hint: "systeem: afzender"
+    aan:
+      type: list[email]
+      label: Aan
+      hint: gescheiden door komma's
+    cc:
+      type: list[email]
+      label: Cc
+      hint: gescheiden door komma's
+    message_id:
+      type: str
+      editable: []
+      hint: "systeem: kenmerk van het bericht, houdt dubbele kopieën eruit"

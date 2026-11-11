@@ -1,0 +1,97 @@
+Received: from srv2a.filter.example.net (srv2a.filter.example.net [192.0.2.181])
+	by mail.example.nl (Postfix) with ESMTPS id AC9C2214802
+	for <zk-54865@odas.veenwacht.example.nl>; Thu, 13 Aug 2026 16:04:41 +0000 (UTC)
+Received: from srv1b.host.example.net ([192.0.2.251])
+	by srv2a.filter.example.net with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <hulpvraag@veenwacht.example.nl>)
+	id 1wuXv6-002TPO-2j
+	for zk-54865@odas.veenwacht.example.nl; Thu, 13 Aug 2026 18:04:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=veenwacht.example.nl; s=x; h=Content-Transfer-Encoding:Content-Type:
+	Message-ID:References:In-Reply-To:Subject:To:From:Date:MIME-Version:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5uUonQvrr66AJ3R2XtUzk8bMkIzab/qcPhPbkZqmhHc=; b=B9/ZFoYDEgw+R3DopOuejcZec+
+	IxJRqmlOaDz6C0QoQje2uTPJ92xkGzocaJwc266qs9gacBVuFwacUhw5AK8Gv8RRCdhZPzndWDGYq
+	YgDukQO/8JcVFbM9VOI0toxiABEZiJbhf/jzLO6lXc0v4nuNzwWpwzzGYK05Vy7/WJz2X3noQNdRQ
+	48G5vIxoTPG5+oHe1hz71ur3eATVq44J6MIN75QVpmLVPwLVQ02tXPx017cxIPw6P4D8o8/szU3TO
+	eOiRjE8qHD59O/Mh8Fc3gb3C7MIYx1oYkSvj7BneSuDeMK8ibeCbV9Kf+dMur65lWX+cMFVUYiIVJ
+	1N4QC+4g==;
+Received: from [::1] (helo=veenwacht.example.nl)
+	by srv1b.host.example.net with esmtpa (Exim 4.99.5)
+	(envelope-from <hulpvraag@veenwacht.example.nl>)
+	id 1wuXv4-00000001yx5-4852
+	for zk-54865@odas.veenwacht.example.nl;
+	Thu, 13 Aug 2026 18:04:38 +0200
+MIME-Version: 1.0
+Date: Thu, 13 Aug 2026 18:04:38 +0200
+From: hulpvraag@veenwacht.example.nl
+To: zk-54865@odas.veenwacht.example.nl
+Subject: Fwd: Re: Testbericht voor nieuwe methode
+In-Reply-To: <CAKUqD=otLDBmkQPQCrxe=D_cgrQV5VQnZqpjRMp44yPBsXxKug@mail.example.org>
+References: <96b809b004c6c53c8baf63c885ba8610@veenwacht.example.nl>
+ <CAKUqD=pJFmTZ6eZGE5aQOqxLt8-_G4onH6yL9DP9U8f98vQ4vQ@mail.example.org>
+ <CAKUqD=otLDBmkQPQCrxe=D_cgrQV5VQnZqpjRMp44yPBsXxKug@mail.example.org>
+Message-ID: <c600cae0cdaa2903c7d9746478672908@veenwacht.example.nl>
+X-Sender: hulpvraag@veenwacht.example.nl
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: hulpvraag@veenwacht.example.nl
+X-Originating-IP: 192.0.2.251
+X-SpamExperts-Domain: host.example.net
+X-SpamExperts-Username: 192.0.2.251
+Authentication-Results: filter.example.net; auth=pass smtp.auth=192.0.2.251@host.example.net
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.05)
+X-Recommended-Action: accept
+X-Filter-ID: 9kzQTOBWQUFZTohSKvQbgI7ZDo5ubYELi59AwcWUnuU8x8KOklPkdePBXDAx06gF38WPMy+t8Jq8
+ dJj5DsoLQiu2SmbhJN1U9FKs8X3+Nt1y7CBVZP5WBkoTTFxnhkwhYrQZCK8sim+4vTQUnVdt48ho
+ U2b8PCO0iL0hyUOqp+mu93IGV32+66vR3SK5jUmE4pWx7WxWFZpsjT/483ewgv9QqPJ8g6TBqSjJ
+ 1i0/zNvEGIk6SwrK6SPvnVd1/rFPr3fT2Af9Z9yvlAXawn6rWO3om1NOCXE1kCr91rpFr6Qih0hN
+ QvJ4fMqp1uEpe8GY29pZCXSDPzlZg9vETxgKhQApCVB1N/BtJyJqv7YkIyy0t/gb8nl4B3qX7ePe
+ RQqjehOSaoUlnVqa/S9m7pV5omv/FKJ/cJ8t+xw9ke7dLzc2HqurXu74/esod5fCkU1oNe5TYlVY
+ /Mub32mRhzSRpIr74qMnft9Hod95KPZK6jQ28H6oALGR0YS27+83oA4GQBjnIW61Egmj/LKgBeff
+ krwqyT5p50x81ZKcmzCu2U3pUEifLhcEpiI4jBT7v99NP4165TrQh54+bCsJzfAiKnyZGyC7zuqv
+ 5AHmVxyNc+88XKLgKVqGtIPPU1llfLA/++DuIQUs/5JJj4C/n4CILtDzH0oQyD8OGy4eucN9Wqxl
+ b5SCPFafQdVbHVLhLB9ijxxVx1Gxj4yH7DyV8htfFZ+WaH/j7rIRIEQUfw/SzF094dj6lUEj9w3y
+ WrzfsZRIsfleIEzSIDwYLpsqF5A/5ueURvP7468+f+EGtWkSZL3braCZ3U5PYHUXrOmnlwzE2JIx
+ j+PiaN6fMt31PDjq3xMIcjrwrnH79b5Rroaq5q8OUQMdH5WPCsO5OcRSoeO+rjm/RJvPdTKBaI5M
+ zZF+8DlBQBtMGuKfMAL/jcwEPjz1H/aAwarQpYDOYx/6JtUOsQaGY572GFhBRIHhKI5VAIlEL+Hu
+ ydhixMGhldLBGTRNky5IXPcrANFOmz6hxnTZJBBr+SujGgSYA7mcaMjP7mRCocjQL9Td+ZGFmhHY
+ C7oPNPzgTBmSKz1vmMK42Hj7cGrPtNGJYX3VT+yZ12sm8Q==
+X-Report-Abuse-To: spam@srv3a.filter.example.net
+X-Complaints-To: abuse@srv3a.filter.example.net
+
+
+
+-------- Oorspronkelijke bericht --------
+Onderwerp: Re: Testbericht voor nieuwe methode
+Datum: 2026-08-13 18:03
+Afzender: Hanna Bos <h.bos@example.org>
+Ontvanger: hulpvraag@veenwacht.example.nl, Jan Visser 
+<jan@visser.example.nl>
+
+Gelukt. ZIe het dossier. Allebei  binnen met een kleine vertraging.
+Veel dank weer.
+Fijn weekend. Wat een rotweer. Ik wou dat die zon een tijdje langer
+verduisterd was gebleven.
+
+mvg,
+Hanna
+
+Op do 13 aug 2026 om 17:52 schreef Hanna Bos
+<h.bos@example.org>:
+
+> De uitgaande mail komt niet binnen in het dossier.
+> Nu ga ik een mail sturen die ik ga FF naar de zaak als inkomende mail.
+> 
+> Op do 13 aug 2026 om 17:47 schreef <hulpvraag@veenwacht.example.nl>:
+> 
+>> Hoe werkt dit?
+>> Is dit ingewikkelder of niet?
+>> Is dit overzichtelijker of niet>
+>> 
+>> Check.

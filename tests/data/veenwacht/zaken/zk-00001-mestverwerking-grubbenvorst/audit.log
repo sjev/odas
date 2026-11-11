@@ -1,0 +1,36 @@
+2026-02-10 10:15 [indiener] zaak aangemaakt
+2026-02-12 09:30 [jev] Behandelaar gewijzigd: — → jev
+2026-02-12 09:31 [jev] Status gewijzigd: nieuw → in_behandeling
+2026-02-12 09:31 [jev] Fase gewijzigd: — → zienswijze
+2026-02-12 09:32 [jev] Termijn soort gewijzigd: — → zienswijze
+2026-02-12 09:32 [jev] Termijn datum gewijzigd: — → 2026-03-05
+2026-03-04 16:20 [jev] Besluit gewijzigd: — → aangenomen
+2026-03-04 16:20 [jev] Reden besluit gewijzigd: — → Zienswijze ingediend; wachten op definitief besluit provincie.
+2026-03-04 16:21 [jev] Status gewijzigd: in_behandeling → afgerond
+2026-05-20 11:00 [jev] Status gewijzigd: afgerond → in_behandeling
+2026-05-20 11:00 [jev] Besluit gewijzigd: aangenomen → —
+2026-05-20 11:01 [jev] Reden besluit gewijzigd: Zienswijze ingediend; wachten op definitief besluit provincie. → —
+2026-05-20 11:01 [jev] Fase gewijzigd: zienswijze → bezwaar
+2026-05-20 11:02 [jev] Termijn soort gewijzigd: zienswijze → bezwaar
+2026-05-20 11:02 [jev] Termijn datum gewijzigd: 2026-03-05 → 2026-06-26
+2026-06-09 15:50 [m.janssen@example.com] reactie ontvangen: test inzien
+2026-06-10 14:10 [Test User] log-item aangemaakt (UIT): foo
+2026-06-10 14:42 [m.janssen@example.com] reactie ontvangen: test link
+2026-06-15 20:14 [Test User] map vervangen via upload
+2026-06-15 21:00 [Test User] index bewerkt
+2026-06-15 21:03 [Test User] index bewerkt (Behandelaar: jev → Alice)
+2026-06-15 21:05 [Test User] log-item aangemaakt (LOG): email ontvangen
+2026-06-16 11:45 [Test User] index bewerkt (Termijn soort: bezwaar → geen)
+2026-06-16 11:46 [Test User] index bewerkt (Termijn soort: geen → hoger_beroep)
+2026-06-16 12:58 [Test User] index bewerkt (Locatie: Grubbenvorst, gemeente Horst aan de Maas → 51.181254,5.493164)
+2026-06-16 13:18 [Test User] index bewerkt (Contactpersoon naam: — → Jan Janssen; Contactpersoon e-mail: — → jan.janssen@example.com)
+2026-06-16 13:19 [Test User] index bewerkt (Locatie: 51.181254,5.493164 → 51.439417,5.475998)
+2026-06-18 23:26 [Test User] index bewerkt (Behandelaar: Alice → —; Experts: — → g.jansen@example.com, karin@example.org, s.hoving@example.org, f.wielinga@example.org)
+2026-06-18 23:29 [Test User] index bewerkt (Experts: g.jansen@example.com, karin@example.org, s.hoving@example.org, f.wielinga@example.org → s.hoving@example.org, f.wielinga@example.org)
+2026-06-19 00:05 [Test User] index bewerkt
+2026-06-19 00:05 [Test User] index bewerkt (Behandelaar: — → Robert Amelung)
+2026-06-19 00:36 [Test User] index bewerkt (Experts: s.hoving@example.org, f.wielinga@example.org → karin@example.org, s.hoving@example.org, f.wielinga@example.org)
+2026-06-19 14:32 [Test User] index bewerkt
+2026-06-19 14:33 [Test User] index bewerkt (Behandelaar: Robert Amelung → —; Locatie: 51.439417,5.475998 → Venlo; Experts: karin@example.org, s.hoving@example.org, f.wielinga@example.org → f.wielinga@example.org, karin@example.org, s.hoving@example.org)
+2026-06-19 14:33 [Test User] index bewerkt (Experts: f.wielinga@example.org, karin@example.org, s.hoving@example.org → f.wielinga@example.org)
+2026-06-19 14:37 [Test User] index bewerkt (Locatie: Venlo → 51.162741,6.126829)

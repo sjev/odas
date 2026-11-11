@@ -1,0 +1,885 @@
+/* ============================================================
+   ODAS — global styles
+   Built on PicoCSS. Theme + a few layout helpers only;
+   typography and cards are left to Pico defaults.
+   ============================================================ */
+
+:root {
+  --accent:        #0a6e96;
+  --accent-strong: #075a7b;
+  --accent-tint:   #e7f4fb;
+
+  --pico-primary:           var(--accent);
+  --pico-primary-hover:     var(--accent-strong);
+  --pico-primary-focus:     rgba(10,110,150,.25);
+  --pico-primary-underline: rgba(10,110,150,.4);
+
+  --pico-background-color:      #f4f7f9;
+  --pico-card-background-color: #ffffff;
+
+  --pico-border-radius: 14px;
+
+  --st-new-bg:#e6f1fb;  --st-new-fg:#0f5e8c;
+  --st-prog-bg:#fbefd6; --st-prog-fg:#8a5600;
+  --st-done-bg:#e3f1e7; --st-done-fg:#2c6a41;
+  --st-hold-bg:#fbe6e2; --st-hold-fg:#9a3327;
+  --st-clsd-bg:#eceef1; --st-clsd-fg:#565d65;
+
+  --head-fg: #111;
+  --ok-bg:#d1fae5; --ok-fg:#065f46; --ok-border:#6ee7b7;
+
+  /* intake (public): contrast kept well past WCAG AA in both themes */
+  --intake-fg:      #1c221e;
+  --intake-help-fg: #52595f;
+  --intake-panel:   #f4f7f5;
+
+  --inzien-bg: #71c7ff;
+}
+
+[data-theme="dark"] {
+  --accent:        #5cc6ec;
+  --accent-strong: #8fdcf6;
+  --accent-tint:   rgba(66,207,255,.12);
+  --pico-background-color:      #11161b;
+  --pico-card-background-color: #181f26;
+  --st-new-bg:rgba(66,160,255,.16);   --st-new-fg:#8fc8f5;
+  --st-prog-bg:rgba(230,170,40,.16);  --st-prog-fg:#e6bb6b;
+  --st-done-bg:rgba(70,180,110,.16);  --st-done-fg:#79c894;
+  --st-hold-bg:rgba(220,90,70,.16);   --st-hold-fg:#e89a8c;
+  --st-clsd-bg:rgba(150,160,170,.14); --st-clsd-fg:#9aa3ab;
+
+  --head-fg: #e6ebef;
+  --ok-bg:rgba(70,180,110,.16); --ok-fg:#8fe0b0; --ok-border:rgba(70,180,110,.45);
+
+  --intake-fg:      #e7ece9;
+  --intake-help-fg: #a9b3b0;
+  --intake-panel:   #1b2228;
+
+  --inzien-bg: #0b2b3d;
+}
+
+/* Reading width by default. A page with a wide table opts in with body.wide. */
+.container { max-width: 1080px; padding-inline: var(--pico-spacing); }
+body.wide .container { max-width: 1400px; }
+
+/* The nav is the fixed landmark: always at the wide width, so it does not move
+   between a reading page and the overview. */
+body > header.container {
+  max-width: 1400px;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  margin-bottom: var(--pico-spacing);
+}
+
+/* ---- nav ---- */
+.app-nav { flex-wrap: wrap; gap: 0.5rem; }
+.app-nav ul:last-child { margin-left: auto; align-items: center; }
+nav a { text-decoration: none; }
+.app-header { display: flex; justify-content: flex-start; padding: 0.5rem 0; }
+.app-logo { height: 85px; width: auto; }
+
+.theme-toggle {
+  width: auto; margin: 0; padding: 0.15rem 0.5rem;
+  background: none; border: none; box-shadow: none; cursor: pointer;
+  color: var(--pico-muted-color); font-size: 1.15rem; line-height: 1;
+}
+.theme-toggle:hover, .theme-toggle:focus { background: none; color: var(--pico-primary); }
+
+/* ---- article header (title + action button) ---- */
+.article-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.btn-sm {
+  margin: 0; padding: 0.25rem 0.75rem; width: auto;
+}
+.btn-action {
+  margin: 0; padding: 0.25rem 0.75rem; width: auto;
+  background: #facc15; border-color: #e6b800; color: #000;
+}
+.btn-action:hover:not(:disabled) {
+  background: #eab308; border-color: #ca8a04; color: #000;
+}
+
+.back-nav { margin-bottom: var(--pico-block-spacing-vertical); }
+
+.prewrap { white-space: pre-wrap; }
+
+/* ---- status badges ---- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 650; white-space: nowrap;
+  vertical-align: middle;
+}
+.badge::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; opacity: .9;
+}
+.status-new      { background: var(--st-new-bg);  color: var(--st-new-fg); }
+.status-progress { background: var(--st-prog-bg); color: var(--st-prog-fg); }
+.status-done     { background: var(--st-done-bg); color: var(--st-done-fg); }
+.status-hold     { background: var(--st-hold-bg); color: var(--st-hold-fg); }
+.status-closed   { background: var(--st-clsd-bg); color: var(--st-clsd-fg); }
+
+/* ---- case header ---- */
+.case-header { margin-bottom: 1.75rem; }
+.title-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.title-row h1 { margin: 0; }
+.flag-form { display: inline; margin: 0; }
+.flag-box { display: inline-flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; }
+.flag-box input { margin: 0; }
+.flag-box.on { color: var(--pico-del-color); }
+.meta,
+.case-subtitle,
+.reageer-line { color: var(--pico-muted-color); font-size: 0.875rem; }
+
+.case-subtitle { margin: 0.5rem 0 0; display: flex; align-items: center; gap: 10px; }
+.case-subtitle .ref { font-family: monospace; font-weight: 600; }
+.reageer-line {
+  margin: 0.35rem 0 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.reageer-line .reageer-link { font-family: monospace; word-break: break-all; }
+.copy-btn {
+  display: inline-flex; align-items: center; padding: 2px; margin: 0;
+  width: auto; border: none; background: none; cursor: pointer; line-height: 0;
+  color: var(--pico-muted-color);
+}
+.copy-btn:hover { color: var(--pico-primary); }
+.zaak-toolbar {
+  margin-top: 0.5rem; display: flex; align-items: center; gap: 4px;
+}
+
+/* ---- indiener reply card (inzien page) ---- */
+.reply-card { margin-bottom: 1.5rem; }
+.reply-card > h2 { margin-top: 0; }
+.reply-new-btn { margin-left: auto; width: auto; background: #facc15; border-color: #e6b800; color: #000; }
+.reply-new-btn:hover:not(:disabled) { background: #eab308; border-color: #ca8a04; color: #000; }
+.success {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.875rem 1rem; border-radius: var(--pico-border-radius);
+  background: var(--ok-bg); color: var(--ok-fg);
+  border: 1px solid var(--ok-border);
+  font-weight: 500;
+}
+.success .success-icon { flex-shrink: 0; font-size: 1.1em; line-height: 1.4; }
+.success .success-text { flex: 1; }
+.success .success-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--ok-fg); opacity: 0.6; font-size: 1.1em;
+  padding: 0; line-height: 1; flex-shrink: 0;
+}
+.success .success-close:hover { opacity: 1; }
+
+/* ---- case card: meta header + summary body ---- */
+.case-card { margin-bottom: 1.5rem; position: relative; }
+.card-edit-btn { position: absolute; top: 0.6rem; right: 0.75rem; }
+.case-card > header, .case-meta-header {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+}
+.case-card > h2 {
+  margin: 1rem 0 0.5rem; font-size: 1rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--head-fg);
+}
+
+.case-main { display: flex; flex-direction: column; gap: 1.5rem; }
+.case-main article { margin: 0; }
+
+/* section eyebrow headings */
+.case-main article > h2 {
+  margin: 0 0 1rem; font-size: 1rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--head-fg);
+}
+
+.summary { margin: 0; }
+.empty { color: var(--pico-muted-color); font-style: italic; margin: 0; }
+.prose { line-height: 1.6; }
+/* The page is wide; a line of running text stays short enough to read. */
+.prose > p, .prose > ul, .prose > ol, .prose > blockquote { max-width: 80ch; }
+.prose > *:first-child { margin-top: 0; }
+.prose > *:last-child { margin-bottom: 0; }
+.prose p { margin: 0.5rem 0; }
+.prose ul, .prose ol { margin: 0.5rem 0; padding-left: 1.5rem; }
+.prose strong { font-weight: 700; }
+.prose em { font-style: italic; }
+.prose code { font-family: monospace; font-size: 0.9em; background: var(--pico-code-background-color); padding: 0.1em 0.3em; border-radius: 3px; }
+.prose pre { background: var(--pico-code-background-color); padding: 0.75rem; border-radius: 4px; overflow-x: auto; }
+.prose blockquote { border-left: 3px solid var(--pico-muted-border-color); margin: 0.5rem 0; padding-left: 1rem; color: var(--pico-muted-color); }
+
+/* ---- logboek ---- */
+.log-entry {
+  display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+.log-entry:first-child { border-top: none; }
+.log .ts { color: var(--pico-muted-color); white-space: nowrap; }
+.log .ts > span { display: block; }
+.log .ts .time { font-variant-numeric: tabular-nums; }
+.log .ts .edited { font-size: 0.8em; font-style: italic; }
+.log-entry .ev { min-width: 0; }
+.log-entry .entry-text { margin: 0.25rem 0 0; font-size: 0.9rem; overflow-wrap: anywhere; }
+.log-entry ul { margin: 0.25rem 0 0; padding-left: 1.25rem; font-size: 0.9rem; }
+.log-entry .route { display: block; font-size: 0.85rem; color: var(--pico-muted-color); margin-top: 0.1rem; }
+.log-entry .bron { display: block; font-size: 0.85rem; color: var(--pico-muted-color); margin-top: 0.1rem; }
+.log-entry .bron .bron-icon { font-weight: bold; }
+.log-entry .entry-text.clamped {
+  max-height: 12em; overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 70%, transparent);
+          mask-image: linear-gradient(#000 70%, transparent);
+}
+.log-entry .entry-text.expanded {
+  max-height: none;
+  -webkit-mask-image: none; mask-image: none;
+}
+/* An open entry gives the timestamp column to the text. */
+.log-entry:has(.entry-text.expanded) { grid-template-columns: minmax(0, 1fr); gap: 0.35rem; }
+.log-entry:has(.entry-text.expanded) .ts { white-space: normal; }
+.log-entry:has(.entry-text.expanded) .ts > span { display: inline; }
+.entry-toggle {
+  display: block; width: 100%; margin: 0.1rem 0 0; padding: 0;
+  background: none; border: none; cursor: pointer;
+  color: var(--pico-muted-color); line-height: 1;
+  font-size: 1.4rem; text-align: center;
+}
+.entry-toggle.open { transform: rotate(180deg); }
+.entry-toggle:hover { color: var(--pico-primary); }
+.entry-toggle:focus { outline: none; box-shadow: none; }
+
+/* ---- metadata fields ---- */
+.field { padding: 0; }
+.field .label {
+  margin: 0 0 0.25rem; font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em; color: var(--head-fg);
+}
+.field .value .sub { color: var(--pico-muted-color); }
+/* One field per row, in the same columns as the edit form. */
+.case-meta-header .field {
+  display: grid; grid-template-columns: 14rem minmax(0, 36rem); gap: 0.25rem 1rem;
+  align-items: baseline;
+}
+.case-meta-header .field .label { margin: 0; }
+
+/* ---- the choices and the box: two rows of one shape each ---- */
+.zoek { margin-bottom: 0.75rem; }
+
+.zoek-keuze { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+.zoek-keuze select {
+  flex: 1 1 10rem; width: auto; margin: 0;
+  padding-block: 0.4rem; font-size: 0.9rem;
+}
+
+.zoek-form { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.zoek-form input[type="search"] { flex: 1 1 16rem; margin: 0; }
+.zoek-form button, .zoek-form [role="button"] { margin: 0; width: auto; white-space: nowrap; }
+/* The help icon stands between the box and Zoek, as tall as either. */
+.zoek-form .copy-btn svg { width: 1.75rem; height: 1.75rem; }
+
+/* ---- zaak table (one grid, mobile cards) ---- */
+.zaak-list { display: flex; flex-direction: column; }
+.table-scroll { overflow-x: auto; }
+
+/* --tpl is set per table. The rows are subgrids of the one list grid, so a
+   column is as wide as its widest value on any row, and every row lines up. */
+.zaak-table {
+  display: grid; grid-template-columns: var(--tpl);
+  font-size: 0.875rem; font-variant-numeric: tabular-nums;
+}
+.zaak-header,
+.zaak-row {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: subgrid;
+  column-gap: 1rem;
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  align-items: baseline;
+}
+
+.zaak-header {
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--pico-muted-color);
+  border-bottom: 2px solid var(--pico-muted-border-color);
+}
+
+.zaak-header a.sort { color: inherit; text-decoration: none; }
+.zaak-header a.sort:hover { color: var(--pico-primary); }
+
+.kolommen { margin-bottom: 0.5rem; font-size: 0.9rem; }
+/* The arrow sits next to its word, not at the far edge of a wide page. */
+.kolommen summary::after { display: inline-block; float: none; vertical-align: middle; }
+.kolommen form { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; }
+.kolommen label { margin: 0; }
+.kolommen button { margin: 0; width: auto; padding-block: 0.3rem; }
+
+.zaak-row {
+  text-decoration: none; color: inherit;
+  border-radius: 0; transition: background 0.1s;
+}
+.zaak-row:hover { background: var(--accent-tint); }
+
+.zaak-cell { min-width: 0; overflow-wrap: anywhere; }
+.zaak-cell .sub { color: var(--pico-muted-color); }
+.zaak-ref {
+  font-family: var(--pico-font-family-monospace);
+  font-size: 0.8rem; color: var(--pico-muted-color);
+}
+/* The Opvolgen column: the work waits for the team. */
+.zaak-flag { color: var(--pico-del-color); }
+
+/* The membership editor: one member, one Verwijderen button. Not a table row. */
+.member-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+.member-row .zaak-cell { flex: 1 1 12rem; }
+.member-row form { margin: 0; }
+.member-row button { margin: 0; width: auto; }
+
+@media (max-width: 600px) {
+  .zaak-header { display: none; }
+
+  .zaak-list { gap: 0.65rem; }
+  .zaak-table { display: flex; flex-direction: column; }
+
+  .zaak-row {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    align-items: flex-start;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
+    background: var(--pico-card-background-color);
+    text-align: left;
+  }
+
+  /* The header is gone, so each cell names itself. A cell with no value has no
+     label either, and a card leaves it out rather than showing a blank line. */
+  .zaak-row .zaak-cell { display: flex; flex-direction: column; gap: 0.1rem; }
+  .zaak-row .zaak-cell:not([data-label]) { display: none; }
+  .zaak-row .zaak-cell::before {
+    content: attr(data-label);
+    font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .07em;
+    color: var(--pico-muted-color);
+  }
+}
+
+/* ---- footer ---- */
+.footer-stack {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0.35rem; text-align: center;
+}
+
+/* ---- user avatar ---- */
+.user-dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--pico-spacing); }
+.user-dialog-actions > * { margin: 0; text-align: center; }
+
+.user-avatar-btn {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; border: none !important; background: none !important;
+  box-shadow: none !important; cursor: pointer;
+}
+.user-avatar, .user-avatar-fallback {
+  width: 2rem; height: 2rem; border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+.user-avatar { object-fit: cover; }
+.user-avatar-fallback {
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem;
+}
+
+/* ---- intake form ---- */
+.intake-form .error { color: var(--pico-del-color); }
+
+/* ---- intake (public) — larger, calmer, high-contrast for elderly users ----
+   Brand cyan #00ADFF is too light (~2.7:1) for text/fills, so functional
+   colour stays on the darkened --accent; the bright cyan is used only as a
+   highly visible focus ring. Help text is darkened well past WCAG AA. */
+.intake-intro {
+  background: var(--accent-tint);
+  border-radius: var(--pico-border-radius);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.75rem;
+  border-left: 5px solid var(--accent);
+}
+.intake-intro h1 { margin-bottom: 0.5rem; }
+.intake-intro p { font-size: 1.2rem; line-height: 1.5; margin-bottom: 0.5rem; color: var(--intake-fg); }
+.intake-intro p:last-child { margin-bottom: 0; }
+.intake-phone { color: var(--intake-help-fg); }
+
+.intake-form { font-size: 1.2rem; }
+.intake-form label { font-weight: 600; color: var(--intake-fg); }
+.intake-form input,
+.intake-form textarea { font-size: 1.2rem; }
+
+/* obvious focus indicator — the one place the bright brand cyan helps */
+.intake-form input:focus,
+.intake-form textarea:focus,
+.intake-form button:focus-visible {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 4px rgba(0, 173, 255, 0.55);
+  outline: none;
+}
+
+.intake-form .help {
+  display: block;
+  margin-top: 0.2rem;
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--intake-help-fg); /* ~7:1 contrast, not Pico's faint muted grey */
+}
+.intake-form .error {
+  display: block;
+  margin-top: 0.2rem;
+  font-weight: 700;
+  color: var(--pico-del-color);
+}
+
+/* documents: one clearly separate, optional step */
+.intake-docs {
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.75rem;
+  background: var(--intake-panel);
+}
+.intake-docs .docs-label {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--intake-fg);
+  margin-bottom: 0.25rem;
+}
+.intake-docs .help { margin-bottom: 0; }
+
+.icon-clip { vertical-align: -0.15em; margin-right: 0.3em; }
+
+/* whole area is one large click + drop target */
+.drop-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--pico-primary);
+  border-radius: 0.5rem;
+  background: var(--pico-card-background-color);
+  cursor: pointer;
+}
+.drop-area .drop-title { font-size: 1.2rem; font-weight: 700; color: var(--pico-primary); }
+.drop-area .drop-hint { font-size: 1rem; font-weight: 400; color: var(--pico-muted-color); }
+.drop-area:hover { border-style: solid; }
+.drop-area.drop-active { border-style: solid; background: var(--accent-tint); }
+
+.docs-count { font-weight: 600; color: var(--intake-fg); margin: 1rem 0 0.5rem; }
+.docs-count:empty { display: none; }
+
+.docs-list { list-style: none; padding: 0; margin: 0; }
+.docs-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.5rem;
+  background: var(--pico-card-background-color);
+  margin-bottom: 0.5rem;
+}
+.docs-list .docs-name { flex: 1; word-break: break-all; }
+.docs-list .docs-size { flex-shrink: 0; color: var(--pico-muted-color); white-space: nowrap; }
+.docs-list .docs-remove {
+  width: auto;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--pico-del-color);
+  color: var(--pico-del-color);
+}
+
+/* large, comfortable targets (>= ~52px) */
+.intake-form button { min-height: 3.25rem; }
+.intake-form > button[type="submit"] { width: 100%; font-size: 1.25rem; font-weight: 700; }
+
+/* Outlined icon button; .edit-btn adds the yellow fill. */
+.icon-action, .edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin-bottom: 0;
+  padding: 0.4rem 0.75rem;
+  line-height: 0;
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+.icon-action:hover { background: transparent; border-color: currentColor; opacity: 0.75; }
+.edit-btn {
+  background: #facc15;
+  border-color: #e6b800;
+  color: #000;
+}
+.edit-btn:hover:not(:disabled) {
+  background: #eab308;
+  border-color: #ca8a04;
+  color: #000;
+}
+/* Plain textareas everywhere except the raw index.md editor, so prose wraps and
+   the browser's own spellcheck, undo and find-in-page keep working. */
+.doc-editor {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  min-height: 40vh;
+  resize: vertical;
+}
+/* The raw editor is replaced by CodeMirror, which brings its own box. */
+#raw-editor.doc-editor { min-height: 0; }
+.CodeMirror {
+  border: var(--pico-border-width, 1px) solid var(--pico-form-element-border-color, #ccc);
+  border-radius: var(--pico-border-radius, 4px);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  height: auto;
+  min-height: 420px;
+  padding: 0.25rem 0;
+}
+.CodeMirror-scroll { min-height: 420px; }
+.editor-form .CodeMirror,
+.editor-form .CodeMirror-scroll { min-height: 40vh; }
+/* One field per row: the label on the left, the control on the right. A group
+   of fields sits inside its own box. */
+.field-facts {
+  display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem;
+  margin-bottom: 1rem; color: var(--pico-muted-color);
+}
+.field-facts .meta { margin-right: 0.25rem; }
+.field-grid { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
+.field-grid label {
+  display: grid; grid-template-columns: 14rem minmax(0, 36rem); gap: 0.25rem 1rem;
+  align-items: center; margin: 0;
+}
+.field-grid label > span:first-child { color: var(--pico-muted-color); overflow-wrap: break-word; }
+.field-grid label > span:first-child small { display: block; font-weight: normal; line-height: 1.3; }
+.termijn-row { display: grid; gap: 0.5rem; }
+.field-grid fieldset {
+  display: grid; gap: 0.75rem; margin: 0; padding: 0.75rem 1rem;
+  border: 1px solid var(--pico-muted-border-color); border-radius: var(--pico-border-radius);
+}
+.field-grid legend { font-weight: 600; padding: 0 0.5rem; }
+.field-grid input, .field-grid select, .field-grid textarea { margin-bottom: 0; }
+@media (max-width: 600px) {
+  .field-grid label, .case-meta-header .field { grid-template-columns: 1fr; }
+}
+.CodeMirror-focused {
+  border-color: var(--pico-primary, #0a6e96);
+  box-shadow: 0 0 0 3px var(--pico-primary-focus, rgba(10, 110, 150, .25));
+  outline: none;
+}
+/* inline log add form */
+.log-toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.log-header-text { flex: 1; }
+.log-title { margin: 0; }
+.log-subtitle { margin: 0.1rem 0 0; font-size: 0.8rem; color: var(--pico-muted-color); }
+.log-new-btn {
+  margin-left: auto;
+  width: auto;
+  padding: 0.25rem 0.75rem;
+  background: #facc15;
+  border-color: #facc15;
+  color: #000;
+}
+.log-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.log-aan, .log-onderwerp { grid-column: 1 / -1; }
+.log-add {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius);
+}
+.log-add > button { width: auto; }
+.log-add .log-form { margin-top: 1rem; }
+.log .ev .row-edit { float: right; margin-left: 0.5rem; }
+.log .ev .reply-link { float: right; margin-left: 0.5rem; }
+/* Documenten: one row per attachment of the zaak, whatever entry it came in. */
+.doc-list { list-style: none; padding: 0; margin: 0.5rem 0 1.5rem; }
+/* Two columns: the name may wrap, the meta stays together at the right. */
+.doc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0.75rem; row-gap: 0.25rem; align-items: baseline;
+    padding: 0.4rem 0; border-bottom: 1px solid var(--pico-muted-border-color); }
+.doc-meta { display: flex; flex-wrap: wrap; justify-content: flex-end;
+    align-items: baseline; gap: 0.25rem 0.75rem; }
+.doc-summary-slot { grid-column: 1 / -1; }
+.doc-link { color: inherit; text-decoration: none; }
+.doc-link:hover { text-decoration: underline; }
+.doc-warning { color: var(--pico-del-color, #c0392b); }
+.doc-summary { margin: 0.25rem 0 0; }
+.doc-summary > summary { font-size: 0.85rem; color: var(--pico-muted-color); }
+.doc-ai { margin: 0; }
+.doc-ai-btn { width: auto; padding: 0.25rem 0.5rem; line-height: 1; }
+.log .ev .doc-list { margin: 0.5rem 0 0; }
+
+.attach-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+.attach-list li { display: flex; align-items: center; gap: 0.5rem; margin: 0.25rem 0; }
+.attach-remove { width: auto; margin: 0; padding: 0 0.5rem; line-height: 1.4;
+    background: none; border: none; color: var(--pico-del-color, #c0392b);
+    font-size: 1.2rem; cursor: pointer; }
+.attach-name { color: inherit; text-decoration: none; }
+.attach-name:hover { text-decoration: underline; }
+.attach-removed .attach-name { text-decoration: line-through; opacity: 0.5; }
+.form-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+.form-actions button, .form-actions [role="button"] { width: auto; margin-bottom: 0; }
+.btn-cancel {
+  --pico-background-color: #dc2626;
+  --pico-border-color: #b91c1c;
+  --pico-color: #fff;
+  background-color: #dc2626;
+  border-color: #b91c1c;
+  color: #fff;
+}
+.btn-cancel:hover:not(:disabled) {
+  --pico-background-color: #b91c1c;
+  --pico-border-color: #991b1b;
+  background-color: #b91c1c;
+  border-color: #991b1b;
+}
+.btn-send {
+  --pico-background-color: #16a34a;
+  --pico-border-color: #15803d;
+  --pico-color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn-send:hover:not(:disabled) {
+  --pico-background-color: #15803d;
+  --pico-border-color: #166534;
+}
+.sent { color: #16a34a; }
+.error { color: var(--pico-del-color); }
+
+/* ---- wijzigingen (audit log, collapsed) ---- */
+.history { margin: 0; }
+.history > summary {
+  cursor: pointer; color: var(--pico-muted-color);
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: .06em;
+}
+.history-log, .audit-log {
+  margin: 0.75rem 0 0; padding: 0.75rem 1rem;
+  background: var(--pico-code-background-color);
+  border-radius: var(--pico-border-radius);
+  font-size: 0.8rem; line-height: 1.5;
+  white-space: pre-wrap; color: var(--pico-muted-color);
+}
+.log-tail { max-height: 16rem; overflow: auto; }
+.secret { white-space: nowrap; }
+.icon-btn { width: auto; margin: 0 0 0 .3rem; padding: .15rem .4rem; line-height: 0; vertical-align: middle; }
+.icon-btn.copied { color: var(--pico-ins-color); border-color: var(--pico-ins-color); }
+
+@media (max-width: 720px) {
+  .case-subtitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .case-subtitle .dot { display: none; }
+
+  .log-entry,
+  .log-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .log-entry { gap: 0.35rem; }
+  .log .ts { white-space: normal; }
+  .log .ts > span { display: inline; }
+
+  .doc-row { grid-template-columns: 1fr; }
+  .doc-meta { justify-content: flex-start; }
+
+  .log-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .log-new-btn { margin-left: 0; }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions button,
+  .form-actions [role="button"] {
+    width: 100%;
+  }
+}
+
+/* ---- toegang ---- */
+.toegang-summary { display: block; font-weight: bold; }
+.checkbox-row { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem; }
+.checkbox-row input[type="checkbox"] {
+    appearance: auto;
+    width: 1.1em;
+    height: 1.1em;
+    margin: 0;
+    flex: 0 0 auto;
+}
+.checkbox-row small { display: block; }
+
+/* ---- locatie / kaart ---- */
+.locatie-row { display: flex; gap: 0.5rem; align-items: center; }
+.locatie-row input { margin-bottom: 0; }
+.locatie-row .edit-btn, .locatie-row .icon-action {
+    padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+    flex-shrink: 0;
+}
+.btn-map { width: auto; white-space: nowrap; margin-bottom: 0; padding: 0 0.75rem; }
+#map-dialog { max-width: 90vw; }
+.map-dialog-card { width: 100%; max-width: 1200px; padding: 1rem; margin: 0; }
+.map-dialog-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; padding: 0; }
+.map-dialog-actions button { width: auto; margin-bottom: 0; }
+.map-mini { height: 220px; width: 100%; border-radius: var(--pico-border-radius); position: relative; }
+#map-dialog .map-mini { height: 60vh; }
+.map-hint {
+    position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.55); color: #fff;
+    padding: 0.4rem 0.85rem; border-radius: 4px;
+    font-size: 0.875rem; pointer-events: none; z-index: 1000; white-space: nowrap;
+}
+/* Leaflet markers must not inherit pico's element styling */
+.leaflet-marker-icon, .leaflet-marker-shadow {
+  background: none; border: none; box-shadow: none;
+}
+/* Zoom control: pico overrides Leaflet's default white button styles */
+.leaflet-touch .leaflet-bar a, .leaflet-bar a {
+  padding: 0; line-height: 30px; font-size: 18px;
+  background-color: #fff; color: #333;
+  box-shadow: none; border-radius: 0;
+}
+.leaflet-touch .leaflet-bar a:hover, .leaflet-bar a:hover,
+.leaflet-touch .leaflet-bar a:focus, .leaflet-bar a:focus {
+  background-color: #f4f4f4; color: #333;
+  box-shadow: none;
+}
+
+/* ---- danger zone: the foot of an edit page, and nowhere else ---- */
+.danger-zone {
+  border: 1px solid var(--pico-del-color);
+  border-radius: var(--pico-border-radius);
+  overflow: hidden;
+  margin-top: 2.5rem;
+}
+.danger-zone > h2 {
+  background: var(--st-hold-bg);
+  color: var(--pico-del-color);
+  font-size: 0.95rem; font-weight: 600;
+  margin: 0; padding: 0.6rem 1rem;
+}
+.danger-row {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  padding: 1rem;
+  background: var(--pico-card-background-color);
+}
+.danger-row + .danger-row { border-top: 1px solid var(--pico-muted-border-color); }
+/* The text takes the room that is left; the button stays on the right until the
+   row is too narrow to hold both. */
+.danger-row > div:first-child { flex: 1 1 20rem; }
+.danger-row strong { display: block; }
+.danger-row small { color: var(--pico-muted-color); }
+.danger-row form { margin: 0; }
+.btn-danger, a.btn-danger {
+  background: transparent;
+  color: var(--pico-del-color);
+  border-color: var(--pico-del-color);
+  width: auto; margin: 0; white-space: nowrap;
+}
+.btn-danger:hover, a.btn-danger:hover {
+  background: var(--pico-del-color);
+  border-color: var(--pico-del-color);
+  color: var(--pico-card-background-color);
+}
+
+/* Wetten: a law list, a table of contents, and a hit with its snippet. Each row
+   is one link, the same shape the zaak list uses, so a whole line is the target. */
+.wet-rij, .wet-artikel, .wet-hit {
+  display: block; text-decoration: none; color: inherit;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  transition: background 0.1s;
+}
+.wet-rij:hover, .wet-artikel:hover, .wet-hit:hover { background: var(--accent-tint); }
+
+.wet-rij span { color: var(--pico-muted-color); font-size: 0.82rem; margin-right: 1rem; }
+.wet-rij strong { display: block; }
+
+.wet-groep { margin-bottom: 1.25rem; }
+.wet-groep h3 { font-size: 1rem; margin: 1rem 0 0.25rem; }
+.wet-groep h3 a { text-decoration: none; }
+
+/* The snippet is three parts: what came before the match, the match, what came
+   after. The page marks the middle one; nothing here builds HTML from law text. */
+.wet-snippet {
+  display: block; margin-top: 0.2rem;
+  color: var(--pico-muted-color); font-size: 0.85rem;
+}
+.wet-snippet mark { background: var(--accent-tint); color: inherit; padding: 0 0.1em; }
+
+.wet-bron { color: var(--pico-muted-color); font-size: 0.85rem; margin-bottom: 1rem; }
+
+/* Verbatim wording: a line break in the register is a line break on the page. */
+.wet-tekst {
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  font-family: inherit; font-size: inherit; line-height: 1.6;
+  background: none; padding: 0; margin: 0;
+}
+
+/* The demonstration banner. It sits above the nav, on every page, because what
+   it warns about is true on every page. */
+.demo-banner {
+    display: block;
+    margin: 0;
+    padding: 0.6rem 1rem;
+    background: var(--pico-mark-background-color, #fff3cd);
+    color: var(--pico-color, inherit);
+    border-bottom: 1px solid var(--pico-muted-border-color, #ddd);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* The window the `.eml` link opens: the message as it stands, so it wraps but
+   keeps its own line breaks, and it scrolls rather than pushing the button away. */
+#eml-dialog article { max-width: 55rem; }
+.eml-source {
+    max-height: 60vh;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+}
+#eml-dialog footer { text-align: right; }
+#eml-download { width: auto; }
+
+/* An address the zaak does not know: the one to check before sending. */
+.send-dialog .addr-unknown { color: var(--pico-del-color); cursor: help; }
+.send-dialog footer { display: flex; justify-content: flex-end; gap: 0.5rem; }
+.send-dialog footer button { width: auto; margin-bottom: 0; }

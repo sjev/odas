@@ -1,0 +1,59 @@
+{# A place, held as free text or as `lat,lon`. Only a value the field can parse
+   into coordinates gets a map link, so an unpinned street name still reads. The
+   input id is derived from the key, so a type may declare more than one. #}
+{% import "_icons.html" as ic %}
+
+{% macro input(key, f, values, ctx) %}
+{%- set value = values.get(key, '') %}
+<div class="locatie-row">
+    <input type="text" id="{{ key }}-input" name="{{ key }}" value="{{ value }}" placeholder="tekst of lat,lon">
+    <button type="button" class="edit-btn map-pick" data-target="{{ key }}-input"
+        title="Kies op kaart" aria-label="Kies op kaart">{{ ic.icon("crosshair") }}</button>
+</div>
+{%- endmacro %}
+
+{% macro detail(key, f, values) %}
+{%- set value = values.get(key, '') %}
+{%- if value %}
+<span class="locatie-row">
+    <span>{{ value }}</span>
+    {%- set point = f.point(value) %}
+    {% if point %}{{ map_link(point) }}{% endif %}
+</span>
+{%- endif %}
+{%- endmacro %}
+
+{# The anchor that opens the shared dialog on this value's points. #}
+{% macro map_link(latlon, label="Toon op kaart", text="") %}
+<a class="icon-action map-link" role="button" href="#" data-latlon="{{ latlon }}" title="{{ label }}">
+    {%- if text %}{{ text }} {% endif %}{{ ic.icon("crosshair") }}</a>
+{%- endmacro %}
+
+{# Leaflet and the one dialog both modes share, emitted once per page. #}
+{% macro assets(mode) %}
+<link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css?v={{ version }}">
+<script src="/static/vendor/leaflet/leaflet.js?v={{ version }}"></script>
+<dialog id="map-dialog">
+    <article class="map-dialog-card">
+        <div id="map" class="map-mini">
+            {% if mode == 'edit' %}<div id="map-hint" class="map-hint">Klik op kaart om locatie te kiezen<br>sleep de marker naar de precieze locatie</div>{% endif %}
+        </div>
+        <footer class="map-dialog-actions">
+            {% if mode == 'edit' %}
+            <button type="button" id="map-cancel" class="btn-cancel">Annuleren</button>
+            <button type="button" id="map-confirm">Opslaan</button>
+            {% else %}
+            <button type="button" id="map-close">Afsluten</button>
+            {% endif %}
+        </footer>
+    </article>
+</dialog>
+{% if mode == 'edit' %}
+<script src="/static/map_picker.js?v={{ version }}"></script>
+<script>initMapPicker();</script>
+{% else %}
+<script src="/static/map_view.js?v={{ version }}"></script>
+<script>initMapView();</script>
+{% endif %}
+{% endmacro %}
+

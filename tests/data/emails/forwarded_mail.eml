@@ -1,0 +1,472 @@
+Received: from pmg03.mx.example.net (localhost.localdomain [127.0.0.1])
+	by pmg03.mx.example.net (ZXCS) with ESMTP id 9CD1B1EE104
+	for <zk-49161@zaken.mooistroomdal.example.nl>; Mon, 10 Aug 2026 11:10:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=visser.example.nl; s=x; h=References:In-Reply-To:To:Subject:Message-ID:From:
+	Content-Type:Date:MIME-Version:Sender:Reply-To:Cc:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Xqcar8LlDR+ijcvSua4ZpDdl632oT1OIJFPoTmgK5t4=; b=q3uNCMhJb1wO1dI5XQEAQMnrjl
+	WsAs5JKNKq+K6ERILB11A2PAlVl8nUBAWQ9M+H3JTXOGVrEyCkFcHazH3QcgCFWCjQt1g7JmotUQl
+	Co/Ha4Ab/uf6qYVU4krpSbcJ5pvKyyuqQOlTVMIRlas2IySryiTGWLbRrR64FJwF9nbyV+01CXP3O
+	bwn2H+hjcZIzbQkXcH0E61a4H6zvDRlcVfSrV97KSsK7T+BHyVV1h/OBBJd1XJCo4QF6s1+pp6+m7
+	zkUm71s3IOaKeOY6+wkHahsexNbkqnwPhBq7cZoWJiE1fEKTRR2sgt2peJTJA0ZseLcTApgWPClZO
+	Wwrgmcvg==;
+MIME-Version: 1.0
+Date: Mon, 10 Aug 2026 09:10:31 +0000
+Content-Type: multipart/mixed;
+ boundary="e175471a-a43d-40d8-8824-be91b3c2f1ea-1"
+From: "Jan Visser" <jan@visser.example.nl>
+Message-ID: <ba9cb04a06ae080cd8f95b33ba5b0ad2121f7b1f@visser.example.nl>
+TLS-Required: No
+Subject: Fwd: Re: Zaak 100200, reactie op de verdaging, verzoek om
+ onderbouwing en tijdpad - Woo-verzoek schutterij - besluitvorming
+To: zk-49161@zaken.mooistroomdal.example.nl
+In-Reply-To: <GV2P195MB19409F3F164D9E542DD799D489D12@GV2P195MB1940.EURP195.PROD.OUTLOOK.COM>
+References: <GV2P195MB1940EDE84BE7D6F8485380D189D42@GV2P195MB1940.EURP195.PROD.OUTLOOK.COM>
+ <aa414ee3fb2eef0946ce6ea68774b8853c4f0ee9@visser.example.nl>
+ <GV2P195MB19409F3F164D9E542DD799D489D12@GV2P195MB1940.EURP195.PROD.OUTLOOK.COM>
+X-Authenticated-Id: jan@visser.example.nl
+
+--e175471a-a43d-40d8-8824-be91b3c2f1ea-1
+Content-Type: multipart/alternative;
+ boundary="0ac23698-3745-46b4-adf5-7f17b624536f-2"
+
+--0ac23698-3745-46b4-adf5-7f17b624536f-2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+-------- Forwarded message -------
+
+From: "woo" <woo@gemeente.example.nl mailto:woo@gemeente.example.nl?to=3D%22woo%22%20%3Cwoo%40gemeente.example.nl%3E >
+To: "Jan Visser" <jan@visser.example.nl mailto:jan@visser.example.nl?to=3D%22Jan%20Visser%22%20%3Cjan%40visser.example.nl%3E >
+Cc: "woo" <woo@gemeente.example.nl mailto:woo@gemeente.example.nl?to=3D%22woo%22%20%3Cwoo%40gemeente.example.nl%3E >
+Sent: August 7, 2026 at 10:49 AM
+Subject: RE: Zaak 100200, reactie op de verdaging, verzoek om onderbouwin=
+g en tijdpad - Woo-verzoek schutterij - besluitvorming
+
+
+
+Geachte heer Visser,
+
+
+
+Bij afwezigheid van de Woo-functionaris reageer ik op uw onderstaande e-m=
+ail.
+
+
+
+Het is juist dat de wet specifieke beslistermijnen noemt.
+
+
+
+Helaas is de praktijk, ook de landelijke, weerbarstiger, zoals u zelf wel=
+licht al vaker via de diverse media heeft kunnen vernemen. Daarbij spelen=
+ meerdere factoren een rol, waaronder de immer groeiende hoeveelheid Woo-=
+verzoeken en ook de omvang ervan. De behandeling van Woo-verzoeken is bew=
+erkelijk en vergt gewoon veel capaciteit. De vakantieperiode kan daarin e=
+veneens een rol spelen; dat is simpelweg een feit en overigens ook niet o=
+nbegrijpelijk. We doen ons best om de wettelijke beslistermijnen zoveel m=
+ogelijk in acht te nemen en anders in overleg met de verzoeker tot een ac=
+ceptabele afhandeling te komen.
+
+
+
+Ten aanzien van de specifieke mogelijkheden om in mandaat te beslissen op=
+ Woo-verzoeken mag ik u wel naar de lokale mandaatregeling op overheid.nl=
+ verwijzen. Er bestaat overigens ook geen verplichting om van een verleen=
+d mandaat gebruik te maken. Uiteindelijk is die beslissing aan het bestuu=
+rsorgaan.
+
+
+
+Het is prettig om te constateren dat er overeenstemming bestaat over het =
+feit dat het onderhavige verzoek (100200) omvangrijk is en dat u bereid b=
+ent om in overleg te treden over de termijn en vorm van de afhandeling. H=
+et werken met deelbesluiten zou daarbij zeker behulpzaam kunnen zijn. Het=
+ aanbod om eerder openbaar gemaakte informatie te verstrekken is u al ged=
+aan. Het betreffende besluit is u, conform uw verzoek, zojuist toegestuur=
+d. Voor zover ik het kan beoordelen, raakt deze informatie met name aan o=
+nderdeel D van uw verzoek. Ik wacht uw berichtgeving daarover verder af.
+
+
+
+De casemanager van deze zaak (100200) is nu niet aanwezig en keert volgen=
+de week terug van vakantie. Ik zal uw aanbod om in de week van 17 augustu=
+s in overleg te treden met een positief advies aan hem voorleggen.=20
+
+
+
+Voor=20de goede orde meld ik u ook nog dat de verdaging op een beslisterm=
+ijn in het kader van de Woo geen besluit in de zin van de Awb is, maar en=
+kel een schriftelijke mededeling. De verdaging in deze zaak, in elk geval=
+ t/m 7 september 2026, is daarmee een feit en gezien de omvang van het ve=
+rzoek ook passend. Mocht de noodzaak bestaan om extern zienswijze op te v=
+ragen, schort zulks de beslistermijn nog verder op (art. 4.4 lid 3 Woo). =
+Uw verwijzing naar artikel 8.3 van de Woo volg ik tot slot niet.
+
+
+
+U ontvangt zo spoedig mogelijk nader bericht over het vervolg van uw verz=
+oek.
+
+
+
+Met vriendelijke groet,
+
+
+
+**Koen Hermans**
+
+
+
+Juridisch Adviseur
+
+
+
+Team Juridische zaken
+
+
+
+Gemeente Voorbeeld
+
+
+
++31 77 0000000
+
+
+
+Dorpsstraat 1,=C2=A01234 AB Voorbeeld
+
+
+
+-----Oorspronkelijk bericht-----
+Van: Jan Visser <jan@visser.example.nl>=20
+Verzonden:=20woensdag 5 augustus 2026 12:02
+Aan: woo <woo@gemeente.example.nl>
+Onderwerp: Zaak 100200, reactie op de verdaging, verzoek om onderbouwing =
+en tijdpad
+
+
+
+[U ontvang niet vaak e-mail van jan@visser.example.nl mailto:jan@visser.example.nl =
+. Meer informatie over waarom dit belangrijk is, vindt u ophttps://aka.ms=
+/LearnAboutSenderIdentification]
+
+
+
+Geachte Woo-functionaris,
+
+
+
+Dit bericht ziet uitsluitend op zaak 100200. In uw bericht van 4 augustus=
+ 2026 verdaagt u de beslissing op mijn verzoek van 25 juli 2026, dat ik d=
+ie dag via het webformulier van de gemeente Voorbeeld heb ingediend en waarva=
+n ik een ontvangstbevestiging heb. Als reden noemt u de vakantie van de z=
+aakbehandelaars en het zomerreces van het college. Een datum waarop u wel=
+ beslist, noemt u niet. Die motivering voldoet niet aan artikel 4.4, twee=
+de lid, Woo.
+
+
+
+Hieronder mijn reactie.
+
+
+
+1. Op grond van artikel 4.4, eerste lid, Woo beslist u zo spoedig mogelij=
+k, doch uiterlijk binnen vier weken gerekend vanaf de dag na ontvangst. V=
+erdaging is mogelijk met ten hoogste twee weken en uitsluitend indien de =
+omvang of de gecompliceerdheid van de informatie een verlenging rechtvaar=
+digt, onder schriftelijke motivering voor afloop van de eerste termijn (a=
+rtikel 4.4, tweede lid, Woo).
+
+
+
+2. Vakantie en reces zien niet op de informatie, maar op de interne organ=
+isatie en de personele bezetting. Die komen voor rekening en risico van h=
+et bestuursorgaan. Daar komt bij dat een besluit op een Woo-verzoek in ma=
+ndaat kan worden genomen (artikel 10:3 Awb), zodat het reces aan tijdige =
+besluitvorming niet in de weg staat.
+
+
+
+3. Anders dan in zaak 700432 erken ik dat dit verzoek omvangrijk is. Een =
+verdaging van twee weken wegens de omvang van de te beoordelen documentat=
+ie acht ik in beginsel te rechtvaardigen, mits die grond ook daadwerkelij=
+k wordt aangevoerd en onderbouwd. Ik verzoek u de motivering daarom aan t=
+e vullen met de stand van de zoekslag en de omvang van de tot nu toe aang=
+etroffen documentatie, met de systemen en archieven die zijn doorzocht, e=
+n met de datum waarop u beslist. Uitgaande van ontvangst op 25 juli 2026 =
+verstrijkt de termijn van artikel 4.4, eerste lid, Woo op zaterdag 22 aug=
+ustus 2026, en dus op grond van de Algemene termijnenwet op maandag 24 au=
+gustus 2026. Met de verdaging verstrijkt de termijn op zaterdag 5 septemb=
+er 2026 en dus uiterlijk op maandag 7 september 2026.
+
+
+
+4. Ik herhaal mijn aanbod uit het verzoek: met gefaseerde afdoening ga ik=
+ akkoord, mits schriftelijk bevestigd met een tijdpad en mits de onderdel=
+en A, B en D als eerste worden afgedaan. Een verzoek om precisering van e=
+en onderdeel dient de behandeling van de overige onderdelen niet op te ho=
+uden. Vraagt u over bepaalde documenten de zienswijze van een derde, houd=
+ de overige documenten dan niet aan; dat vragen van zienswijzen schort de=
+ beslistermijn overigens niet op.
+
+
+
+5. Ik ben bereid in overleg te treden over een nadere beslistermijn en ov=
+er opschorting op grond van artikel 4:15, tweede lid, onder a, Awb; ik ve=
+rwijs in dit verband ook naar artikel 8.3 Woo. Mijn instemming daarmee ge=
+ef ik schriftelijk, onder de voorwaarden dat een concreet tijdpad wordt v=
+astgelegd met per fase een datum, dat een einddatum voor het laatste deel=
+besluit wordt genoemd en dat per fase de reeds beoordeelde documenten wor=
+den verstrekt. Ik stel voor daarover in de week van 17 augustus 2026 tele=
+fonisch of digitaal te overleggen en ben daarvoor beschikbaar. Zolang een=
+ dergelijke afspraak niet schriftelijk is bevestigd, gelden de wettelijke=
+ termijnen onverkort en geef ik geen instemming met opschorting.
+
+
+
+6. Voor de goede orde: een tweede verdaging is wettelijk niet mogelijk, e=
+n uw mededeling dat u vanaf medio augustus bericht over het vervolg is ge=
+en besluit en verlengt geen termijn.
+
+
+
+7. Wordt niet tijdig beslist en komt geen schriftelijke termijnafspraak t=
+ot stand, dan stel ik u schriftelijk in gebreke en stel ik daarna beroep =
+in wegens niet tijdig beslissen (artikel 6:12, tweede lid, en artikel 7:1=
+, eerste lid, onder f, Awb), met het verzoek aan de rechtbank om een besl=
+istermijn onder oplegging van een dwangsom (artikel 8:55d Awb) en om verg=
+oeding van het griffierecht en de proceskosten.
+
+
+
+Dit bericht is uitsluitend procedureel en is geen zienswijze, bezwaar of =
+ander processtuk.
+
+
+
+Graag hoor ik van u.
+
+
+
+Met vriendelijke groet,
+
+
+
+J. Visser
+--0ac23698-3745-46b4-adf5-7f17b624536f-2
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html><html><head><meta http-equiv=3D"Content-Type" content=3D"t=
+ext/html; charset=3Dutf-8"></head><body><div><br><br></div><p>-------- Fo=
+rwarded message -------</p><div>From: "woo" &lt;<a href=3D"mailto:woo@gemeente.example.nl?to=3D%22woo%22%20%3Cwoo%40gemeente.example.nl%3E" target=3D"_blank" tabindex=
+=3D"-1">woo@gemeente.example.nl</a>&gt;<br>To: "Jan Visser" &lt;<a href=3D"mailto=
+:jan@visser.example.nl?to=3D%22Jan%20Visser%22%20%3Cjan%40visser.example.nl%3E" =
+target=3D"_blank" tabindex=3D"-1">jan@visser.example.nl</a>&gt;<br>Cc: "woo" &=
+lt;<a href=3D"mailto:woo@gemeente.example.nl?to=3D%22woo%22%20%3Cwoo%40gemeente.example.nl%3E" =
+target=3D"_blank" tabindex=3D"-1">woo@gemeente.example.nl</a>&gt;<br>Sent: August 7,=
+ 2026 at 10:49 AM<br>Subject: RE: Zaak 100200, reactie op de verdaging, v=
+erzoek om onderbouwing en  tijdpad - Woo-verzoek schutterij - besluitvorm=
+ing<br><br><div>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Geachte heer Visser,</span></span=
+></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Bij afwezigheid van de Woo-functiona=
+ris reageer ik op uw onderstaande e-mail.</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Het is juist dat de wet specifieke b=
+eslistermijnen noemt.</span></span></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Helaas is de praktijk, ook de landel=
+ijke, weerbarstiger, zoals u zelf wellicht al vaker via de diverse media =
+heeft kunnen vernemen. Daarbij spelen meerdere factoren een rol,
+ waaronder de immer groeiende hoeveelheid Woo-verzoeken en ook de omvang =
+ervan. De behandeling van Woo-verzoeken is bewerkelijk en vergt gewoon ve=
+el capaciteit. De vakantieperiode kan daarin eveneens een rol spelen; dat=
+ is simpelweg een feit en overigens ook
+ niet onbegrijpelijk. We doen ons best om de wettelijke beslistermijnen z=
+oveel mogelijk in acht te nemen en anders in overleg met de verzoeker tot=
+ een acceptabele afhandeling te komen.</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Ten aanzien van de specifieke mogeli=
+jkheden om in mandaat te beslissen op Woo-verzoeken mag ik u wel naar de =
+lokale mandaatregeling op overheid.nl verwijzen. Er bestaat overigens
+ ook geen verplichting om van een verleend mandaat gebruik te maken. Uite=
+indelijk is die beslissing aan het bestuursorgaan.</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Het is prettig om te constateren dat=
+ er overeenstemming bestaat over het feit dat het onderhavige verzoek (100200) omvangrijk is en dat u bereid bent om in overleg te treden
+ over de termijn en vorm van de afhandeling. Het werken met deelbesluiten=
+ zou daarbij zeker behulpzaam kunnen zijn. Het aanbod om eerder openbaar =
+gemaakte informatie te verstrekken is u al gedaan. Het betreffende beslui=
+t is u, conform uw verzoek, zojuist toegestuurd.
+ Voor zover ik het kan beoordelen, raakt deze informatie met name aan ond=
+erdeel D van uw verzoek. Ik wacht uw berichtgeving daarover verder af.</s=
+pan></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">De casemanager van deze zaak (100200=
+) is nu niet aanwezig en keert volgende week terug van vakantie. Ik zal u=
+w aanbod om in de week van 17 augustus in overleg te treden met
+ een positief advies aan hem voorleggen. </span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Voor de goede orde meld ik u ook nog=
+ dat de verdaging op een beslistermijn in het kader van de Woo geen beslu=
+it in de zin van de Awb is, maar enkel een schriftelijke mededeling.
+ De verdaging in deze zaak, in elk geval t/m 7 september 2026, is daarmee=
+ een feit en gezien de omvang van het verzoek ook passend. Mocht de noodz=
+aak bestaan om extern zienswijze op te vragen, schort zulks de beslisterm=
+ijn nog verder op (art. 4.4 lid 3 Woo).
+ Uw verwijzing naar artikel 8.3 van de Woo volg ik tot slot niet.</span><=
+/span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">U ontvangt zo spoedig mogelijk nader=
+ bericht over het vervolg van uw verzoek.</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Met vriendelijke groet,
+</span></span></p>
+<p><br></p>
+<p><b><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span =
+class=3D"size" style=3D"font-size:10pt">Koen Hermans</span></span></b><=
+/p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Juridisch Adviseur</span></span></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Team Juridische zaken</span></span><=
+/p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Gemeente Voorbeeld</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">+31 77 0000000</span></span></p>
+<p><br></p>
+<p><span class=3D"font" style=3D"font-family:Arial, sans-serif"><span cla=
+ss=3D"size" style=3D"font-size:10pt">Dorpsstraat 1,=C2=A01234 AB Voorbeeld</s=
+pan></span></p>
+<p><br></p>
+<p><img style=3D"width: 0.4916in; max-height: 0.6in;" alt=3D"logo.png" src=3D"cid:image001.png" title=3D" (image001.png)"></p>
+<p><br></p>
+<p><br></p>
+<p><span style>-----Oorspronkelijk bericht-----<br>
+Van: Jan Visser &lt;jan@visser.example.nl&gt; <br>
+Verzonden: woensdag 5 augustus 2026 12:02<br>
+Aan: woo &lt;woo@gemeente.example.nl&gt;<br>
+Onderwerp: Zaak 100200, reactie op de verdaging, verzoek om onderbouwing =
+en tijdpad</span></p>
+<p><br></p>
+<p>[U ontvang niet vaak e-mail van <a href=3D"mailto:jan@visser.example.nl" st=
+yle=3D"color: rgb(70, 120, 134);" target=3D"_blank" tabindex=3D"-1">
+<span style=3D"color: windowtext; text-decoration: none;">jan@visser.example.nl</span></a>. Meer informatie over waarom dit belangrijk is, vindt u op
+<a href=3D"https://aka.ms/LearnAboutSenderIdentification" style=3D"color:=
+ rgb(70, 120, 134);" target=3D"_blank" tabindex=3D"-1"><span style=3D"col=
+or: windowtext; text-decoration: none;">https://aka.ms/LearnAboutSenderId=
+entification</span></a>]</p>
+<p><br></p>
+<p>Geachte Woo-functionaris,</p>
+<p><br></p>
+<p>Dit bericht ziet uitsluitend op zaak 100200. In uw bericht van 4 augus=
+tus 2026 verdaagt u de beslissing op mijn verzoek van 25 juli 2026, dat i=
+k die dag via het webformulier van de gemeente Voorbeeld heb ingediend en waa=
+rvan ik een ontvangstbevestiging
+ heb. Als reden noemt u de vakantie van de zaakbehandelaars en het zomerr=
+eces van het college. Een datum waarop u wel beslist, noemt u niet. Die m=
+otivering voldoet niet aan artikel 4.4, tweede lid, Woo.</p>
+<p><br></p>
+<p>Hieronder mijn reactie.</p>
+<p><br></p>
+<p>1. Op grond van artikel 4.4, eerste lid, Woo beslist u zo spoedig moge=
+lijk, doch uiterlijk binnen vier weken gerekend vanaf de dag na ontvangst=
+. Verdaging is mogelijk met ten hoogste twee weken en uitsluitend indien =
+de omvang of de gecompliceerdheid
+ van de informatie een verlenging rechtvaardigt, onder schriftelijke moti=
+vering voor afloop van de eerste termijn (artikel 4.4, tweede lid, Woo).<=
+/p>
+<p><br></p>
+<p>2. Vakantie en reces zien niet op de informatie, maar op de interne or=
+ganisatie en de personele bezetting. Die komen voor rekening en risico va=
+n het bestuursorgaan. Daar komt bij dat een besluit op een Woo-verzoek in=
+ mandaat kan worden
+ genomen (artikel 10:3 Awb), zodat het reces aan tijdige besluitvorming n=
+iet in de weg staat.</p>
+<p><br></p>
+<p>3. Anders dan in zaak 700432 erken ik dat dit verzoek omvangrijk is. E=
+en verdaging van twee weken wegens de omvang van de te beoordelen documen=
+tatie acht ik in beginsel te rechtvaardigen, mits die grond ook daadwerke=
+lijk wordt aangevoerd
+ en onderbouwd. Ik verzoek u de motivering daarom aan te vullen met de st=
+and van de zoekslag en de omvang van de tot nu toe aangetroffen documenta=
+tie, met de systemen en archieven die zijn doorzocht, en met de datum waa=
+rop u beslist. Uitgaande van ontvangst
+ op 25 juli 2026 verstrijkt de termijn van artikel 4.4, eerste lid, Woo o=
+p zaterdag 22 augustus 2026, en dus op grond van de Algemene termijnenwet=
+ op maandag 24 augustus 2026. Met de verdaging verstrijkt de termijn op z=
+aterdag 5 september 2026 en dus uiterlijk
+ op maandag 7 september 2026.</p>
+<p><br></p>
+<p>4. Ik herhaal mijn aanbod uit het verzoek: met gefaseerde afdoening ga=
+ ik akkoord, mits schriftelijk bevestigd met een tijdpad en mits de onder=
+delen A, B en D als eerste worden afgedaan. Een verzoek om precisering va=
+n een onderdeel dient
+ de behandeling van de overige onderdelen niet op te houden. Vraagt u ove=
+r bepaalde documenten de zienswijze van een derde, houd de overige docume=
+nten dan niet aan; dat vragen van zienswijzen schort de beslistermijn ove=
+rigens niet op.</p>
+<p><br></p>
+<p>5. Ik ben bereid in overleg te treden over een nadere beslistermijn en=
+ over opschorting op grond van artikel 4:15, tweede lid, onder a, Awb; ik=
+ verwijs in dit verband ook naar artikel 8.3 Woo. Mijn instemming daarmee=
+ geef ik schriftelijk,
+ onder de voorwaarden dat een concreet tijdpad wordt vastgelegd met per f=
+ase een datum, dat een einddatum voor het laatste deelbesluit wordt genoe=
+md en dat per fase de reeds beoordeelde documenten worden verstrekt. Ik s=
+tel voor daarover in de week van 17 augustus
+ 2026 telefonisch of digitaal te overleggen en ben daarvoor beschikbaar. =
+Zolang een dergelijke afspraak niet schriftelijk is bevestigd, gelden de =
+wettelijke termijnen onverkort en geef ik geen instemming met opschorting=
+.</p>
+<p><br></p>
+<p>6. Voor de goede orde: een tweede verdaging is wettelijk niet mogelijk=
+, en uw mededeling dat u vanaf medio augustus bericht over het vervolg is=
+ geen besluit en verlengt geen termijn.</p>
+<p><br></p>
+<p>7. Wordt niet tijdig beslist en komt geen schriftelijke termijnafspraa=
+k tot stand, dan stel ik u schriftelijk in gebreke en stel ik daarna bero=
+ep in wegens niet tijdig beslissen (artikel 6:12, tweede lid, en artikel =
+7:1, eerste lid,
+ onder f, Awb), met het verzoek aan de rechtbank om een beslistermijn ond=
+er oplegging van een dwangsom (artikel 8:55d Awb) en om vergoeding van he=
+t griffierecht en de proceskosten.</p>
+<p><br></p>
+<p>Dit bericht is uitsluitend procedureel en is geen zienswijze, bezwaar =
+of ander processtuk.</p>
+<p><br></p>
+<p>Graag hoor ik van u.</p>
+<p><br></p>
+<p>Met vriendelijke groet,</p>
+<p><br></p>
+<p>J. Visser</p>
+<p><br></p>
+</div></div></body></html>
+--0ac23698-3745-46b4-adf5-7f17b624536f-2--
+
+--e175471a-a43d-40d8-8824-be91b3c2f1ea-1
+Content-Type: image/png; name="image001.png"
+Content-Disposition: inline; filename="image001.png"
+Content-ID: <image001.png@01DD2659.D4DB9C90>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAXpeqz8AAAAASUVORK5CYII=
+--e175471a-a43d-40d8-8824-be91b3c2f1ea-1--
+

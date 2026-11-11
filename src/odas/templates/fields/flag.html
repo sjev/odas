@@ -1,0 +1,14 @@
+{% import "_icons.html" as ic %}
+
+{% macro input(key, f, values, ctx) %}{% endmacro %}
+
+{# One click sets or clears it; there is no form to open first. #}
+{% macro detail(key, f, values) %}
+<form method="post" action="/zaken/{{ values.get('id') }}/flag" class="flag-form">
+    <label class="flag-box{% if values.get(key) == 'ja' %} on{% endif %}" aria-label="{{ f.label }}">
+        <input type="checkbox" name="flag" value="ja"{% if values.get(key) == "ja" %} checked{% endif %}
+            onchange="this.form.submit()">
+        {{ ic.icon("flag", 14) }}
+    </label>
+</form>
+{%- endmacro %}

@@ -1,0 +1,9 @@
+{% import "_icons.html" as ic %}
+{# The access grant. The dialog itself lives in the editor page, which knows the
+   user directory; this widget is the button that opens it. #}
+{% macro input(key, f, values, ctx) %}
+<span>
+    <button type="button" id="toegang-open" class="edit-btn" title="{{ f.label }} wijzigen" aria-label="{{ f.label }} wijzigen">{{ ic.icon("pencil") }}</button>
+</span>
+<span id="toegang-summary" class="toegang-summary"></span>
+{%- endmacro %}

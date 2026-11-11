@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Wetten{% endblock %}
+{% block content %}
+<article>
+    <header class="article-header">
+        <strong>Wetten</strong>
+    </header>
+
+    {# One choice and one box, in one form. The address states the query, so the
+       page a person sends to a colleague is the page that colleague opens. The
+       box takes a few words from any article, or `wet:` / `artikel:`. Quotes
+       hold a phrase together. #}
+    <form class="zoek" method="get" action="/wetten">
+        {% if laws %}
+        <div class="zoek-keuze">
+            <select name="wet" aria-label="Wet" onchange="this.form.submit()">
+                <option value="">Alle wetten ({{ laws | length }})</option>
+                {% for row in laws %}
+                <option value="{{ row.slug }}" {% if wet == row.slug %}selected{% endif %}>
+                    {{ row.short_title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="zoek-form">
+            <input type="search" name="q" value="{{ q }}" aria-label="Zoek in wetteksten"
+                placeholder="een paar woorden uit een artikel, of artikel:3.3">
+            <button type="submit">Zoek</button>
+            {% if q or wet %}
+            <a href="/wetten" role="button" class="btn-cancel">Wissen</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </form>
+
+    {% if not laws %}
+    <p class="empty">Nog geen wetten opgehaald.</p>
+
+    {% elif q %}
+    {% for row, hits in groups %}
+    <section class="wet-groep">
+        <h3><a href="/wetten/{{ row.slug }}">{{ row.short_title }}</a></h3>
+        {% for hit in hits %}
+        <a class="wet-hit" href="/wetten/{{ row.slug }}/{{ hit.name }}">
+            <strong>Artikel {{ hit.nr }}</strong>{% if hit.titel %} — {{ hit.titel }}{% endif %}
+            <span class="wet-snippet">{{ hit.before }}<mark>{{ hit.match }}</mark>{{ hit.after }}</span>
+        </a>
+        {% endfor %}
+    </section>
+    {% else %}
+    <p class="empty">Geen artikelen gevonden voor &ldquo;{{ q }}&rdquo;.</p>
+    {% endfor %}
+
+    {% else %}
+    {% for row in laws %}
+    <a class="wet-rij" href="/wetten/{{ row.slug }}">
+        <strong>{{ row.short_title }}</strong>
+        <span>{{ row.aantal }} artikelen</span>
+        <span>geldig vanaf {{ row.valid_from }}</span>
+        <span>opgehaald {{ row.fetched_at[:10] }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+</article>
+{% endblock %}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toestand bwb-id="BWBR0037885" inwerkingtreding="2026-07-01">
+  <wetgeving>
+    <citeertitel>Omgevingswet</citeertitel>
+    <wet-besluit>
+      <wettekst>
+        <artikel>
+          <kop>
+            <label>Artikel</label>
+            <nr>16.15a</nr>
+            <titel>(verplichte aanwijzing adviseurs)</titel>
+          </kop>
+          <al>Op grond van <intref>artikel 16.15, eerste lid</intref>, worden in ieder geval als adviseur aangewezen:</al>
+          <lijst level="single" nr-sluiting="." start="1" type="expliciet">
+            <li>
+              <li.nr>a.</li.nr>
+              <al>een bestuursorgaan dat zijn bevoegdheid heeft overgedragen,</al>
+            </li>
+            <li>
+              <li.nr>b.</li.nr>
+              <al>de gemeenteraad als het gaat om:</al>
+              <lijst level="single" nr-sluiting="." start="1" type="expliciet">
+                <li>
+                  <li.nr>1°.</li.nr>
+                  <al>een aanvraag om een omgevingsvergunning voor in door de gemeenteraad aangewezen gevallen van een buitenplanse omgevingsplanactiviteit,</al>
+                </li>
+                <li>
+                  <li.nr>2°.</li.nr>
+                  <al>een verzoek om een beslissing over instemming,</al>
+                </li>
+              </lijst>
+            </li>
+            <li>
+              <li.nr>c.</li.nr>
+              <al>gedeputeerde staten in door hen aangewezen gevallen.</al>
+            </li>
+          </lijst>
+        </artikel>
+        <artikel>
+          <kop>
+            <label>Artikel</label>
+            <nr>16.7</nr>
+          </kop>
+          <lid>
+            <lidnr>1</lidnr>
+            <al>Gecoördineerd worden voorbereid:</al>
+            <lijst>
+              <li>
+                <li.nr>a.</li.nr>
+                <al>de beslissingen op aanvragen voor:</al>
+                <lijst>
+                  <li>
+                    <li.nr>1°.</li.nr>
+                    <al>een of meer wateractiviteiten, en</al>
+                  </li>
+                  <li>
+                    <li.nr>2°.</li.nr>
+                    <al>een of meer andere activiteiten,</al>
+                  </li>
+                </lijst>
+                <al>die gelijktijdig zijn ingediend,</al>
+              </li>
+            </lijst>
+          </lid>
+        </artikel>
+        <artikel>
+          <kop>
+            <label>Artikel</label>
+            <nr>2.18</nr>
+          </kop>
+          <al>De provincie heeft tot taak:</al>
+          <lijst>
+            <li>
+              <al>natuur:</al>
+              <lijst>
+                <li>
+                  <li.nr>1°.</li.nr>
+                  <al>maatregelen voor:</al>
+                  <lijst>
+                    <li>
+                      <li.nr>i.</li.nr>
+                      <al>Natura 2000-gebieden.</al>
+                    </li>
+                  </lijst>
+                </li>
+              </lijst>
+            </li>
+          </lijst>
+        </artikel>
+      </wettekst>
+    </wet-besluit>
+  </wetgeving>
+</toestand>

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ ref }} · verwijderen{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<nav class="back-nav"><a href="{{ cancel_url }}">&larr; terug</a></nav>
+
+<h1>{{ kop }}</h1>
+
+<section class="danger-zone">
+    <h2>Weet u het zeker?</h2>
+    <div class="danger-row">
+        <div>
+            <strong>{{ wat }}</strong>
+            <small>{{ aantal }} bijlage{{ '' if aantal == 1 else 'n' }}
+                {{ 'gaat' if aantal == 1 else 'gaan' }} mee naar de prullenbak op
+                de server. Alleen iemand met toegang tot de schijf haalt het terug;
+                in ODAS kan dat niet.</small>
+        </div>
+        <form method="post" action="{{ action_url }}">
+            <button type="submit" class="btn-danger">Verwijderen</button>
+        </form>
+    </div>
+</section>
+
+<p><a href="{{ cancel_url }}">Annuleren</a></p>
+{% endblock %}

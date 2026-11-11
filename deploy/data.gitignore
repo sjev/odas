@@ -1,0 +1,44 @@
+# Secrets and runtime state: they stay on the server. Restic backs them up.
+.app/secrets.yaml
+.app/.secret_key
+.app/mail.key
+.app/mail.crt
+.app/logs/
+.app/backups/
+.app/app-data/
+.access-token
+.migrating
+
+# Every writer appends to it, so it conflicts on each merge.
+audit.log
+
+.backups/
+.claude/
+prullenbak/
+out/
+*.aux
+*.bak
+__pycache__/
+
+# Binaries never change. sync.sh moves them, restic backs them up; git keeps
+# only the text.
+*.[pP][dD][fF]
+*.eml
+*.doc
+*.docx
+*.odt
+*.ods
+*.odp
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.tif
+*.tiff
+*.mp3
+*.mp4

@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='utf-8'?>
+<toestand xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bwb-ng-vast-deel="http://wetten.overheid.nl/id/BWBR0045754/2026-08-15/0" xsi:noNamespaceSchemaLocation="https://repository.officiele-overheidspublicaties.nl/Schema/BWB-toestand/2016-1/xsd/toestand_2016-1.xsd" bwb-id="BWBR0045754" inwerkingtreding="2026-08-15">
+  <bwb-inputbestand />
+  <bwb-wijzigingen />
+  <redactionele-correcties />
+  <wetgeving dtdversie="2.0" soort="wet" stam-id="16114663" versie-id="28111442" id="C39644561" label-id="16045964" inwerkingtredingsdatum="2022-05-01">
+    <intitule bwb-ng-variabel-deel="/Intitule" stam-id="16114683" versie-id="28109162" id="C39642671" label-id="16044864" inwerking="2022-05-01" bron="Stb.2021-499" effect="nieuwe-regeling" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">Wet van 25 oktober 2021, houdende regels over de toegankelijkheid van informatie van publiek belang (Wet open overheid)</intitule>
+    <citeertitel bwb-ng-variabel-deel="/Citeertitel" status="officieel" stam-id="16114693" versie-id="28109172" id="C39643141" label-id="16044874" inwerking="2022-05-01" bron="Stb.2021-499" effect="nieuwe-regeling" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27">Wet open overheid<meta-data><brondata><oorspronkelijk><publicatie effect="nieuwe-regeling" soort="Stb" urlidentifier="stb-2021-499"><publicatiejaar>2021</publicatiejaar><publicatienr>499</publicatienr></publicatie></oorspronkelijk></brondata></meta-data></citeertitel>
+    <wet-besluit>
+      <aanhef bwb-ng-variabel-deel="/Aanhef" stam-id="16114703" versie-id="28110412" id="C39643491" label-id="16044884" inwerking="2022-05-01" bron="Stb.2021-500" effect="wijziging" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">
+        <wij>Wij Willem-Alexander, bij de gratie Gods, Koning der Nederlanden, Prins van Oranje-Nassau, enz. enz. enz.</wij>
+        <considerans>
+          <considerans.al>Allen, die deze zullen zien of horen lezen, saluut! doen te weten:</considerans.al>
+          <considerans.al>Alzo Wij in overweging genomen hebben, dat het, mede gelet op <extref doc="jci1.3:c:BWBR0001840&amp;artikel=110" label-id="2941684" verwijzing-id="3110436" bwb-id="BWBR0001840">artikel 110 van de Grondwet</extref>, het op 25 juni 1998 te Aarhus (Denemarken) tot stand gekomen Verdrag betreffende toegang tot informatie, inspraak bij besluitvorming en toegang tot de rechter inzake milieuaangelegenheden (Trb. 2001, 73) en richtlijn nr. 2003/4/EG van het Europees Parlement en de Raad van 28 januari 2003 inzake de toegang van het publiek tot milieu-informatie en tot intrekking van <extref doc="31990L0313" label="richtlijn" reeks="Celex">Richtlijn 90/313/EEG</extref> van de Raad (PbEU L 41), wenselijk is gebleken om in het kader van het onophoudelijke streven naar een goed en democratisch bestuur, de toegang tot overheidsinformatie voor iedereen te vergroten, de actieve openbaarmaking te bevorderen, bestuurlijke transparantie tot norm te verheffen, de regels voor openheid en openbaarheid te actualiseren en deze zoveel mogelijk in de wet op te nemen zodat openbaarheid een recht wordt van de burger en een plicht van de overheid blijft;</considerans.al>
+        </considerans>
+        <afkondiging>
+          <al>Zo is het, dat Wij, de Afdeling advisering van de Raad van State gehoord, en met gemeen overleg der Staten-Generaal, hebben goedgevonden en verstaan, gelijk Wij goedvinden en verstaan bij deze:</al>
+        </afkondiging>
+      </aanhef>
+      <wettekst>
+        <hoofdstuk bwb-ng-variabel-deel="/Hoofdstuk1" stam-id="16114723" versie-id="30561082" id="C43878161" label-id="17245594" inwerking="2025-02-12" label="Hoofdstuk 1" bron="Stb.2024-391" effect="vernummering" ondertekening_bron="2024-10-23" publicatie_bron="2024-12-10" publicatie_iwt="2025-02-11" status="goed">
+          <kop>
+            <label>Hoofdstuk</label>
+            <nr status="officieel">1</nr>
+            <titel status="officieel">Rechten</titel>
+          </kop>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk1/Artikel1.1" stam-id="16114713" versie-id="28110422" id="C40457791" label-id="16044894" inwerking="2022-05-01" label="Artikel 1.1" bron="Stb.2021-500" effect="wijziging" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">1.1</nr>
+              <titel status="officieel">Recht op toegang</titel>
+            </kop>
+            <al>Eenieder heeft recht op toegang tot publieke informatie zonder daartoe een belang te hoeven stellen, behoudens bij deze wet gestelde beperkingen.</al>
+          </artikel>
+        </hoofdstuk>
+        <hoofdstuk bwb-ng-variabel-deel="/Hoofdstuk2" stam-id="16114783" versie-id="28109262" id="C39643271" label-id="16044964" inwerking="2022-05-01" label="Hoofdstuk 2" bron="Stb.2021-499" effect="nieuwe-regeling" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">
+          <kop>
+            <label>Hoofdstuk</label>
+            <nr status="officieel">2</nr>
+            <titel status="officieel">Algemene bepalingen</titel>
+          </kop>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.1" stam-id="16114733" versie-id="30561092" id="C43878121" label-id="16044914" inwerking="2025-02-12" label="Artikel 2.1" bron="Stb.2024-391" effect="wijziging" ondertekening_bron="2024-10-23" publicatie_bron="2024-12-10" publicatie_iwt="2025-02-11" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">2.1</nr>
+              <titel status="officieel">Begripsbepalingen</titel>
+            </kop>
+            <al>In deze wet en de daarop berustende bepalingen wordt verstaan onder:</al>
+            <lijst level="single" nr-sluiting="." start="1" type="ongemarkeerd">
+              <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.1/Onderdeel_1">
+                <al>
+                  <nadruk type="cur">document:</nadruk> een door een orgaan, persoon of college als bedoeld in <intref doc="jci1.3:c:BWBR0045754&amp;hoofdstuk=2&amp;artikel=2.2&amp;z=2026-08-15&amp;g=2026-08-15" label-id="16044924" verwijzing-id="3110945" bwb-id="BWBR0045754" bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2">artikel 2.2, eerste lid</intref>, opgemaakt of ontvangen schriftelijk stuk of ander geheel van vastgelegde gegevens dat naar zijn aard verband houdt met de publieke taak van dat orgaan, die persoon of dat college;</al>
+              </li>
+              <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.1/Onderdeel_2">
+                <al>
+                  <nadruk type="cur">milieu-informatie:</nadruk> hetgeen daaronder wordt verstaan in <extref doc="jci1.3:c:BWBR0003245&amp;artikel=19.1a" label-id="6225104" verwijzing-id="3110437" bwb-id="BWBR0003245">artikel 19.1a van de Wet milieubeheer</extref>;</al>
+              </li>
+              <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.1/Onderdeel_3">
+                <al>
+                  <nadruk type="cur">Onze Minister:</nadruk> Onze Minister van Binnenlandse Zaken en Koninkrijksrelaties;</al>
+              </li>
+              <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.1/Onderdeel_4">
+                <al>
+                  <nadruk type="cur">publieke informatie:</nadruk> informatie neergelegd in documenten die berusten bij een orgaan, persoon of college als bedoeld in <intref doc="jci1.3:c:BWBR0045754&amp;hoofdstuk=2&amp;artikel=2.2&amp;z=2026-08-15&amp;g=2026-08-15" label-id="16044924" verwijzing-id="3110722" bwb-id="BWBR0045754" bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2">artikel 2.2, eerste lid</intref>.</al>
+              </li>
+            </lijst>
+          </artikel>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2" stam-id="16114743" versie-id="28110512" id="C40457811" label-id="16044924" inwerking="2022-05-01" label="Artikel 2.2" bron="Stb.2021-500" effect="wijziging" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">2.2</nr>
+              <titel status="officieel">Reikwijdte</titel>
+            </kop>
+            <lid bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1" label-id="16044924L1">
+              <lidnr status="officieel">1</lidnr>
+              <al>Deze wet is van toepassing op:</al>
+              <lijst level="single" nr-sluiting="." start="1" type="expliciet">
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeela">
+                  <li.nr>a.</li.nr>
+                  <al>bestuursorganen;</al>
+                </li>
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeelb">
+                  <li.nr>b.</li.nr>
+                  <al>de Kamers en de verenigde vergadering der Staten-Generaal;</al>
+                </li>
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeelc">
+                  <li.nr>c.</li.nr>
+                  <al>de Raad voor de rechtspraak en het College van afgevaardigden;</al>
+                </li>
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeeld">
+                  <li.nr>d.</li.nr>
+                  <al>de Raad van State, tenzij de Raad het koninklijk gezag uitoefent, en met uitzondering van de Afdeling bestuursrechtspraak;</al>
+                </li>
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeele">
+                  <li.nr>e.</li.nr>
+                  <al>de Algemene Rekenkamer;</al>
+                </li>
+                <li bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid1/Onderdeelf">
+                  <li.nr>f.</li.nr>
+                  <al>de Nationale ombudsman en de substituut-ombudsmannen als bedoeld in <extref doc="jci1.3:c:BWBR0003372&amp;artikel=9" label-id="871544" verwijzing-id="3110438" bwb-id="BWBR0003372">artikel 9, eerste lid, van de Wet Nationale ombudsman</extref>, en ombudsmannen en ombudscommissies als bedoeld in <extref doc="jci1.3:c:BWBR0005537&amp;artikel=9:17" label-id="6767134" verwijzing-id="3110439" bwb-id="BWBR0005537">artikel 9:17, onderdeel b, van de Algemene wet bestuursrecht</extref>.</al>
+                </li>
+              </lijst>
+            </lid>
+            <lid bwb-ng-variabel-deel="/Hoofdstuk2/Artikel2.2/Lid2" label-id="16044924L2">
+              <lidnr status="officieel">2</lidnr>
+              <al>Voor de toepassing van deze wet worden de organen, personen en colleges, bedoeld in het eerste lid, onderdelen b tot en met f, die op grond van de <extref doc="jci1.3:c:BWBR0005537" label-id="2816734" verwijzing-id="3110441" bwb-id="BWBR0005537">Algemene wet bestuursrecht</extref> geen bestuursorgaan zijn, gelijk gesteld met een bestuursorgaan.</al>
+            </lid>
+          </artikel>
+        </hoofdstuk>
+        <hoofdstuk bwb-ng-variabel-deel="/Hoofdstuk9" label="Hoofdstuk 9" status="goed">
+          <kop>
+            <label>Hoofdstuk</label>
+            <nr status="officieel">9</nr>
+            <titel status="officieel">Wijziging van enige wetten</titel>
+          </kop>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk9/Artikel9.47" label="Artikel 9.47" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">9.47</nr>
+              <titel status="officieel">Wijziging <extref doc="jci1.3:c:BWBR0005181" bwb-id="BWBR0005181">Woningwet</extref></titel>
+            </kop>
+            <al>
+              <redactie type="vervanging">Wijzigt de Woningwet.</redactie>
+            </al>
+          </artikel>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk9/Artikel9.50" label="Artikel 9.50" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">9.50</nr>
+              <titel status="officieel">
+                <extref doc="jci1.3:c:BWBR0023825" bwb-id="BWBR0023825">Wet op de parlementaire enquête 2008</extref>
+              </titel>
+            </kop>
+            <al>
+              <redactie type="vervanging">Wijzigt de Wet op de parlementaire enquête 2008.</redactie>
+            </al>
+          </artikel>
+        </hoofdstuk>
+        <hoofdstuk bwb-ng-variabel-deel="/Hoofdstuk10" label="Hoofdstuk 10" status="goed">
+          <kop>
+            <label>Hoofdstuk</label>
+            <nr status="officieel">10</nr>
+            <titel status="officieel">Slotbepalingen</titel>
+          </kop>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk10/Artikel10.1" label="Artikel 10.1" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">10.1</nr>
+              <titel status="officieel">Intrekking
+                <extref doc="jci1.3:c:BWBR0005252" bwb-id="BWBR0005252">Wet openbaarheid van bestuur</extref></titel>
+            </kop>
+            <al>De Wet openbaarheid van bestuur wordt ingetrokken.</al>
+          </artikel>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk10/Artikel10.2" label="Artikel 10.2" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">10.2</nr>
+              <titel status="officieel">Overgangsrecht actieve openbaarmaking</titel>
+            </kop>
+            <al>De verplichting tot openbaarmaking geldt na een bij koninklijk besluit te bepalen termijn.</al>
+          </artikel>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk10/Artikel10.3" label="Artikel 10.3" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">10.3</nr>
+              <titel status="officieel">Elektronisch verkeer</titel>
+            </kop>
+            <al>
+              <redactie type="extra">Dit artikel is in werking getreden in verband met de invoering van digitaal procederen.</redactie>
+            </al>
+            <lid>
+              <lidnr status="officieel">1</lidnr>
+              <al>Het verzoek wordt langs elektronische weg ingediend.</al>
+            </lid>
+            <al>
+              <redactie type="extra">Voor overige gevallen luidt het artikel als volgt:</redactie>
+            </al>
+            <tussenkop>Artikel 10.3.</tussenkop>
+            <lid>
+              <lidnr status="officieel">1</lidnr>
+              <al>Het verzoek wordt schriftelijk ingediend.</al>
+            </lid>
+          </artikel>
+          <artikel bwb-ng-variabel-deel="/Hoofdstuk10/Artikel10.4" label="Artikel 10.4" status="goed">
+            <kop>
+              <label>Artikel</label>
+              <nr status="officieel">10.4</nr>
+            </kop>
+            <al>
+              <redactie type="vervanging">Vervallen</redactie>
+            </al>
+          </artikel>
+        </hoofdstuk>
+      </wettekst>
+      <wetsluiting bwb-ng-variabel-deel="/SlotformulierEnOndertekening" stam-id="16115763" versie-id="28110242" id="C39642651" label-id="16045944" inwerking="2022-05-01" bron="Stb.2021-499" effect="nieuwe-regeling" ondertekening_bron="2021-10-25" publicatie_bron="2021-10-27" publicatie_iwt="2021-10-27" status="goed">
+        <slotformulering>
+          <al>Lasten en bevelen dat deze in het Staatsblad zal worden geplaatst, en dat alle ministeries, autoriteiten, colleges en ambtenaren die zulks aangaat, aan de nauwkeurige uitvoering de hand zullen houden.</al>
+        </slotformulering>
+        <gegeven>
+          <label>Gegeven te </label>
+          <dagtekening>
+            <plaats>’s-Gravenhage</plaats>
+            <datum isodatum="2021-10-25">25 oktober 2021</datum>
+          </dagtekening>
+          <koning>Willem-Alexander</koning>
+        </gegeven>
+        <ondertekening>
+          <functie>De Minister van Binnenlandse Zaken en Koninkrijksrelaties,</functie>
+          <naam>
+            <voornaam>K.H.</voornaam>
+            <achternaam>Ollongren</achternaam>
+          </naam>
+        </ondertekening>
+        <uitgifte>
+          <datum isodatum="2021-10-27">de <nadruk type="cur">zevenentwintigste</nadruk> oktober 2021</datum>
+          <ondertekening>
+            <functie>De Minister van Justitie en Veiligheid,</functie>
+            <naam>
+              <voornaam>F.B.J.</voornaam>
+              <achternaam>Grapperhaus</achternaam>
+            </naam>
+          </ondertekening>
+        </uitgifte>
+      </wetsluiting>
+    </wet-besluit>
+  </wetgeving>
+</toestand>

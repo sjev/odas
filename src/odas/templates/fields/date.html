@@ -1,0 +1,3 @@
+{% macro input(key, f, values, ctx) %}
+<input type="date" name="{{ key }}" value="{{ values.get(key, '') }}">
+{%- endmacro %}

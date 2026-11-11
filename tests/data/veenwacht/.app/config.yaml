@@ -1,0 +1,207 @@
+# Stichting Veenwacht: ticketing helpdesk + dossiers, public intake on.
+#
+# This file is the complete schema for this data dir. Nothing is merged onto it:
+# what is not declared here does not exist for this organisation. Restart the
+# app after editing.
+#
+# `types:` is the registry: one entry per soort of zaak, and a type *is* its
+# field declaration. `id`, `soort`, `titel`, `aangemaakt` and `gewijzigd` are injected in
+# front of every type, so no type declares them.
+#
+# Fields are kept deliberately small: only what code branches on (enums, routing,
+# access, deadline) or what you scan a list by. Descriptive context (telefoon,
+# adviseur, vereniging, lopende procedure, overige links) is prompted for in the
+# intake description and lives as free text in the body, not as fields.
+#
+# A field with `editable: [public]` is asked on the public intake form and stays
+# editable by the indiener through their token link. The form holds no field
+# list of its own, so adding a question here is the whole change.
+
+version: 13               # on-disk layout revision, checked at startup
+
+org:
+  display_name: Stichting Veenwacht
+  app_title: Hulpvraag
+  logo: /assets/logo.svg   # a file in .app/assets/ of this data dir
+  # The columns the overview starts with, in the order they stand. Ref, Opvolgen and
+  # Naam come first always. A person may pick another set for their own browser.
+  columns: [aangemaakt, gewijzigd, status, behandelaar, termijn]
+
+oidc:
+  issuer: https://id.veenwacht.example.nl
+  client_id: odas
+  redirect_uri: https://hulpvraag.veenwacht.example.nl/auth/callback
+  group_team: veenwacht_team
+
+# Mail capture. A zaak has one address, `<ref>@<domein>`. A jurist sends from
+# their own client and puts it in Bcc; an incoming letter is forwarded to it.
+# Which way a message went is read off the message, never off the address.
+mailin:
+  domains: [odas.veenwacht.example.nl]
+
+smtp:
+  # A folder, so this example org sends for real without a relay. Each message
+  # is written there as it went on the wire.
+  host: ./outbox
+  sender: Stichting Veenwacht <noreply@hulpvraag.veenwacht.example.nl>
+  # Offered under a typed message, so a person reads it before sending.
+  footer: |
+    U ziet uw hulpvraag in via {inzien_url}
+    Deze link is persoonlijk. Haal deze regel weg als u aan iemand anders schrijft.
+
+  # What this organisation sends, in its own words. A message with no template
+  # here is not sent: the declaration is what makes the mail exist.
+  templates:
+    intake_bevestiging:
+      onderwerp: Bevestiging van uw hulpvraag ({ref})
+      tekst: |
+        Beste,
+
+        We hebben uw hulpvraag ontvangen. Uw kenmerk is {ref}.
+
+        Een behandelaar bekijkt uw vraag en neemt contact met u op. U hoeft nu
+        niets te doen; bewaar dit kenmerk voor als u ernaar wilt verwijzen.
+
+        Via deze link ziet u uw hulpvraag in en kunt u reageren of aanvullen:
+        {inzien_url}
+
+        U kunt ook antwoorden op deze e-mail. Uw antwoord komt dan bij uw
+        hulpvraag te staan. Het adres van deze hulpvraag is {zaak_adres}.
+
+        Met vriendelijke groet,
+        Stichting Veenwacht
+
+types:
+  # A hulpvraag: one request from an indiener, tracked to resolution. This type
+  # declares the public form, which is what makes /indienen exist at all.
+  hulpvraag:
+    prefix: zk
+    public_intake: true
+    status:
+      type: status          # the four generic values come with the type
+      public: true
+    opvolgen: {type: flag}  # an IN sets it; a person clears it on the zaak page
+    fase:
+      type: [vooroverleg, zienswijze, bezwaar, beroep, hoger-beroep]
+      public: true
+      editable: [team, public]
+      group: Procedure
+    # Only the donor report reads this one. The behandelaar sets it.
+    zwaarte: {type: [afwijzing, eenvoudig, meervoudig, complex]}
+    # The donor report reads these two. Not public: the indiener never sees them.
+    juridische_procedure: {type: text, label: Juridische procedure}
+    actie: {type: text, label: Actie Veenwacht}
+    indiener_soort:
+      type: [vereniging, stichting, burger]
+      label: Indiener is een
+      public: true
+      editable: [team, public]
+    naam_organisatie:
+      type: str
+      label: Naam van de organisatie
+      public: true
+      editable: [team, public]
+    behandelaar:
+      type: user
+      public: true
+    locatie:
+      type: latlon
+      hint: lat,lon (zet via kaart)
+      public: true
+      editable: [team, public]
+    contact_naam:
+      public_required: true
+      type: str
+      label: Contactpersoon naam
+      public: true
+      editable: [team, public]
+      group: Contact
+    contact_email:
+      public_required: true
+      type: email
+      label: Contactpersoon e-mail
+      public: true
+      editable: [team, public]
+      group: Contact
+    mail_toestemming:
+      public_required: true
+      type: [ja, nee]
+      label: Mag e-mail ontvangen over werk en steun
+      public: true
+      editable: [team, public]
+      group: Contact
+    bekendmaking_url:
+      type: str
+      label: Officiële bekendmaking
+      hint: zoek op officielebekendmakingen.nl en plak de link hier
+      public: true
+      editable: [team, public]
+      group: Procedure
+    termijn:
+      type: termijn         # writes termijn_datum + termijn_soort, never `termijn:`
+      hint: voor welke procedure(s)?
+      public: true
+      editable: [team, public]
+      group: Procedure
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+      group: Beheer
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+  # A dossier: a zaak that groups other zaken.
+  dossier:
+    prefix: ds
+    zaken:
+      type: zaken           # refs to other zaken, edited through a picker
+      hint: refs van de zaken in dit dossier
+    toegang:
+      type: toegang         # this field *is* the access grant
+      hint: e-mails van personen met toegang tot deze zaak
+    reply_token:
+      type: reply_token     # mints itself at creation, never editable
+      label: Antwoordtoken
+      hint: "systeem: capability-token voor reageerpagina"
+
+  # An overleg: an internal discussion. No indiener, no termijn, and no token,
+  # so it has no /inzien- page either. The team alone opens it.
+  overleg:
+    prefix: ov
+    status: {type: status}
+    opvolgen: {type: flag}
+    eigenaar: {type: user}
+
+fields:
+  # log/ entry frontmatter, read from the message that came in. Date (JJJJ-MM-DD)
+  # and direction (IN/UIT/LOG) live in the entry name, so neither appears here.
+  # `aan` and `cc` are typed to send the entry as mail, and are read off a
+  # message that comes in. `van` and `message_id` belong to a received message
+  # alone, so they stay `editable: []`.
+  # There is no bcc (a Bcc'd copy carries no such header) and no verzonden stamp
+  # (the message's own date is the entry date).
+  log:
+    onderwerp:
+      type: str
+      hint: korte titel, bv. zienswijze
+    markdown:
+      type: bool
+      label: Markdown
+    van:
+      type: email
+      editable: []
+      hint: "systeem: afzender"
+    aan:
+      type: list[email]
+      label: Aan
+      hint: gescheiden door komma's
+    cc:
+      type: list[email]
+      label: Cc
+      hint: gescheiden door komma's
+    message_id:
+      type: str
+      editable: []
+      hint: "systeem: kenmerk van het bericht, houdt dubbele kopieën eruit"

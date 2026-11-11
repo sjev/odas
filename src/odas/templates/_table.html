@@ -1,0 +1,131 @@
+{% import "_fields.html" as fld %}
+{% import "_icons.html" as ic %}
+
+{# One header cell. With `links` it orders the list, and the arrow marks the
+   column that orders it now. #}
+{% macro head(label, key, links) %}
+{%- if links and key in links %}{% set href, arrow = links[key] %}
+<span><a class="sort" href="{{ href }}">{{ label }}</a>{% if arrow %} {{ arrow }}{% endif %}</span>
+{%- else %}<span>{{ label }}</span>{% endif %}
+{%- endmacro %}
+
+{# The overview table. One row per zaak, and the whole row opens the zaak.
+   Columns are the ref, the naam, then `cols` (the config's defaults when none
+   are given) — one set for the page, so a row lines up with the row above it
+   whatever soort it is. A soort that declares none of them leaves those cells
+   empty. Nothing is behind a hover, and under 600px the header drops away and
+   `data-label` turns each row into a labelled card. #}
+{% macro zaak_table(zaken, cols=None, back=None, links=None) %}
+{% if zaken %}
+{% set cols = cols or default_columns() %}
+{% set from = "?from=" ~ back|urlencode if back else "" %}
+<div class="table-scroll">
+    {# The table always fits the page: a part hidden to the right is a part nobody
+   finds. A date keeps its width. Another column takes its full width when
+   there is room, and wraps when there is not. The naam takes what is left. #}
+    {% set tpl %}max-content max-content minmax(12rem, 1fr)
+    {%- for f in cols.values() %} {{ "max-content" if f.widget in ("date", "datetime") else "fit-content(16rem)" }}{% endfor %}{% endset %}
+    <div class="zaak-list zaak-table" style="--tpl: {{ tpl }}">
+        <div class="zaak-header">
+            {{ head("Ref", "ref", links) }}
+            {{ head("Opvolgen", "flag", links) }}
+            {{ head("Naam", "titel", links) }}
+            {% for key, f in cols.items() %}{{ head(f.label, key, links) }}{% endfor %}
+        </div>
+        {% for zaak in zaken %}
+        {% if zaak.error %}
+        <a class="zaak-row" href="/zaken/{{ zaak.ref }}/bewerken{{ from }}">
+            <span class="zaak-cell" data-label="Ref"><span class="zaak-ref">{{ zaak.ref }}</span></span>
+            <span class="zaak-cell"></span>
+            <span class="zaak-cell" data-label="Naam" style="color:var(--pico-del-color)">{{ zaak.error }}</span>
+            {% for key, f in cols.items() %}<span class="zaak-cell">{{ "herstellen &rarr;"|safe if loop.first }}</span>{% endfor %}
+        </a>
+        {% else %}
+        <a class="zaak-row" href="/zaken/{{ zaak.ref }}{{ from }}">
+            <span class="zaak-cell" data-label="Ref"><span class="zaak-ref">{{ zaak.ref }}</span></span>
+            <span class="zaak-cell"{% if zaak.flagged %} data-label="Opvolgen"{% endif %}>
+                {%- if zaak.flagged %}<span class="zaak-flag" aria-label="Opvolgen">{{ ic.icon("flag", 14) }}</span>{% endif %}</span>
+            <span class="zaak-cell" data-label="Naam">{{ zaak.titel }}</span>
+            {# A cell this soort has no field for stays in place, so the columns
+               keep lining up, but carries no label: a card must not print a
+               heading with nothing under it. #}
+            {% for key, f in cols.items() %}
+            {% set value %}{{ fld.field_cell(zaak, key, f) if key in zaak.fields }}{% endset %}
+            <span class="zaak-cell"{% if value.strip() %} data-label="{{ f.label }}"{% endif %}>{{ value }}</span>
+            {% endfor %}
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<p class="empty">Nog geen zaken.</p>
+{% endif %}
+{% endmacro %}
+
+{% macro inzien_link_line(url) %}
+<p class="reageer-line">
+    <span class="meta">Inzienlink:</span>
+    <a href="{{ url }}" target="_blank" rel="noopener" class="reageer-link">{{ url }}</a>
+    <button type="button" class="copy-btn" data-copy="{{ url }}"
+        title="Kopieer link" aria-label="Kopieer inzienlink">
+        {{ ic.icon("copy") }}
+    </button>
+</p>
+{% endmacro %}
+
+{# The zaak's own mail address. Where the sender puts it says what the entry
+   becomes: Bcc is UIT, To or a forward is IN, Cc is a note. #}
+{% macro mail_adres_line(adres, help='') %}
+{% if adres %}
+<p class="reageer-line">
+    <span class="meta">Zaak-e-mail:</span>
+    <a href="mailto:{{ adres }}" class="reageer-link">{{ adres }}</a>
+    <button type="button" class="copy-btn" data-copy="{{ adres }}"
+        title="Kopieer adres" aria-label="Kopieer het e-mailadres van deze zaak">
+        {{ ic.icon("copy") }}
+    </button>
+    {% if help %}{{ help_button('mail-help-dialog', 'Hoe leg ik e-mail vast?') }}{% endif %}
+</p>
+{% if help %}{{ help_dialog('mail-help-dialog', 'E-mail gebruiken', help) }}{% endif %}
+{% endif %}
+{% endmacro %}
+
+{# A round ? that opens the dialog of that id. #}
+{% macro help_button(dialog_id, title) %}
+<button type="button" class="copy-btn" title="{{ title }}" aria-label="{{ title }}"
+    onclick="document.getElementById('{{ dialog_id }}').showModal()">
+    {{ ic.icon("help") }}
+</button>
+{%- endmacro %}
+
+{# The manual's own section, so this screen holds no second copy of the rules. #}
+{% macro help_dialog(dialog_id, title, help) %}
+<dialog id="{{ dialog_id }}">
+    <article>
+        <header>
+            <button aria-label="Close" rel="prev"
+                onclick="document.getElementById('{{ dialog_id }}').close()"></button>
+            <h3>{{ title }}</h3>
+        </header>
+        {{ help }}
+        <footer>
+            <a href="/handleiding">Hele handleiding</a>
+        </footer>
+    </article>
+</dialog>
+{% endmacro %}
+
+{% macro meta_field(label, value) %}
+<div class="field">
+    <h3 class="label">{{ label }}</h3>
+    <div class="value">{{ value }}</div>
+</div>
+{% endmacro %}
+
+{% macro meta_field_html(label) %}
+<div class="field">
+    <h3 class="label">{{ label }}</h3>
+    <div class="value">{{ caller() }}</div>
+</div>
+{% endmacro %}

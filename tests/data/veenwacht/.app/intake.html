@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<!--
+  The intake form of Stichting Veenwacht. The app serves this file as it is at
+  /indienen. It posts one JSON part, `zaak`, and the files under `documenten`:
+    {"titel": str, "body": markdown, "velden": {key: value}}
+  `velden` holds the public fields of `types.hulpvraag`. The other answers are
+  prose about the case: they go into `body`. A field a condition hides is not sent.
+-->
+<html lang="nl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hulpvraag indienen</title>
+    <link rel="stylesheet" href="/static/pico.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/theme.js"></script>
+    <style>
+        .field-grid .field-row { display: grid; grid-template-columns: 14rem minmax(0, 36rem); gap: 0.25rem 1rem; align-items: center; margin: 0; }
+        .field-grid .field-row > span:first-child { color: var(--pico-muted-color); overflow-wrap: break-word; }
+        .field-grid .field-row > span:first-child small { display: block; font-weight: normal; line-height: 1.3; }
+        .radio-group { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; align-items: center; }
+        .radio-group label { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; }
+        .radio-group input { margin: 0; }
+        .uitleg { margin: 0; border: 0; padding: 0; }
+        .uitleg summary { font-size: 0.875em; }
+        .uitleg summary::after { float: none; display: inline-block; vertical-align: middle; margin-inline-start: 0.25rem; }
+        /* A Ja/Nee answer needs little room, so its question gets more. */
+        .field-grid .field-row:has(> .radio-group) { grid-template-columns: 24rem auto; }
+        /* The Veenwacht site sets its text at 16px. Pico grows the root to 131% on a wide screen. */
+        :root { --pico-font-size: 100%; }
+        .intake-intro h1 { font-size: 1.75rem; }
+        .intake-intro p, .intake-scope li, .intake-form, .intake-form input, .intake-form textarea,
+        .drop-area .drop-title { font-size: 1rem; }
+        .intake-scope h3 { font-size: 1.1rem; }
+        .intake-form .help, .drop-area .drop-hint { font-size: 0.875rem; }
+        .intake-form > button[type="submit"] { font-size: 1.1rem; }
+        .intake-lead { margin-bottom: 1.5rem; }
+        @media (max-width: 600px) { .field-grid .field-row, .field-grid .field-row:has(> .radio-group) { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body class="">
+    <header class="container">
+        <div class="app-header">
+            <img src="/assets/logo.svg" alt="Stichting Veenwacht" class="app-logo">
+        </div>
+    </header>
+    <main class="container" id="main">
+        <section class="intake-intro">
+            <h1>Hulpvraag indienen</h1>
+            <p>Komt u op voor de natuur en heeft u hulp nodig? Beschrijf hieronder kort wat er
+                speelt. Ons intaketeam bekijkt uw vraag en neemt daarna contact met u op.</p>
+            <p><strong>Wacht niet te lang.</strong> Burgergroepen nemen vaak pas in een late fase contact op. Dan is er vaak al veel gedaan of er is nog maar weinig tijd. Wij helpen u ook graag in een vroegtijdig stadium. Wel belangrijk is dat er een besluit of voorgenomen <strong>besluit is gepubliceerd</strong>. Zonder dat kunnen we niet heel veel.</p>
+            <div class="intake-scope">
+                <h3>Wat wij wel en niet doen</h3>
+                <ul>
+                    <li>Wij steunen zaken waarbij de <strong>natuur</strong> in het geding is,
+                        vooral via natuurbeschermingswetgeving.</li>
+                    <li>Geen zaken tegen windmolenparken of zonneweides (tenzij in een
+                        Natura 2000-gebied), en geen zaken tegen woningbouw (tenzij zeer dicht
+                        bij Natura 2000).</li>
+                    <li>Geen NIMBY-zaken. Voor ruimtelijke ordening (zoals bestemmingsplannen)
+                        verwijzen wij meestal door.</li>
+                    <li><strong>Wij nemen geen zaken over.</strong> Wij kunnen meelezen met stukken die u hebt
+                        opgesteld, advies geven over haalbaarheid van de procedure, richting en
+                        volgende stappen. Ook kunnen wij een expert uit ons netwerk aanbevelen.</li>
+                </ul>
+            </div>
+        </section>
+        <form id="intake" class="intake-form">
+            <div aria-hidden="true" style="position:absolute;left:-9999px">
+                <label>Laat dit veld leeg <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            <p id="alert" class="error" role="alert" hidden></p>
+            <p class="intake-lead">Hieronder staan de belangrijkste vragen en gegevens die wij van u nodig
+                hebben om uw hulpvraag in behandeling te nemen. Wij vragen u vriendelijk onderstaand
+                formulier zo compleet mogelijk in te vullen en de gevraagde documenten bij te voegen.</p>
+            <label>Onderwerp en locatie *
+                <input type="text" name="titel" value="" required maxlength="150"
+                    placeholder="Korte omschrijving en locatie"
+                    aria-invalid="">
+            </label>
+            <label>Wat is het probleem en het belang voor de natuur? *
+                <textarea name="omschrijving" rows="8" required
+                    placeholder="Vul hier uw omschrijving in van het probleem en het belang voor de natuur"
+                    aria-invalid=""
+                ></textarea>
+            </label>
+            <label>Welke specifieke vragen wilt u dat wij beantwoorden? *
+                <textarea name="specifieke_vragen" rows="5" required
+                    placeholder="Vul hier uw specifieke hulpvragen in"
+                    aria-invalid=""
+                ></textarea>
+            </label>
+<div class="field-grid">
+    <label class="field-row">
+        <span>Rechtspersoon * <small>(vereniging/stichting/burger)</small></span>
+<select name="indiener_soort" required>
+    <option value=""></option>
+    <option value="vereniging">vereniging</option>
+    <option value="stichting">stichting</option>
+    <option value="burger">burger</option>
+</select>
+    </label>
+    <label class="field-row" data-show-if='{"indiener_soort": ["vereniging", "stichting"]}'>
+        <span>Naam van de rechtspersoon <small>(voeg de statuten toe als bijlage)</small></span>
+<input type="text" name="naam_organisatie" value="" placeholder="Naam zoals in de statuten">
+    </label>
+    <label class="field-row">
+        <span>Locatie *<small>coordinaten (gebruik gele knop rechts)</small></span>
+<div class="locatie-row">
+    <input type="text" id="locatie-input" name="locatie" value="" placeholder="tekst of lat,lon" required>
+    <button type="button" class="edit-btn map-pick" data-target="locatie-input"
+        title="Kies op kaart" aria-label="Kies op kaart">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg></button>
+</div>
+    </label>
+    <fieldset><legend>Contact</legend>
+    <label class="field-row">
+        <span>Contactpersoon naam *</span>
+<input type="text" name="contact_naam" value="" required>
+    </label>
+    <label class="field-row">
+        <span>Contactpersoon e-mail *</span>
+<input type="email" name="contact_email" value="" required>
+    </label>
+    <div class="field-row">
+        <span>Mogen wij u e-mailen? *
+            <details class="uitleg"><summary>Waarover?</summary>
+                <small>Stichting Veenwacht stuurt u dan af en toe e-mail
+                    over haar werk en met verzoeken om steun.
+                    U kunt zich altijd afmelden via de link in elke e-mail.</small>
+            </details></span>
+        <span class="radio-group">
+            <label><input type="radio" name="mail_toestemming" value="ja" required> Ja</label>
+            <label><input type="radio" name="mail_toestemming" value="nee" required> Nee</label>
+        </span>
+    </div>
+    </fieldset>
+</div>
+<script>
+    // The page may lay out conditional rows after this macro, so wait for it.
+    document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-show-if]').forEach(row => {
+        const cond = JSON.parse(row.dataset.showIf);
+        const form = row.closest('form');
+        const controls = key => form.querySelectorAll('[name="' + key + '"]');
+        // A radio group answers with the one control that is checked; every other
+        // kind answers with its single value.
+        const answer = key => {
+            const els = [...controls(key)];
+            if (els.length > 1 || (els[0] && els[0].type === 'radio')) {
+                const on = els.find(el => el.checked);
+                return on ? on.value : '';
+            }
+            return els.length ? els[0].value : null;
+        };
+        const sync = () => {
+            row.hidden = !Object.entries(cond).every(
+                ([key, values]) => answer(key) !== null && values.includes(answer(key)));
+            row.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = row.hidden; });
+        };
+        Object.keys(cond).forEach(key => controls(key).forEach(
+            el => ['change', 'input'].forEach(ev => el.addEventListener(ev, sync))));
+        sync();
+    });
+    });
+</script>
+            <div class="field-grid">
+                <fieldset>
+                    <legend>Status, besluiten en termijnen</legend>
+<div class="field-row">
+    <span>Is er al een besluit genomen door het bevoegd gezag? *</span>
+    <span class="radio-group">
+        <label><input type="radio" name="besluit_genomen" value="ja" required> Ja</label>
+        <label><input type="radio" name="besluit_genomen" value="nee" required> Nee</label>
+    </span>
+</div>
+                    <label class="field-row" data-show-if='{"besluit_genomen": ["ja"]}'>
+                        <span>Datum van het besluit</span>
+                        <input type="date" name="besluit_datum" value="">
+                    </label>
+<label class="field-row" data-show-if='{"besluit_genomen": ["ja"]}'>
+    <span>Link naar officiële bekendmaking <small>(zoek op officielebekendmakingen.nl en plak de link hier)</small></span>
+<input type="text" name="bekendmaking_url" value="">
+</label>
+<div class="field-row">
+    <span>Loopt er momenteel een juridische procedure? *</span>
+    <span class="radio-group">
+        <label><input type="radio" name="procedure_loopt" value="ja" required> Ja</label>
+        <label><input type="radio" name="procedure_loopt" value="nee" required> Nee</label>
+    </span>
+</div>
+<label class="field-row" data-show-if='{"procedure_loopt": ["ja"]}'>
+    <span>In welke fase bevindt de procedure zich?</span>
+<select name="fase">
+    <option value=""></option>
+    <option value="vooroverleg">vooroverleg</option>
+    <option value="zienswijze">zienswijze</option>
+    <option value="bezwaar">bezwaar</option>
+    <option value="beroep">beroep</option>
+    <option value="hoger-beroep">hoger-beroep</option>
+</select>
+</label>
+<div class="field-row">
+    <span>Loopt er een harde deadline of indieningstermijn? *</span>
+    <span class="radio-group">
+        <label><input type="radio" name="termijn_loopt" value="ja" required> Ja</label>
+        <label><input type="radio" name="termijn_loopt" value="nee" required> Nee</label>
+    </span>
+</div>
+<label class="field-row" data-show-if='{"termijn_loopt": ["ja"]}'>
+    <span>Termijn <small>(voor welke procedure(s)?)</small></span>
+<div class="termijn-row">
+    <input type="date" name="termijn_datum" value="">
+    <input type="text" name="termijn_soort" value="" placeholder="welke procedure?">
+</div>
+</label>
+<div class="field-row">
+    <span>Is er al een advocaat of deskundige adviseur betrokken? *</span>
+    <span class="radio-group">
+        <label><input type="radio" name="adviseur_betrokken" value="ja" required> Ja</label>
+        <label><input type="radio" name="adviseur_betrokken" value="nee" required> Nee</label>
+    </span>
+</div>
+                    <label class="field-row" data-show-if='{"adviseur_betrokken": ["ja"]}'>
+                        <span>Wie is de betrokken advocaat of adviseur?</span>
+                        <input type="text" name="adviseur" value="">
+                    </label>
+                </fieldset>
+            </div>
+            <div class="intake-docs">
+                <p class="docs-label">Documenten uploaden <span class="required">*</span></p>
+                <small class="help">Om uw zaak te kunnen beoordelen vragen wij u de volgende documenten mee te sturen:</small>
+                <ul class="docs-wanted">
+                    <li>Het (ontwerp)besluit met onderliggende stukken (aanvraag, ecologische onderzoeken, stikstofberekening).</li>
+                    <li>Zelf ingediende stukken (zienswijze, bezwaar, beroep, handhavingsverzoek).</li>
+                    <li>Statuten van uw stichting of vereniging, als die van toepassing zijn.</li>
+                </ul>
+                <small class="help">pdf, jpg, png of docx — max 10 MB per bestand.</small>
+                <button type="button" id="drop-area" class="drop-area" onclick="docsInput.click()">
+                    <span class="drop-title">Bestand toevoegen</span>
+                    <span class="drop-hint">Klik hier, of sleep uw bestanden hierheen</span>
+                </button>
+                <input type="file" id="docs-input" multiple hidden accept=".pdf,.jpg,.jpeg,.png,.docx">
+                <p id="docs-count" class="docs-count"></p>
+                <ul id="docs-list" class="docs-list"></ul>
+            </div>
+            <button type="submit">Verstuur mijn hulpvraag</button>
+        </form>
+<link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css">
+<script src="/static/vendor/leaflet/leaflet.js"></script>
+<dialog id="map-dialog">
+    <article class="map-dialog-card">
+        <div id="map" class="map-mini">
+            <div id="map-hint" class="map-hint">Klik op kaart om locatie te kiezen<br>sleep de marker naar de precieze locatie</div>
+        </div>
+        <footer class="map-dialog-actions">
+            <button type="button" id="map-cancel" class="btn-cancel">Annuleren</button>
+            <button type="button" id="map-confirm">Opslaan</button>
+        </footer>
+    </article>
+</dialog>
+<script src="/static/map_picker.js"></script>
+<script>initMapPicker();</script>
+    <script>
+        const ta = document.querySelector('textarea[name="omschrijving"]');
+        function resizeTa() { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+        resizeTa();
+        ta.addEventListener('input', resizeTa);
+        const docsInput = document.getElementById('docs-input');
+        const docsList = document.getElementById('docs-list');
+        const docsCount = document.getElementById('docs-count');
+        const dropArea = document.getElementById('drop-area');
+        let docs = [];
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+        function syncInput() {
+            const dt = new DataTransfer();
+            docs.forEach(f => dt.items.add(f));
+            docsInput.files = dt.files;
+            renderList();
+        }
+        function addFiles(fileList) {
+            for (const f of fileList) {
+                if (!docs.some(d => d.name === f.name && d.size === f.size)) {
+                    docs.push(f);
+                }
+            }
+            syncInput();
+        }
+        function removeFile(index) {
+            docs.splice(index, 1);
+            syncInput();
+        }
+        function renderList() {
+            docsCount.textContent = docs.length
+                ? (docs.length === 1 ? '1 bestand toegevoegd' : docs.length + ' bestanden toegevoegd')
+                : '';
+            docsList.innerHTML = '';
+            docs.forEach((f, i) => {
+                const li = document.createElement('li');
+                const name = document.createElement('span');
+                name.className = 'docs-name';
+                name.textContent = '📄 ' + f.name;
+                const size = document.createElement('span');
+                size.className = 'docs-size';
+                size.textContent = formatSize(f.size);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'docs-remove';
+                btn.textContent = 'Verwijderen';
+                btn.onclick = () => removeFile(i);
+                li.append(name, size, btn);
+                docsList.appendChild(li);
+            });
+        }
+        docsInput.addEventListener('change', () => {
+            addFiles(docsInput.files);
+            if (docs.length === 0) docsInput.value = '';
+        });
+        ['dragover', 'dragenter'].forEach(ev =>
+            dropArea.addEventListener(ev, e => {
+                e.preventDefault();
+                dropArea.classList.add('drop-active');
+            }));
+        ['dragleave', 'drop'].forEach(ev =>
+            dropArea.addEventListener(ev, e => {
+                e.preventDefault();
+                dropArea.classList.remove('drop-active');
+            }));
+        dropArea.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+    </script>
+    <script>
+        const form = document.getElementById('intake');
+        const opened = Date.now();
+        // The zaak fields of types.hulpvraag. Every other answer is prose for the body.
+        const VELDEN = ['indiener_soort', 'naam_organisatie', 'locatie', 'contact_naam', 'contact_email',
+            'mail_toestemming', 'bekendmaking_url', 'fase', 'termijn_datum', 'termijn_soort'];
+        const VRAGEN = [
+            ['besluit_genomen', 'Is er al een besluit genomen door het bevoegd gezag?'],
+            ['besluit_datum', 'Datum van het besluit'],
+            ['procedure_loopt', 'Loopt er momenteel een juridische procedure?'],
+            ['termijn_loopt', 'Loopt er een harde deadline of indieningstermijn?'],
+            ['adviseur_betrokken', 'Is er al een advocaat of deskundige adviseur betrokken?'],
+            ['adviseur', 'Wie is de betrokken advocaat of adviseur?'],
+        ];
+        const SPELLING = {ja: 'Ja', nee: 'Nee'};
+
+        // A disabled control is hidden by its condition, so it gives no answer.
+        const val = name => {
+            const on = [...form.elements].find(el => el.name === name && !el.disabled
+                && (el.type !== 'radio' || el.checked));
+            return on ? on.value.trim() : '';
+        };
+
+        function body() {
+            const lines = ['## Hulpvraag', '', '**Wat is het probleem en het belang voor de natuur?**', '',
+                val('omschrijving'), '', '**Welke specifieke vragen wilt u dat wij beantwoorden?**', '',
+                val('specifieke_vragen'), ''];
+            for (const [key, label] of VRAGEN) {
+                const answer = val(key);
+                if (answer) lines.push('- **' + label + '**: ' + (SPELLING[answer] || answer));
+            }
+            return lines.join('\n');
+        }
+
+        function showErrors(errors) {
+            form.querySelectorAll('small.error').forEach(el => el.remove());
+            const alert = document.getElementById('alert');
+            // The file input has no name, so a message about the documents goes here.
+            alert.textContent = errors._ || errors.documenten
+                || 'Uw hulpvraag is niet verstuurd. Vul de velden met een melding aan.';
+            alert.hidden = false;
+            for (const [key, msg] of Object.entries(errors)) {
+                const el = form.querySelector('[name="' + key + '"]');
+                if (!el) continue;
+                el.setAttribute('aria-invalid', 'true');
+                const small = document.createElement('small');
+                small.className = 'error';
+                small.textContent = msg;
+                el.after(small);
+            }
+            alert.scrollIntoView({behavior: 'smooth'});
+        }
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const velden = Object.fromEntries(VELDEN.map(k => [k, val(k)]).filter(([, v]) => v));
+            const data = new FormData();
+            data.append('zaak', JSON.stringify({titel: val('titel'), body: body(), velden}));
+            data.append('website', form.elements.website.value);
+            data.append('bedenktijd', String((Date.now() - opened) / 1000));
+            docs.forEach(f => data.append('documenten', f));
+            const button = form.querySelector('button[type="submit"]');
+            button.disabled = true;
+            try {
+                const r = await fetch('/indienen', {method: 'POST', body: data});
+                const answer = await r.json();
+                if (!r.ok) return showErrors(answer.errors || {});
+                document.getElementById('main').innerHTML =
+                    '<h1>We hebben uw hulpvraag ontvangen</h1><article><p>Uw kenmerk is <strong class="ref"></strong>. ' +
+                    'Bewaar dit; u kunt ernaar verwijzen in contact met ons.</p><p><span class="bevestiging">U ontvangt ' +
+                    'een bevestiging per e-mail. </span>Een behandelaar bekijkt uw vraag en neemt binnen twee werkdagen contact met u op.</p>' +
+                    '<p class="inzien" hidden>Via <a></a> ziet u uw zaak in.</p>' +
+                    '<p class="adres" hidden>Stuur aanvullende berichten naar <a></a>.</p></article>';
+                document.querySelector('#main .ref').textContent = answer.ref;
+                const link = (cls, href, text) => {
+                    if (!text) return;
+                    const p = document.querySelector(`#main .${cls}`);
+                    p.querySelector('a').href = href;
+                    p.querySelector('a').textContent = text;
+                    p.hidden = false;
+                };
+                link('inzien', answer.inzien_url, answer.inzien_url);
+                link('adres', `mailto:${answer.adres}`, answer.adres);
+                if (answer.melding) {
+                    document.querySelector('#main .bevestiging').hidden = true;
+                    const d = document.createElement('dialog');
+                    d.className = 'mail-alert';
+                    d.innerHTML = '<article><header><h3>Geen bevestiging per e-mail</h3></header><p></p>' +
+                        '<footer><button type="button">Sluiten</button></footer></article>';
+                    d.querySelector('p').textContent = answer.melding;
+                    d.querySelector('button').onclick = () => d.close();
+                    document.body.append(d);
+                    d.showModal();
+                }
+                window.scrollTo(0, 0);
+            } catch {
+                showErrors({_: 'Uw hulpvraag is niet verstuurd. Controleer uw verbinding en probeer het opnieuw.'});
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+    </main>
+</body>
+</html>
