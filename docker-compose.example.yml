@@ -39,9 +39,9 @@
 
 services:
   odas:
-    # `inv deploy` pushes two tags: `latest`, which this line reads, and the
-    # commit tag, which stays in the registry for a rollback.
-    image: registry.example.nl/odas:latest
+    # A version tag publishes `latest`, which this line reads, and the version,
+    # which stays in the registry for a rollback.
+    image: ghcr.io/sjev/odas:latest
     container_name: odas
     restart: unless-stopped
     user: "1000:1000"
@@ -72,9 +72,9 @@ services:
   #     port: 2525
   #     max_bytes: 26214400
   odas-mail:
-    # `inv deploy` pushes two tags: `latest`, which this line reads, and the
-    # commit tag, which stays in the registry for a rollback.
-    image: registry.example.nl/odas:latest
+    # A version tag publishes `latest`, which this line reads, and the version,
+    # which stays in the registry for a rollback.
+    image: ghcr.io/sjev/odas:latest
     command: mailin
     container_name: odas-mail
     restart: unless-stopped

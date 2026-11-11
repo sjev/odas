@@ -5,14 +5,10 @@ from pathlib import Path
 
 from invoke import task
 
-# One org-agnostic image; each org is a service in the stek repo (own data dir and host).
-# This repo builds, pushes and restarts the image — services, secrets and routing live in stek.
-#
-# A registry on the VPS itself keeps a push small (the wheel, ~2 MB) and the pull
-# on the host. `docker save | ssh docker load` sent all 213 MB every time.
-# Log in to the registry once on both machines: write here, read on the VPS.
-REGISTRY = os.getenv("ODAS_DEPLOY_REGISTRY", "")  # e.g. registry.example.nl/team
-IMAGE = f"{REGISTRY}/odas" if REGISTRY else "odas"
+# One org-agnostic image; each org is a service in the deployment repo (own data dir
+# and host). GitHub Actions builds the image on a version tag (.github/workflows/image.yml);
+# this repo only restarts the services. Services, secrets and routing live in the deployment repo.
+IMAGE = "odas"  # local builds only; deployments pull ghcr.io/<owner>/odas
 VPS = os.getenv("ODAS_DEPLOY_VPS", "")  # ssh alias from your ~/.ssh/config
 STACK = os.getenv("ODAS_DEPLOY_STACK", "/srv/stack")  # the compose dir on the VPS
 
@@ -136,28 +132,29 @@ def build_image(c):
 
 @task(help={"service": "Cycle one service only, e.g. odas-demo"})
 def deploy(c, service=""):
-    """Build the image, push it to the registry, and restart the odas services.
+    """Wait for the image build of the latest tag, then cycle the odas services.
 
-    Two tags are pushed: the commit tag stays behind for a rollback, and `latest`
-    is the tag the stek compose files read. `up -d` recreates a service when the
-    pulled image differs, so the services are cycled, not restarted.
+    `inv bump` pushes the tag, and the tag starts the Image workflow. The VPS pulls
+    the image the compose files name. `up -d` recreates a service when the pulled
+    image differs, so the services are cycled, not restarted.
     """
-    if not (REGISTRY and VPS):
-        raise SystemExit("Set ODAS_DEPLOY_REGISTRY and ODAS_DEPLOY_VPS first.")
-    build_image(c)
-    tag = _image_tag(c)
-    c.run(f"docker tag {IMAGE}:{tag} {IMAGE}:latest")
+    if not VPS:
+        raise SystemExit("Set ODAS_DEPLOY_VPS first.")
+    tag = _latest_tag(c)
+    run = c.run(
+        f"gh run list --workflow=image.yml --branch={tag} -L1 --json databaseId -q '.[0].databaseId'",
+        hide=True,
+    ).stdout.strip()
+    if not run:
+        raise SystemExit(f"No Image workflow run for {tag}. Did `inv bump` push the tag?")
+    c.run(f"gh run watch {run} --exit-status", pty=True)
 
-    print(f"Pushing {IMAGE}:{tag}...")
-    c.run(f"docker push {IMAGE}:{tag}", pty=True)
-    c.run(f"docker push {IMAGE}:latest", pty=True)
-
-    # Every odas service in stek is named `odas-*`, so a new org needs no edit here.
+    # Every odas service in the deployment repo is named `odas-*`, so a new org needs no edit here.
     all_odas = "$(docker compose config --services | grep '^odas-')"
     pick = shlex.quote(service) if service else all_odas
     remote = f"cd {STACK} && S={pick} && docker compose pull $S && docker compose up -d $S"
     c.run(f"ssh -t {VPS} {shlex.quote(remote)}", pty=True)
-    print(f"Deployed {IMAGE}:{tag} as latest.")
+    print(f"Deployed {tag}.")
 
 
 @task

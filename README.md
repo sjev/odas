@@ -71,12 +71,12 @@ app migrates a data dir with an old layout. `odas upgrade` shows the plan first.
 ## Deploy
 
 ```bash
-inv bump patch   # tag vX.Y.Z, then: git push origin vX.Y.Z
-inv deploy       # build and push the image, then restart the services
+inv bump patch   # tag and push vX.Y.Z; GitHub builds ghcr.io/sjev/odas
+inv deploy       # wait for that build, then restart the services
 ```
 
-`inv deploy` reads `ODAS_DEPLOY_REGISTRY`, `ODAS_DEPLOY_VPS` and
-`ODAS_DEPLOY_STACK` (see [`.env.example`](.env.example)). Keep the services,
+`inv deploy` reads `ODAS_DEPLOY_VPS` and `ODAS_DEPLOY_STACK` (see
+[`.env.example`](.env.example)). Keep the services,
 secrets and routing of each organisation in your own deployment repo.
 [`docker-compose.example.yml`](docker-compose.example.yml) shows the shape.
 
