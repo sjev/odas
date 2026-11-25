@@ -1,20 +1,21 @@
-"""A zaak as one text: index.md and the log, for a person to paste into an AI tool.
+"""A zaak as one text: its fields, summary and log, for a person to paste into an AI tool.
 
-The text is the case as it stands on disk, file by file. An attachment is named,
-never read in: the text is for a chat box, not for an archive.
+The reader is a model that knows nothing of ODAS. The text says what each part
+is and drops what only the app needs. An attachment is named, never read in.
 """
 
 from __future__ import annotations
 
-from conftest import DOSSIER, LEEG, ZAAK, ZAAK_FOLDER, token_of
+from conftest import DOSSIER, LEEG, ZAAK, ZAAK_FOLDER, ZAAK_TITEL, token_of
 from fastapi.testclient import TestClient
 
-from odas import log_write, zaak
+from odas import index, log_write, zaak
 
 
-def test_the_text_holds_the_case_and_its_log_and_names_each_attachment(
+def test_the_text_opens_with_a_reading_key_then_gegevens_samenvatting_and_logboek(
     client: TestClient,
 ) -> None:
+    """A model that never saw ODAS must tell the case from the log, and who sent what."""
     folder = zaak.find(ZAAK)
     assert folder is not None
 
@@ -24,16 +25,45 @@ def test_the_text_holds_the_case_and_its_log_and_names_each_attachment(
     assert r.headers["content-type"].startswith("text/markdown")
     assert f'filename="{ZAAK_FOLDER}.md"' in r.headers["content-disposition"]
     text = r.text
-    assert (folder / "index.md").read_text(encoding="utf8") in text
+    assert text.startswith(f"# Zaak {ZAAK}: {ZAAK_TITEL}\n")
+    assert "UIT = verstuurd door Stichting Veenwacht" in text
+    sections = [text.index(h) for h in ("## 1. Gegevens", "## 2. Samenvatting", "## 3. Logboek")]
+    assert sections == sorted(sections)
+    assert "- Juridische procedure: De provincie wil" in text  # the label, not the disk key
+    assert "### Samenvatting" in text  # the body's own heading sits below the export's
     entries = zaak.scan_log(folder)
-    positions = [text.index(f"## log/{e.name}\n") for e in entries]
-    assert positions == sorted(positions)  # the log reads in its own order
-    for e in entries:
-        raw = folder / "log" / e.name
-        source = raw / "index.md" if raw.is_dir() else raw.with_name(f"{e.name}.md")
-        assert source.read_text(encoding="utf8").strip() in text
-    assert "ontwerpbesluit-mestverwerking.pdf" in text
+    positions = [text.index(f"### {e.datum}") for e in entries]
+    assert positions == sorted(positions)
+    assert "### 2026-06-07 · UIT · concept bezwaarschrift ter controle" in text
+    assert "Aan: m.janssen@example.com" in text
+
+
+def test_the_text_drops_what_only_the_app_needs(client: TestClient) -> None:
+    text = client.get(f"/zaken/{ZAAK}/export.md").text
+    assert "niet wijzigen" not in text  # no YAML hints
+    assert "Behandelaar" not in text  # empty on this zaak
+    assert "51.162741" not in text  # coordinates
+    assert "- Toegang:" not in text  # the access list; a note may still name a person
+    assert "bcc" not in text.lower()
+
+
+def test_an_attachment_is_named_and_its_content_is_left_out(client: TestClient) -> None:
+    text = client.get(f"/zaken/{ZAAK}/export.md").text
+    assert "Bijlage: ontwerpbesluit-mestverwerking.pdf" in text
     assert "%PDF" not in text
+    assert "Samenvatting van de bijlage" not in text  # none was made
+
+
+def test_an_attachment_brings_its_ai_summary_when_one_was_made(client: TestClient) -> None:
+    folder = zaak.find(ZAAK)
+    assert folder is not None
+    pdf = folder / "log" / "2026-05-18-A-IN-definitief-besluit" / "definitief-besluit.pdf"
+    index.write_summary(pdf, index.digest(pdf), "Het besluit staat de uitbreiding toe.", "test")
+
+    text = client.get(f"/zaken/{ZAAK}/export.md").text
+
+    after = text.split("Bijlage: definitief-besluit.pdf\n", 1)[1]
+    assert after.startswith("Samenvatting van de bijlage:\nHet besluit staat de uitbreiding toe.")
 
 
 def test_the_text_leaves_out_the_token_the_audit_log_and_the_prullenbak(
