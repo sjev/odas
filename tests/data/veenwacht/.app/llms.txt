@@ -1,0 +1,4 @@
+# Stichting Veenwacht: hulpvraag indienen
+
+> Help een bewoner een hulpvraag voor te bereiden voor het formulier op /indienen.
+> Schrijf kort en feitelijk. Verstuur het formulier niet zelf: de bewoner vult het in.

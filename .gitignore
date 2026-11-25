@@ -40,6 +40,7 @@ pip-wheel-metadata/
 tests/data/*/.app/*
 !tests/data/*/.app/config.yaml
 !tests/data/*/.app/intake.html
+!tests/data/*/.app/llms.txt
 !tests/data/*/.app/assets/
 
 # Virtual environments
