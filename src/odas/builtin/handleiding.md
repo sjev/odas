@@ -115,6 +115,14 @@ De indiener ziet alleen de daarvoor bedoelde velden. **Documenten** is voor de i
 
 Als een zaak een veld **Zaken** heeft, kunt u andere zaken koppelen. De gekoppelde zaken blijven ongewijzigd en afzonderlijk toegankelijk.
 
+## Zaak exporteren
+
+Met **Download zaak** haalt u de hele zaak op als zip-bestand, met alle bijlagen.
+
+**Zaak als tekst** maakt één tekstbestand met de gegevens en alle logboek-items. Bijlagen staan er alleen met hun naam in, niet met hun inhoud. Gekoppelde zaken staan er niet in. Met de downloadknop slaat u het bestand op. Met de kopieerknop zet u de tekst op het klembord.
+
+Plak de tekst in een AI-hulpmiddel om vragen over de zaak te stellen. De tekst bevat ook persoonsgegevens. Controleer eerst of u deze met dat hulpmiddel mag delen.
+
 ## Admin
 
 Teamleden hebben toegang tot **Admin**.

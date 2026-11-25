@@ -65,6 +65,14 @@
             {{ ic.icon("download") }}
         </a>
     </div>
+    <div class="zaak-toolbar">
+        <span class="meta">Zaak als tekst:</span>
+        <a href="/zaken/{{ zaak.ref }}/export.md" class="copy-btn" role="button" title="Download als tekst">
+            {{ ic.icon("download") }}
+        </a>
+        <button type="button" class="copy-btn" data-copy-url="/zaken/{{ zaak.ref }}/export.md"
+            title="Kopieer als tekst" aria-label="Kopieer als tekst">{{ ic.icon("copy") }}</button>
+    </div>
     {% endif %}
 
 </header>
@@ -157,10 +165,19 @@
 
     initEntryClamp();
 
-    // Copy the reageerlink to the clipboard, with brief feedback.
-    document.querySelectorAll('.copy-btn').forEach(btn => {
+    // Copy a value, or the text behind a URL, to the clipboard, with brief feedback.
+    // The URL is fetched inside the click: a pending blob keeps the user gesture,
+    // which Safari needs to allow the write.
+    document.querySelectorAll('.copy-btn[data-copy], .copy-btn[data-copy-url]').forEach(btn => {
         btn.addEventListener('click', async () => {
-            await navigator.clipboard.writeText(btn.dataset.copy);
+            const url = btn.dataset.copyUrl;
+            if (url) {
+                const text = fetch(url).then(r => r.text())
+                    .then(t => new Blob([t], { type: 'text/plain' }));
+                await navigator.clipboard.write([new ClipboardItem({ 'text/plain': text })]);
+            } else {
+                await navigator.clipboard.writeText(btn.dataset.copy);
+            }
             const tip = btn.title;
             btn.title = 'Gekopieerd!';
             setTimeout(() => { btn.title = tip; }, 1500);

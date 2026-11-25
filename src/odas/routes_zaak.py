@@ -19,6 +19,7 @@ from odas import (
     zaak_columns,
     zaak_create,
     zaak_query,
+    zaak_text,
 )
 from odas.appconfig import all_types, default_type_name, type_label
 from odas.templating import templates
@@ -150,6 +151,16 @@ async def zaak_export_zip(request: Request, zaak_id: str) -> StreamingResponse:
         buf,
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/zaken/{zaak_id}/export.md", tags=["ui"])
+async def zaak_export_text(request: Request, zaak_id: str) -> Response:
+    folder = zaak_folder(request, zaak_id)
+    return Response(
+        zaak_text.render(folder),
+        media_type="text/markdown; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{folder.name}.md"'},
     )
 
 
