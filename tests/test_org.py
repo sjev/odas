@@ -46,10 +46,15 @@ def test_a_type_declaring_public_intake_is_what_opens_the_public_form(
     use_config(tmp_path, monkeypatch)  # the plain template: no type claims intake
     paths = _paths(create_app())
     assert "/indienen" not in paths
-    assert AuthMiddleware(_dummy_asgi).public_exact == {"/robots.txt"}
+    assert AuthMiddleware(_dummy_asgi).public_exact == {"/robots.txt", "/llms.txt"}
     assert "/zaken" in paths and "/zaken/{zaak_id}" in paths  # base features stay
     assert any(p.startswith("/inzien-") for p in paths)  # public links are always on
 
     _with_helpdesk_type(tmp_path, monkeypatch)
     assert "/indienen" in _paths(create_app())
-    assert AuthMiddleware(_dummy_asgi).public_exact == {"/robots.txt", "/", "/indienen"}
+    assert AuthMiddleware(_dummy_asgi).public_exact == {
+        "/robots.txt",
+        "/llms.txt",
+        "/",
+        "/indienen",
+    }

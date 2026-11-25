@@ -57,7 +57,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
         self.public_prefixes = PUBLIC_PREFIXES
-        self.public_exact = {"/robots.txt"}
+        self.public_exact = {"/robots.txt", "/llms.txt"}
         if intake_type():
             self.public_exact |= {"/", "/indienen"}
 

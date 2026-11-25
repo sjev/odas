@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
@@ -73,9 +73,17 @@ def create_app() -> FastAPI:
     app.include_router(api_router)
 
     # Case data and a demo's hourly sandbox alike must never reach an index.
+    # llms.txt is the exception: an assistant that obeys robots.txt must still read it.
     @app.get("/robots.txt", response_class=PlainTextResponse)
     def robots() -> str:
-        return "User-agent: *\nDisallow: /\n"
+        return "User-agent: *\nAllow: /llms.txt\nDisallow: /\n"
+
+    # How an AI assistant should prepare a public submission. The org writes it.
+    @app.get("/llms.txt", response_class=PlainTextResponse)
+    def llms() -> str:
+        if not (own := config.data_dir / "llms.txt").is_file():
+            raise HTTPException(status_code=404)
+        return own.read_text(encoding="utf8")
 
     return app
 

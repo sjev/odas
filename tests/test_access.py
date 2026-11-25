@@ -96,7 +96,33 @@ def test_a_search_engine_is_told_to_stay_out_without_a_session(
     with TestClient(create_app()) as c:
         r = c.get("/robots.txt", follow_redirects=False)
         assert r.status_code == 200
-        assert r.text == "User-agent: *\nDisallow: /\n"
+        assert r.text == "User-agent: *\nAllow: /llms.txt\nDisallow: /\n"
+
+
+def test_an_ai_assistant_reads_the_llms_txt_the_data_dir_ships(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A person's AI assistant reads how to prepare a hulpvraag, without a session."""
+    use_example_data("veenwacht", tmp_path, monkeypatch)
+    monkeypatch.delenv("ODAS_TEST_MODE", raising=False)
+    from odas.app import create_app
+
+    with TestClient(create_app()) as c:
+        r = c.get("/llms.txt", follow_redirects=False)
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/plain")
+    assert r.text == (tmp_path / ".app" / "llms.txt").read_text(encoding="utf8")
+
+
+def test_a_data_dir_without_llms_txt_answers_404_not_a_login(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The file is the organisation's own; without it there is nothing to read."""
+    monkeypatch.delenv("ODAS_TEST_MODE", raising=False)
+    from odas.app import create_app
+
+    with TestClient(create_app()) as c:
+        assert c.get("/llms.txt", follow_redirects=False).status_code == 404
 
 
 @pytest.mark.parametrize(
