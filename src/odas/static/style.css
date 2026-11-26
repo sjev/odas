@@ -34,6 +34,11 @@
   --intake-panel:   #f4f7f5;
 
   --inzien-bg: #71c7ff;
+
+  /* One page width for every app page; text blocks keep a readable line. */
+  --page-max:   1680px;
+  --column-max: 1080px;
+  --measure:    80ch;
 }
 
 [data-theme="dark"] {
@@ -58,14 +63,16 @@
   --inzien-bg: #0b2b3d;
 }
 
-/* Reading width by default. A page with a wide table opts in with body.wide. */
-.container { max-width: 1080px; padding-inline: var(--pico-spacing); }
-body.wide .container { max-width: 1400px; }
+/* Every app page has the same frame, so the nav and the left edge stay put.
+   A one-column page keeps its content at --column-max, left in the frame. A
+   page with columns (the list, the case page) opts in to the full width with
+   body.wide. A public form page is one centred column: body.narrow. */
+.container { max-width: var(--page-max); padding-inline: var(--pico-spacing); }
+main.container > * { max-width: var(--column-max); }
+body.wide main.container > * { max-width: none; }
+body.narrow .container { max-width: var(--column-max); }
 
-/* The nav is the fixed landmark: always at the wide width, so it does not move
-   between a reading page and the overview. */
 body > header.container {
-  max-width: 1400px;
   border-bottom: 1px solid var(--pico-muted-border-color);
   margin-bottom: var(--pico-spacing);
 }
@@ -170,20 +177,40 @@ nav a { text-decoration: none; }
 }
 .success .success-close:hover { opacity: 1; }
 
-/* ---- case card: meta header + summary body ---- */
-.case-card { margin-bottom: 1.5rem; position: relative; }
-.card-edit-btn { position: absolute; top: 0.6rem; right: 0.75rem; }
-.case-card > header, .case-meta-header {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  border-bottom: 1px solid var(--pico-muted-border-color);
-  background: var(--pico-card-background-color);
+/* ---- case page: the content left, the fields right ----
+   A log line must hold a mail's hard-wrapped line, so the two columns wait for
+   a wide screen. Below that, one column keeps the reading width. */
+.case-layout { display: grid; gap: 1.5rem; max-width: var(--column-max); }
+.case-side, .case-main { min-width: 0; }
+.case-side article { margin: 0; }
+@media (min-width: 1536px) {
+  .case-layout {
+    max-width: none; gap: 2rem; align-items: start;
+    grid-template-columns: minmax(0, 1fr) clamp(18rem, 28%, 28rem);
+  }
+  .case-side { grid-column: 2; grid-row: 1; }
+  .case-main { grid-column: 1; grid-row: 1; }
 }
+
+.case-card, .case-summary { position: relative; }
+.card-edit-btn { position: absolute; top: 0.6rem; right: 0.75rem; }
+.case-meta { display: grid; gap: 0.75rem; }
 .case-card > h2 {
-  margin: 1rem 0 0.5rem; font-size: 1rem; font-weight: 700;
+  margin: 0 0 1rem; font-size: 1rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: .06em; color: var(--head-fg);
 }
+.case-links {
+  margin-top: 1rem; padding-top: 0.75rem;
+  border-top: 1px solid var(--pico-muted-border-color);
+}
+.case-links .reageer-line:first-child { margin-top: 0; }
+/* The label and its buttons on one row, the address on its own row below: a
+   long link wraps by itself and never pushes a button onto a new line. */
+.case-links .reageer-line {
+  display: grid; grid-template-columns: repeat(3, max-content) minmax(0, 1fr);
+  align-items: center; gap: 0.1rem 0.4rem;
+}
+.case-links .reageer-link { grid-row: 2; grid-column: 1 / -1; min-width: 0; overflow-wrap: anywhere; }
 
 .case-main { display: flex; flex-direction: column; gap: 1.5rem; }
 .case-main article { margin: 0; }
@@ -198,7 +225,7 @@ nav a { text-decoration: none; }
 .empty { color: var(--pico-muted-color); font-style: italic; margin: 0; }
 .prose { line-height: 1.6; }
 /* The page is wide; a line of running text stays short enough to read. */
-.prose > p, .prose > ul, .prose > ol, .prose > blockquote { max-width: 80ch; }
+.prose > p, .prose > ul, .prose > ol, .prose > blockquote { max-width: var(--measure); }
 .prose > *:first-child { margin-top: 0; }
 .prose > *:last-child { margin-bottom: 0; }
 .prose p { margin: 0.5rem 0; }
@@ -211,17 +238,20 @@ nav a { text-decoration: none; }
 
 /* ---- logboek ---- */
 .log-entry {
-  display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0.6rem 0;
   border-top: 1px solid var(--pico-muted-border-color);
 }
 .log-entry:first-child { border-top: none; }
-.log .ts { color: var(--pico-muted-color); white-space: nowrap; }
-.log .ts > span { display: block; }
-.log .ts .time { font-variant-numeric: tabular-nums; }
+/* Date, direction and subject on one line; the actions at the card edge. */
+.entry-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; }
+.entry-head .onderwerp { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.entry-actions { margin-left: auto; display: inline-flex; gap: 0.5rem; }
+.entry-actions > * { margin: 0; }
+.log .ts { color: var(--pico-muted-color); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .log .ts .edited { font-size: 0.8em; font-style: italic; }
-.log-entry .ev { min-width: 0; }
-.log-entry .entry-text { margin: 0.25rem 0 0; font-size: 0.9rem; overflow-wrap: anywhere; }
+/* A mail wraps its lines at 72 to 85 characters. Such a line must fit, or the
+   text breaks twice. */
+.log-entry .entry-text { margin: 0.25rem 0 0; font-size: 0.9rem; overflow-wrap: anywhere; max-width: 90ch; }
 .log-entry ul { margin: 0.25rem 0 0; padding-left: 1.25rem; font-size: 0.9rem; }
 .log-entry .route { display: block; font-size: 0.85rem; color: var(--pico-muted-color); margin-top: 0.1rem; }
 .log-entry .bron { display: block; font-size: 0.85rem; color: var(--pico-muted-color); margin-top: 0.1rem; }
@@ -235,10 +265,7 @@ nav a { text-decoration: none; }
   max-height: none;
   -webkit-mask-image: none; mask-image: none;
 }
-/* An open entry gives the timestamp column to the text. */
-.log-entry:has(.entry-text.expanded) { grid-template-columns: minmax(0, 1fr); gap: 0.35rem; }
-.log-entry:has(.entry-text.expanded) .ts { white-space: normal; }
-.log-entry:has(.entry-text.expanded) .ts > span { display: inline; }
+/* Open or closed, the text keeps its column and width: it does not wrap anew. */
 .entry-toggle {
   display: block; width: 100%; margin: 0.1rem 0 0; padding: 0;
   background: none; border: none; cursor: pointer;
@@ -257,11 +284,15 @@ nav a { text-decoration: none; }
 }
 .field .value .sub { color: var(--pico-muted-color); }
 /* One field per row, in the same columns as the edit form. */
-.case-meta-header .field {
+.case-meta .field {
   display: grid; grid-template-columns: 14rem minmax(0, 36rem); gap: 0.25rem 1rem;
   align-items: baseline;
 }
-.case-meta-header .field .label { margin: 0; }
+.case-meta .field .label { margin: 0; }
+/* In the side column the label goes above its value. */
+@media (min-width: 1536px) {
+  .case-meta .field { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+}
 
 /* ---- the choices and the box: two rows of one shape each ---- */
 .zoek { margin-bottom: 0.75rem; }
@@ -576,7 +607,7 @@ nav a { text-decoration: none; }
 .field-grid legend { font-weight: 600; padding: 0 0.5rem; }
 .field-grid input, .field-grid select, .field-grid textarea { margin-bottom: 0; }
 @media (max-width: 600px) {
-  .field-grid label, .case-meta-header .field { grid-template-columns: 1fr; }
+  .field-grid label, .case-meta .field { grid-template-columns: 1fr; }
 }
 .CodeMirror-focused {
   border-color: var(--pico-primary, #0a6e96);
@@ -607,6 +638,8 @@ nav a { text-decoration: none; }
   gap: 0.5rem;
 }
 .log-aan, .log-onderwerp { grid-column: 1 / -1; }
+/* The box holds only the form: a closed form leaves no empty box. */
+.log-add:has(> form[hidden]) { display: none; }
 .log-add {
   margin: 1.5rem 0;
   padding: 1rem;
@@ -616,8 +649,6 @@ nav a { text-decoration: none; }
 }
 .log-add > button { width: auto; }
 .log-add .log-form { margin-top: 1rem; }
-.log .ev .row-edit { float: right; margin-left: 0.5rem; }
-.log .ev .reply-link { float: right; margin-left: 0.5rem; }
 /* Documenten: one row per attachment of the zaak, whatever entry it came in. */
 .doc-list { list-style: none; padding: 0; margin: 0.5rem 0 1.5rem; }
 /* Two columns: the name may wrap, the meta stays together at the right. */
@@ -634,7 +665,7 @@ nav a { text-decoration: none; }
 .doc-summary > summary { font-size: 0.85rem; color: var(--pico-muted-color); }
 .doc-ai { margin: 0; }
 .doc-ai-btn { width: auto; padding: 0.25rem 0.5rem; line-height: 1; }
-.log .ev .doc-list { margin: 0.5rem 0 0; }
+.log-entry .doc-list { margin: 0.5rem 0 0; }
 
 .attach-list { list-style: none; padding: 0; margin: 1rem 0 0; }
 .attach-list li { display: flex; align-items: center; gap: 0.5rem; margin: 0.25rem 0; }

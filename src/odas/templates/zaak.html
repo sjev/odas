@@ -8,6 +8,7 @@
 {% import "fields/latlon.html" as latlon %}
 {% import "_theme.html" as theme %}
 {% block title %}{{ zaak.ref }}{% endblock %}
+{% block body_class %}wide{% endblock %}
 {% block head %}
 {% if readonly %}<style>body { background: var(--inzien-bg); }</style>{% endif %}
 {% if reply %}<script src="/static/upload.js?v={{ version }}"></script>{% endif %}
@@ -56,33 +57,19 @@
         {{ latlon.map_link(relation_locaties, text=relation_zaken|length ~ " locaties") }}
     </p>
     {% endif %}
-    {% if not readonly %}
-    {% if inzien_url %}{{ icons.inzien_link_line(inzien_url) }}{% endif %}
-    {{ icons.mail_adres_line(mail_adres, mail_help) }}
-    <div class="zaak-toolbar">
-         <span class="meta">Download zaak:</span>
-        <a href="/zaken/{{ zaak.ref }}/export.zip" class="copy-btn" role="button" title="Download als zip">
-            {{ ic.icon("download") }}
-        </a>
-    </div>
-    <div class="zaak-toolbar">
-        <span class="meta">Zaak als tekst:</span>
-        <a href="/zaken/{{ zaak.ref }}/export.md" class="copy-btn" role="button" title="Download als tekst">
-            {{ ic.icon("download") }}
-        </a>
-        <button type="button" class="copy-btn" data-copy-url="/zaken/{{ zaak.ref }}/export.md"
-            title="Kopieer als tekst" aria-label="Kopieer als tekst">{{ ic.icon("copy") }}</button>
-    </div>
-    {% endif %}
-
 </header>
 
+{# The fields come first, so a narrow screen reads them before the log. A wide
+   screen puts them to the right of the log. #}
+<div class="case-layout">
+<aside class="case-side">
 <article class="case-card">
     {% if not readonly %}<a href="/zaken/{{ zaak.ref }}/bewerken" class="edit-btn card-edit-btn" role="button"
         title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
     {% if readonly %}<a href="/inzien-{{ token }}/bewerken" class="edit-btn card-edit-btn" role="button"
         title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
-    <header class="case-meta-header">
+    <h2>Gegevens</h2>
+    <div class="case-meta">
         {% if badge %}{% call icons.meta_field_html("Status") %}<span class="badge {{ badge[1] }}">{{ badge[0] }}</span>{% endcall %}{% endif %}
         {# Declaration order drives the rest, and every field gets a row: reading
            this card and reading index.md give the same answer. #}
@@ -97,16 +84,42 @@
         {{ icons.meta_field(key, value or '—') }}
         {% endfor %}
         {{ icons.meta_field("Aangemaakt", zaak.created|dt or "—") }}
-    </header>
+    </div>
 
-    {% if zaak.body %}
-    <div class="summary prose">{{ zaak.body|md }}</div>
-    {% else %}
-    <p class="empty">Geen samenvatting.</p>
+    {% if not readonly %}
+    <div class="case-links">
+        {% if inzien_url %}{{ icons.inzien_link_line(inzien_url) }}{% endif %}
+        {{ icons.mail_adres_line(mail_adres, mail_help) }}
+        <div class="zaak-toolbar">
+            <span class="meta">Download zaak:</span>
+            <a href="/zaken/{{ zaak.ref }}/export.zip" class="copy-btn" role="button" title="Download als zip">
+                {{ ic.icon("download") }}
+            </a>
+        </div>
+        <div class="zaak-toolbar">
+            <span class="meta">Zaak als tekst:</span>
+            <a href="/zaken/{{ zaak.ref }}/export.md" class="copy-btn" role="button" title="Download als tekst">
+                {{ ic.icon("download") }}
+            </a>
+            <button type="button" class="copy-btn" data-copy-url="/zaken/{{ zaak.ref }}/export.md"
+                title="Kopieer als tekst" aria-label="Kopieer als tekst">{{ ic.icon("copy") }}</button>
+        </div>
+    </div>
     {% endif %}
 </article>
+</aside>
 
 <div class="case-main">
+    <article class="case-summary">
+        {# The same edit page as the fields: it opens at the summary. #}
+        {% if not readonly %}<a href="/zaken/{{ zaak.ref }}/bewerken#body-label" class="edit-btn card-edit-btn"
+            role="button" title="Samenvatting bewerken" aria-label="Samenvatting bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
+        {% if zaak.body %}
+        <div class="summary prose">{{ zaak.body|md }}</div>
+        {% else %}
+        <p class="empty">Geen samenvatting.</p>
+        {% endif %}
+    </article>
 
     {% if reply %}{% set reply_open = errors or sent %}{% endif %}
 
@@ -146,6 +159,7 @@
 
     {% endif %}
 
+</div>
 </div>
 
 {{ fld.field_assets(fields, "view") }}

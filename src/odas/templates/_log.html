@@ -96,43 +96,46 @@
 <div class="log">
     {% for entry in entries|reverse %}
     <div class="log-entry">
-        <div class="ts"><span>{{ entry.datum|dt }}</span>
-            {%- if entry.time %} <span class="time">{{ entry.time }}</span>{% endif %}
-            {%- if entry.edited %} <span class="edited" title="gewijzigd op {{ entry.edited }}">bewerkt</span>{% endif %}</div>
-        <div class="ev">
-            {% if editable %}<a href="{{ base_url }}/log/{{ entry.name }}/bewerken"
-                class="edit-btn row-edit" role="button" title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>{% endif %}
-            {# Floats right after the pencil, so it sits left of it. #}
-            {% if editable and log_mail_fields() and entry|mailable %}<a href="{{ base_url }}?reply={{ entry.name }}"
-                class="icon-action reply-link" role="button" title="Beantwoorden" aria-label="Beantwoorden">{{ ic.icon("reply-all") }}</a>{% endif %}
+        {# One head line above the text, so the text starts at the card edge like
+           the summary does. #}
+        <div class="entry-head">
+            <div class="ts"><span>{{ entry.datum|dt }}</span>
+                {%- if entry.time %} <span class="time">{{ entry.time }}</span>{% endif %}
+                {%- if entry.edited %} <span class="edited" title="gewijzigd op {{ entry.edited }}">bewerkt</span>{% endif %}</div>
             <span class="badge">{{ entry.direction }}</span>
-            {{ entry.frontmatter.onderwerp or entry.slug }}
-            {# Headers of the message this entry was filed from, when it came by mail. #}
-            {% set aan = entry.frontmatter.get("aan") %}
-            {% if aan or entry.frontmatter.get("van") %}
-            <span class="route">
-                {% if entry.frontmatter.get("van") %}{{ entry.frontmatter.van|naam }}{% endif %}
-                {% if aan %}<b>&rarr;</b> {{ aan }}{% endif %}
-                {% if entry.frontmatter.get("cc") %}<span class="sub">cc {{ entry.frontmatter.cc }}</span>{% endif %}
-                {# The window shows the message with its kopregels: a team tool. #}
-                {% if editable and entry.frontmatter.get("message_id") %}
-                <a class="eml-link" href="{{ base_url }}/log/{{ entry.name }}/bericht"
-                    data-eml="{{ base_url }}/log/{{ entry.name }}/bijlage/bericht.eml"
-                    data-onderwerp="{{ entry.frontmatter.onderwerp or '' }}"
-                    title="Het ontvangen bericht zelf, zoals het verstuurd is">&#8615; .eml</a>
-                {% endif %}
-            </span>
-            {% endif %}
-            {% if entry.body and entry.frontmatter.markdown == "ja" %}<div class="entry-text">{{ entry.body | md }}</div>
-            {% elif entry.body %}<div class="entry-text prewrap">{{ entry.body }}</div>{% endif %}
-            {# The documents of this entry, drawn as they are in the gathered list. #}
-            {% set rows = documenten.get(entry.name, []) %}
-            {% if rows %}
-            <ul class="doc-list">
-                {% for d in rows %}{{ docs_macros.doc_row(d, base_url, ai) }}{% endfor %}
-            </ul>
-            {% endif %}
+            <span class="onderwerp">{{ entry.frontmatter.onderwerp or entry.slug }}</span>
+            {% if editable %}<span class="entry-actions">
+                {%- if log_mail_fields() and entry|mailable %}<a href="{{ base_url }}?reply={{ entry.name }}"
+                    class="icon-action reply-link" role="button" title="Beantwoorden" aria-label="Beantwoorden">{{ ic.icon("reply-all") }}</a>{% endif %}
+                <a href="{{ base_url }}/log/{{ entry.name }}/bewerken"
+                    class="edit-btn" role="button" title="Bewerken" aria-label="Bewerken">{{ ic.icon("pencil") }}</a>
+            </span>{% endif %}
         </div>
+        {# Headers of the message this entry was filed from, when it came by mail. #}
+        {% set aan = entry.frontmatter.get("aan") %}
+        {% if aan or entry.frontmatter.get("van") %}
+        <span class="route">
+            {% if entry.frontmatter.get("van") %}{{ entry.frontmatter.van|naam }}{% endif %}
+            {% if aan %}<b>&rarr;</b> {{ aan }}{% endif %}
+            {% if entry.frontmatter.get("cc") %}<span class="sub">cc {{ entry.frontmatter.cc }}</span>{% endif %}
+            {# The window shows the message with its kopregels: a team tool. #}
+            {% if editable and entry.frontmatter.get("message_id") %}
+            <a class="eml-link" href="{{ base_url }}/log/{{ entry.name }}/bericht"
+                data-eml="{{ base_url }}/log/{{ entry.name }}/bijlage/bericht.eml"
+                data-onderwerp="{{ entry.frontmatter.onderwerp or '' }}"
+                title="Het ontvangen bericht zelf, zoals het verstuurd is">&#8615; .eml</a>
+            {% endif %}
+        </span>
+        {% endif %}
+        {% if entry.body and entry.frontmatter.markdown == "ja" %}<div class="entry-text">{{ entry.body | md }}</div>
+        {% elif entry.body %}<div class="entry-text prewrap">{{ entry.body }}</div>{% endif %}
+        {# The documents of this entry, drawn as they are in the gathered list. #}
+        {% set rows = documenten.get(entry.name, []) %}
+        {% if rows %}
+        <ul class="doc-list">
+            {% for d in rows %}{{ docs_macros.doc_row(d, base_url, ai) }}{% endfor %}
+        </ul>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
