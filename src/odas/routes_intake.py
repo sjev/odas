@@ -92,7 +92,9 @@ async def intake_submit(request: Request) -> Response:
             return JSONResponse({"errors": errors}, status_code=422)
         return _render(request, values, errors, status=422)
 
-    new_zaak = zaak_create.create_zaak(
+    # A worker thread: reading the PDFs takes seconds, and the loop serves everyone.
+    new_zaak = await run_in_threadpool(
+        zaak_create.create_zaak,
         {k: v for k, v in values.items() if k not in (TITEL, OMSCHRIJVING)},
         titel=values[TITEL],
         body=values[OMSCHRIJVING],

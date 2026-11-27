@@ -6,6 +6,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import RedirectResponse, Response
+from starlette.concurrency import run_in_threadpool
 
 from odas import audit, documents, index_write, log_files, log_write, schema, zaak
 from odas.appconfig import public_fields
@@ -53,7 +54,8 @@ async def reply_submit(
         )
 
     by = values["naam"] or "indiener"
-    log_write.write_log_entry(
+    await run_in_threadpool(  # reading the PDFs takes seconds; the loop serves everyone
+        log_write.write_log_entry,
         folder,
         "IN",
         values["onderwerp"],

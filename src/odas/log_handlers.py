@@ -155,8 +155,11 @@ async def handle_log_create(
     if not error:
         try:
             # A sent entry is filed from the message itself, so it carries the bytes.
+            # Both run in a worker thread: reading the PDFs takes seconds, and the
+            # loop serves everyone.
             if msg is not None:
-                entry_path = mail_sent.file_sent(
+                entry_path = await run_in_threadpool(
+                    mail_sent.file_sent,
                     folder,
                     msg,
                     body,
@@ -166,8 +169,14 @@ async def handle_log_create(
                     attachments=docs,
                 )
             else:
-                entry_path = log_write.create_log_entry(
-                    folder, direction, entry_date, content, attachments=docs, by=by
+                entry_path = await run_in_threadpool(
+                    log_write.create_log_entry,
+                    folder,
+                    direction,
+                    entry_date,
+                    content,
+                    attachments=docs,
+                    by=by,
                 )
         except ValueError as e:
             error = str(e)
@@ -245,8 +254,14 @@ async def handle_log_edit(
     content = schema.dump(fm, body, fields=schema.log_fields())
     if not error:
         try:
-            log_write.update_log_entry(
-                folder, entry_name, content, attachments=docs, remove=verwijder, direction=direction
+            await run_in_threadpool(
+                log_write.update_log_entry,
+                folder,
+                entry_name,
+                content,
+                attachments=docs,
+                remove=verwijder,
+                direction=direction,
             )
         except FileNotFoundError as e:
             raise HTTPException(status_code=404, detail="log-item niet gevonden") from e

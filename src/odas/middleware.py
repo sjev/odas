@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 
 from fastapi import Request
+from starlette.concurrency import run_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import PlainTextResponse, RedirectResponse, Response
 from starlette.routing import Match
@@ -94,7 +95,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
             # still exists and is in the team group. It is asked again on every
             # request, so an account removed or moved there is gone here at once.
             try:
-                person = users.account(session["email"])
+                # A network call: in a worker thread, so a slow directory holds this
+                # request and no other.
+                person = await run_in_threadpool(users.account, session["email"])
             except Exception:
                 log.exception("Cannot reach the user directory; refusing to guess at access")
                 return _no_cache(PlainTextResponse(DIRECTORY_DOWN, status_code=503))

@@ -510,6 +510,11 @@ nav a { text-decoration: none; }
 .docs-count { font-weight: 600; color: var(--intake-fg); margin: 1rem 0 0.5rem; }
 .docs-count:empty { display: none; }
 
+.upload-status { margin: 1rem 0; }
+.upload-status progress { margin-bottom: 0.25rem; }
+.upload-status p { margin: 0; }
+.upload-status.failed p { color: var(--pico-del-color); font-weight: 600; }
+
 .docs-list { list-style: none; padding: 0; margin: 0; }
 .docs-list li {
   display: flex;

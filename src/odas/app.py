@@ -28,6 +28,7 @@ from odas.routes_team import router as team_router
 from odas.routes_wetten import router as wetten_router
 from odas.routes_zaak import router as zaak_router
 from odas.routes_zaak_edit import router as zaak_edit_router
+from odas.upload_log import UploadLogMiddleware
 
 _BASE_DIR = Path(__file__).resolve().parent
 log = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ def create_app() -> FastAPI:
     if (assets := config.data_dir / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=str(assets)), name="assets")
     app.add_middleware(AuthMiddleware)
+    app.add_middleware(UploadLogMiddleware)  # outside auth: a refused upload is logged too
     # Caddy terminates TLS and is a container of its own, so uvicorn's default
     # (trust 127.0.0.1 only) drops X-Forwarded-Proto: every mailed link came out
     # http:// and no session cookie carried Secure. Added last, so it wraps the

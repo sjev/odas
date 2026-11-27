@@ -52,6 +52,8 @@
 </div>
 <script>
     initUpload(document.getElementById('reply-docs'));
+    // An upload sent by XHR lands here without the #success-banner fragment.
+    document.getElementById('success-banner')?.scrollIntoView({ block: 'center' });
     // Reveal the reply form on click; mirrors the team "Nieuw" log pattern.
     (function () {
         const replyBtn = document.getElementById('reply-new-btn');

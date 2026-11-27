@@ -34,6 +34,7 @@
         .intake-scope h3 { font-size: 1.1rem; }
         .intake-form .help, .drop-area .drop-hint { font-size: 0.875rem; }
         .intake-form > button[type="submit"] { font-size: 1.1rem; }
+        #voortgang { margin: 1rem 0; }
         .intake-lead { margin-bottom: 1.5rem; }
         @media (max-width: 600px) { .field-grid .field-row, .field-grid .field-row:has(> .radio-group) { grid-template-columns: 1fr; } }
     </style>
@@ -245,6 +246,7 @@
                 <p id="docs-count" class="docs-count"></p>
                 <ul id="docs-list" class="docs-list"></ul>
             </div>
+            <div id="voortgang" role="status" hidden><progress max="100"></progress><span></span></div>
             <button type="submit">Verstuur mijn hulpvraag</button>
         </form>
 <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css">
@@ -386,6 +388,47 @@
             alert.scrollIntoView({behavior: 'smooth'});
         }
 
+        // A file the browser cannot read fails the whole post with no reason given:
+        // one in iCloud that is not on this computer, or one changed after it was chosen.
+        async function unreadableFile(files) {
+            for (const f of files) {
+                try { await f.slice(0, 1).arrayBuffer(); } catch { return f.name; }
+            }
+            return null;
+        }
+
+        // XHR, not fetch: only XHR tells how far an upload is. Resolves with the
+        // status and the JSON answer (null if the answer is no JSON); rejects when
+        // the connection drops.
+        const voortgang = document.getElementById('voortgang');
+        function post(url, data) {
+            const bar = voortgang.querySelector('progress');
+            const text = voortgang.querySelector('span');
+            bar.value = 0;
+            text.textContent = 'Versturen…';
+            voortgang.hidden = false;
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', url);
+                xhr.upload.onprogress = e => {
+                    if (!e.lengthComputable) return;
+                    bar.value = Math.floor(100 * e.loaded / e.total);
+                    text.textContent = `Versturen: ${bar.value}% (${formatSize(e.loaded)} van ${formatSize(e.total)})`;
+                };
+                xhr.upload.onload = () => {
+                    bar.removeAttribute('value');
+                    text.textContent = 'Ontvangen. Uw hulpvraag wordt verwerkt…';
+                };
+                xhr.onload = () => {
+                    let answer = null;
+                    try { answer = JSON.parse(xhr.responseText); } catch {}
+                    resolve({status: xhr.status, answer});
+                };
+                xhr.onerror = xhr.onabort = () => reject(new Error('connection'));
+                xhr.send(data);
+            });
+        }
+
         form.addEventListener('submit', async e => {
             e.preventDefault();
             const velden = Object.fromEntries(VELDEN.map(k => [k, val(k)]).filter(([, v]) => v));
@@ -394,12 +437,17 @@
             data.append('website', form.elements.website.value);
             data.append('bedenktijd', String((Date.now() - opened) / 1000));
             docs.forEach(f => data.append('documenten', f));
+            const bad = await unreadableFile(docs);
+            if (bad) return showErrors({_: `Het bestand '${bad}' kan niet worden gelezen. Verwijder het en `
+                + 'voeg het opnieuw toe. Staat het in iCloud of OneDrive? Zet het dan eerst op deze computer.'});
             const button = form.querySelector('button[type="submit"]');
             button.disabled = true;
             try {
-                const r = await fetch('/indienen', {method: 'POST', body: data});
-                const answer = await r.json();
-                if (!r.ok) return showErrors(answer.errors || {});
+                const r = await post('/indienen', data);
+                const answer = r.answer;
+                if (!answer) return showErrors({_: `Uw hulpvraag is niet verstuurd: de server gaf fout ${r.status}. `
+                    + 'Uw gegevens en bestanden staan er nog. Probeer het later opnieuw.'});
+                if (r.status >= 400) return showErrors(answer.errors || {});
                 document.getElementById('main').innerHTML =
                     '<h1>We hebben uw hulpvraag ontvangen</h1><article><p>Uw kenmerk is <strong class="ref"></strong>. ' +
                     'Bewaar dit; u kunt ernaar verwijzen in contact met ons.</p><p><span class="bevestiging">U ontvangt ' +
@@ -429,8 +477,10 @@
                 }
                 window.scrollTo(0, 0);
             } catch {
-                showErrors({_: 'Uw hulpvraag is niet verstuurd. Controleer uw verbinding en probeer het opnieuw.'});
+                showErrors({_: 'Uw hulpvraag is niet verstuurd: de verbinding viel weg. Uw gegevens en '
+                    + 'bestanden staan er nog. Controleer uw verbinding en probeer het opnieuw.'});
             } finally {
+                voortgang.hidden = true;
                 button.disabled = false;
             }
         });

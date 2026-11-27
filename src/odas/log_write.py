@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from odas.index_write import parse_raw, set_flag
 from odas.naming import _parse_date, _safe_filename, next_letter, slugify, write_text_atomic
 
 log = logging.getLogger(__name__)
+_naming = threading.Lock()  # one process, many worker threads
 
 
 def _letters_on(log_dir: Path, name_date: str) -> set[str]:
@@ -60,22 +62,24 @@ def _write_log_dir(
     fm = {**fm, "aangemaakt": clock.stamp(at)}
     log_dir = folder / "log"
     log_dir.mkdir(exist_ok=True)
-    letter = next_letter(_letters_on(log_dir, name_date))
-    base = f"{name_date}-{letter}-{direction}-{slug or 'entry'}"
-    name = base
-    i = 2
-    while (log_dir / f"{name}.md").exists() or (log_dir / name).exists():
-        name = f"{base}-{i}"
-        i += 1
-
     text = schema.dump(fm, body, schema.log_fields())
-    if not attachments:
-        entry = log_dir / f"{name}.md"
-        write_text_atomic(entry, text)
-        return entry
+    # Handlers write from worker threads: a name stays free until it is on disk,
+    # so two entries made at once could take the same one.
+    with _naming:
+        letter = next_letter(_letters_on(log_dir, name_date))
+        base = f"{name_date}-{letter}-{direction}-{slug or 'entry'}"
+        name = base
+        i = 2
+        while (log_dir / f"{name}.md").exists() or (log_dir / name).exists():
+            name = f"{base}-{i}"
+            i += 1
+        if not attachments:
+            entry = log_dir / f"{name}.md"
+            write_text_atomic(entry, text)
+            return entry
+        entry = log_dir / name
+        entry.mkdir()
 
-    entry = log_dir / name
-    entry.mkdir()
     write_text_atomic(entry / "index.md", text)
     taken: set[str] = {"index.md"}
     for fname, content in attachments:
