@@ -82,3 +82,6 @@ coverage.xml
 # OS files
 .DS_Store
 Thumbs.db
+
+# Working notes: local only, never committed.
+wip/
